@@ -1,0 +1,456 @@
+{% extends 'frontend/_layout.html' %}
+
+{% block main %}
+    <div id="wrapperParallax" class="wrapper wrapper-boxed clearfix">
+
+    <div class="slider slider-11">
+    <div id="rev_slider_12_1_wrapper" class="rev_slider_wrapper fullscreen-container" data-alias="hebes-home-11" data-source="gallery" style="background:transparent;padding:0px;">
+    <!-- START REVOLUTION SLIDER 5.4.7 fullscreen mode -->
+        <div id="rev_slider_12_1" class="rev_slider fullscreenbanner" style="display:none;" data-version="5.4.7">
+    <ul>	<!-- SLIDE  -->
+        <li data-index="rs-47" data-transition="parallaxtoleft"
+             data-easein="Power4.easeInOut"
+             data-easeout="Power4.easeInOut"
+             data-masterspeed="2000" >
+            <!-- MAIN IMAGE -->
+            <img src="{{url_for('static',filename='frontend/assets/images/slider/bg/0.jpg')}}"  alt=""  data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="off" class="rev-slidebg" data-no-retina>
+            <!-- LAYERS -->
+            <!-- LAYER NR. 1 -->
+            <div class="tp-caption   tp-resizeme"
+                 id="slide-47-layer-5"
+                 data-x="['left','left','left','left']" data-hoffset="['100','100','70','50']"
+                 data-y="['top','top','top','top']" data-voffset="['200','200','350','320']"
+                data-fontsize="['72','72','72','60']"
+                data-lineheight="['72','72','72','60']"
+                data-width="none"
+                data-height="none"
+                data-whitespace="nowrap"
+                data-type="text"
+                data-responsive_offset="on"
+                data-frames='[{"delay":2000,"speed":2000,"frame":"0","from":"y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;","to":"o:1;","ease":"Power4.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"opacity:0;","ease":"Power3.easeInOut"}]'
+                data-textAlign="['inherit','inherit','inherit','inherit']"
+                data-paddingtop="[0,0,0,0]"
+                data-paddingright="[0,0,0,0]"
+                data-paddingbottom="[0,0,0,0]"
+                data-paddingleft="[0,0,0,0]"
+                 style="z-index: 6; white-space: nowrap; font-size: 72px; line-height: 72px; font-weight: 700; color: #000000; letter-spacing: 0px;font-family:Montserrat;">all the best<br>gifts, for<br>
+                <span style="color:#9e2a97; font-family: 'Sacramento', cursive;">lovesake </span>
+
+     </div>
+    </li>
+    </ul>
+    </div>
+    </div>
+
+    </div>
+    <script>
+        var revapi12,
+            tpj;
+        (function() {
+            if (!/loaded|interactive|complete/.test(document.readyState)) document.addEventListener("DOMContentLoaded", onLoad)
+            else
+                onLoad();
+
+            function onLoad() {
+                if (tpj === undefined) {
+                    tpj = jQuery;
+
+                    if ("off" == "on") tpj.noConflict();
+                }
+                if (tpj("#rev_slider_12_1").revolution == undefined) {
+                    revslider_showDoubleJqueryError("#rev_slider_12_1");
+                } else {
+                    revapi12 = tpj("#rev_slider_12_1").show().revolution({
+                        sliderType: "standard",
+                        jsFileLocation: "assets/revolution/js/",
+                        sliderLayout: "auto",
+                        dottedOverlay: "none",
+                        delay: 9000,
+                        navigation: {
+                            keyboardNavigation: "off",
+                            keyboard_direction: "horizontal",
+                            mouseScrollNavigation: "off",
+                            mouseScrollReverse: "default",
+                            onHoverStop: "off",
+                            arrows: {
+                                style: "uranus",
+                                enable: true,
+                                hide_onmobile: false,
+                                hide_onleave: false,
+                                tmp: '',
+                                left: {
+                                    h_align: "left",
+                                    v_align: "center",
+                                    h_offset: 20,
+                                    v_offset: 0
+                                },
+                                right: {
+                                    h_align: "right",
+                                    v_align: "center",
+                                    h_offset: 20,
+                                    v_offset: 0
+                                }
+                            }
+                        },
+                        responsiveLevels: [1240, 1024, 778, 480],
+                        visibilityLevels: [1240, 1024, 778, 480],
+                        gridwidth: [1240, 1024, 778, 480],
+                        gridheight: [700, 768, 960, 720],
+                        lazyType: "none",
+                        parallax: {
+                            type: "mouse",
+                            origo: "enterpoint",
+                            speed: 400,
+                            speedbg: 0,
+                            speedls: 0,
+                            levels: [5, 10, 15, 20, 25, 30, 35, 40, 45, 46, 47, 48, 49, 3, 2, 55],
+                        },
+                        shadow: 0,
+                        spinner: "spinner0",
+                        stopLoop: "off",
+                        stopAfterLoops: -1,
+                        stopAtSlide: -1,
+                        shuffle: "off",
+                        autoHeight: "off",
+                        fullScreenAutoWidth: "off",
+                        fullScreenAlignForce: "off",
+                        fullScreenOffsetContainer: "",
+                        fullScreenOffset: "",
+                        disableProgressBar: "on",
+                        hideThumbsOnMobile: "off",
+                        hideSliderAtLimit: 0,
+                        hideCaptionAtLimit: 0,
+                        hideAllCaptionAtLilmit: 0,
+                        debugMode: false,
+                        fallbacks: {
+                            simplifyAll: "off",
+                            nextSlideOnWindowFocus: "off",
+                            disableFocusListener: false,
+                        }
+                    });
+                    var api = revapi12;
+
+                    /* no need to edit below */
+                    var divider = ' / ',
+                        totalSlides,
+                        numberText;
+
+                    api.one('revolution.slide.onloaded', function() {
+
+                        totalSlides = api.revmaxslide();
+                        numberText = api.find('.slide-status-numbers').text('1' + divider + totalSlides);
+
+                        api.on('revolution.slide.onbeforeswap', function(e, data) {
+
+                            numberText.text((data.nextslide.index() + 1) + divider + totalSlides);
+
+                        });
+
+                    });
+                }; /* END OF revapi call */
+            }; /* END OF ON LOAD FUNCTION */
+        }()); /* END OF WRAPPING FUNCTION */
+    </script>
+    <!-- collection #4
+    ============================================= -->
+    <section id="collection4" class="collection collection-4 pt-50 pb-0">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+                    <div class="heading text--center mb-100">
+                        <h2 class="heading--title">all the most beautiful <span style="color:#9e2a97; font-family: 'Sacramento', cursive; font-size: 66px;">gifts</span> in one place!</h2>
+                        <p class="heading--desc">MyWishlistNG is a bespoke gift registry that allows you to choose the ideal gifts for your special occasion. It's a list of preferred gift
+                            items for a particular occasion or event that is curated by the intended recipients of the gifts and passed on to their guests</p>
+                    </div>
+                </div>
+                <!-- .col-lg-12 end -->
+            </div>
+            <!-- .row end -->
+            <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+                        <div class="heading text--center mb-100">
+                            <h2 class="heading--title"><span style="font-family: 'Sacramento', cursive; font-size: 66px; font-weight: 500;">how it works.</span></h2>
+                        </div>
+                    </div>
+                    <!-- .col-lg-12 end -->
+                </div>
+                <!-- .row end -->
+            <div class="row">
+                <!-- collection item #1 -->
+                <div class="col-sm-12 col-md-6 col-lg-4">
+                    <div class="item-info text-center pb-50">
+                        <h5 style= "color:#9e2a97; font-family: 'Alatsi', sans-serif;">create.</h5>
+                        <p>create a visual list of items for your wedding, bridal shower, birthdays, baby showers, graduation and so on.</p>
+                    </div>
+                    <div class="collection-item collection-item-3">
+                        <div class="item--numb">01</div>
+                        <div class="collection--img">
+                            <img src="{{url_for('static',filename='frontend/assets/images/collection/col4/registry.jpg')}}" alt="collection" />
+                            <div class="collection--hover">
+                                <div class="collection--action">
+                                    <a href="#" class="btn">SHOP NOW</a>
+                                </div>
+                            </div>
+                            <!-- .collection-hover end -->
+                        </div>
+                        <!-- .collection-img end -->
+                        <div class="collection--content">
+                            <div class="collection--title">
+                                <h3>Create a Registry</h3>
+                            </div>
+                            <!-- .collection-title end -->
+                            <div class="collection--desc">
+                                <p>Let your family and friends know what you really like, so they know what to gift you.</p>
+                            </div>
+                            <!-- .collection-desc end -->
+                        </div>
+                        <!-- .collection-content end -->
+                    </div>
+                    <!-- .collection-item end -->
+                </div>
+                <!-- .col-lg-4 end -->
+                <!-- collection item #2 -->
+                <div class="col-sm-12 col-md-6 col-lg-4">
+                        <div class="item-info text-center pb-50">
+                            <h5 style= "color:#9e2a97; font-family: 'Alatsi', sans-serif;">share your URL.</h5>
+                            <p>A custom URL directly takes your guests to your event page to enable them see your gift list and purchase.</p>
+                        </div>
+                    <div class="collection-item collection-item-4">
+                        <div class="item--numb">02</div>
+                        <div class="collection--img">
+                            <img src="{{url_for('static',filename='frontend/assets/images/collection/col4/find_registry.jpg')}}" alt="collection" />
+                            <div class="collection--hover">
+                                <div class="collection--action">
+                                    <a href="#" class="btn">SHOP NOW</a>
+                                </div>
+                            </div>
+                            <!-- .collection-hover end -->
+                        </div>
+                        <!-- .collection-img end -->
+                        <div class="collection--content">
+                            <div class="collection--title">
+                                <h3>Find a Registry</h3>
+                            </div>
+                            <!-- .collection-title end -->
+                            <div class="collection--desc">
+                                <p>Discover what your celebrant would like to receive from you.</p>
+                            </div>
+                            <!-- .collection-desc end -->
+                        </div>
+                        <!-- .collection-content end -->
+                    </div>
+                    <!-- .collection-item end -->
+                </div>
+                <!-- .col-lg-4 end -->
+                <!-- collection item #3 -->
+                <div class="col-sm-12 col-md-6 col-lg-4">
+                        <div class="item-info text-center pb-50">
+                            <h5 style= "color:#9e2a97; font-family: 'Alatsi', sans-serif;">track.</h5>
+                            <p>MyWishlistNG prevents gift givers from duplicating gifts and allows you to easily track and manage items sild from the registry.</p>
+                        </div>
+                    <div class="collection-item collection-item-5">
+                        <div class="item--numb">03</div>
+                        <div class="collection--img">
+                            <img src="{{url_for('static',filename='frontend/assets/images/collection/col4/honeymoon.jpg')}}" alt="collection" />
+                            <div class="collection--hover">
+                                <div class="collection--action">
+                                    <a href="#" class="btn">SHOP NOW</a>
+                                </div>
+                            </div>
+                            <!-- .collection-hover end -->
+                        </div>
+                        <!-- .collection-img end -->
+                        <div class="collection--content">
+                            <div class="collection--title">
+                                <h3><a href="product-gallery-vertical.html">Honeymoon Fund</a></h3>
+                            </div>
+                            <!-- .collection-title end -->
+                            <div class="collection--desc">
+                                <p>Gift your couple a special treat, by contributing to their love get away experience.</p>
+                            </div>
+                            <!-- .collection-desc end -->
+                        </div>
+                        <!-- .collection-content end -->
+                    </div>
+                    <!-- .collection-item end -->
+                </div>
+                <!-- .col-lg-4 end -->
+
+            </div>
+            <!-- .row end -->
+        </div>
+        <!-- .container end -->
+    </section>
+    <!-- .collections4 end -->
+    <!-- newsletter #3
+    ============================================= -->
+    <section id="newsletter3" class="newsletter newsletter-3 text-center bg-theme">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+                        <div class="heading heading-4">
+                            <h5 class="heading--title">stay connected to <span style="color:#fdb0d4; font-family: 'Sacramento', cursive; font-size: 72px; font-weight: 500;">discover</span> more about us</h5>
+                            <p class="heading--desc">Get notified about the latest news and updates. No spam, we promise!</p>
+                        </div>
+                        <form class="mailchimp">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="newsletter-email" placeholder="Enter your email">
+                                <button type="submit" class="btn">SUBSCRIBE<i class="lnr lnr-arrow-right"></i></button>
+                            </div>
+                        </form>
+                        <div class="subscribe-alert"></div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <!-- .col-lg-8 end -->
+                </div>
+                <!-- .row end -->
+            </div>
+            <!-- .container end -->
+        </section>
+        <!-- #newsletter end -->
+    <!-- categories list #1
+    ============================================= -->
+    <section id="cat-list" class="cat-list bg-lightpurple text-center-xs pt-50 pt-xs-60">
+            <div class="container">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+                            <div class="heading text--center mb-100">
+                                <h2 class="heading--title">discover an array of <span style="color:#9e2a97; font-family: 'Sacramento', cursive; font-size: 66px;">exquisite</span> gifts to choose from</h2>
+                            </div>
+                        </div>
+                        <!-- .col-lg-12 end -->
+                    </div>
+                <div class="row">
+                        <!-- .col-lg-3 end -->
+                        <div class="col-sm-12 col-md-4 col-lg-3">
+                            <div class="cat--list-item">
+                                <a href="#">
+                                    <img src="{{url_for('static',filename='frontend/assets/images/categories/list/1.jpg')}}" alt="img">
+                                    <h4># Kitchen &amp; Household</h4>
+                                </a>
+                            </div>
+                        </div>
+                    <!-- .col-lg-3 end -->
+                    <div class="col-sm-12 col-md-4 col-lg-3">
+                        <div class="cat--list-item">
+                            <a href="#">
+                                <img src="{{url_for('static',filename='frontend/assets/images/categories/list/2.jpg')}}" alt="img">
+                                <h4># Home electronics</h4>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- .col-lg-3 end -->
+                    <div class="col-sm-12 col-md-4 col-lg-3">
+                        <div class="cat--list-item">
+                            <a href="#">
+                                <img src="{{url_for('static',filename='frontend/assets/images/categories/list/3.jpg')}}" alt="img">
+                                <h4># Fashion &amp; Jewelry</h4>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- .col-lg-3 end -->
+                    <div class="col-sm-12 col-md-4 col-lg-3">
+                        <div class="cat--list-item">
+                            <a href="#">
+                                <img src="{{url_for('static',filename='frontend/assets/images/categories/list/4.jpg')}}" alt="img">
+                                <h4># Baby gifts</h4>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- .col-lg-3 end -->
+                </div>
+                <!-- .row end -->
+            </div>
+            <!-- .container end -->
+        </section>
+        <!-- #categories-list end -->
+        <div class="bg-white clearfix"></div>
+
+
+    <section id="newsletter3" class="newsletter newsletter-3 text-center bg-theme">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+                        <div class="heading heading-5">
+                            <h5 class="heading--title">TO DISCOVER MORE SUCH AS GIFTCARDS <span style="color:#fdb0d4; font-family: 'Sacramento', cursive; font-size: 60px; font-weight: 400;"> and other</span> PLEASE <a href="">CLICK HERE</a></h5>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <!-- .col-lg-8 end -->
+                </div>
+                <!-- .row end -->
+            </div>
+            <!-- .container end -->
+        </section>
+    <!-- feature #1
+    ============================================= -->
+    <section id="feature1" class="feature feature-1  pt-50 pb-80 pb-60-xs">
+        <div class="container">
+            <div class="row">
+                <!--  feature panel #1 -->
+                <div class="col-sm-6 col-md-6 col-lg-3">
+                    <div class="feature-panel">
+                        <div class="feature--icon">
+                            <i class="icon-bolt"></i>
+                        </div>
+                        <!-- .feature-icon end -->
+                        <div class="feature--content">
+                            <h3>Creative &amp; Unique</h3>
+                            <p>GREAT FROM US</p>
+                        </div>
+                        <!-- .feature-content end -->
+                    </div>
+                </div>
+                <!-- .feature-panel end -->
+                <!--  feature panel #2 -->
+                <div class="col-sm-6 col-md-6 col-lg-3">
+                    <div class="feature-panel">
+                        <div class="feature--icon">
+                            <i class="icon-location"></i>
+                        </div>
+                        <!-- .feature-icon end -->
+                        <div class="feature--content">
+                            <h3>Free Shipping</h3>
+                            <p>ALL ORDER OVER $30</p>
+                        </div>
+                        <!-- .feature-content end -->
+                    </div>
+                </div>
+                <!-- .feature-panel end -->
+                <!--  feature panel #3 -->
+                <div class="col-sm-6 col-md-6 col-lg-3">
+                    <div class="feature-panel">
+                        <div class="feature--icon">
+                            <i class="icon-phone"></i>
+                        </div>
+                        <!-- .feature-icon end -->
+                        <div class="feature--content">
+                            <h3>Support Customer</h3>
+                            <p>SUPPORT 24/7</p>
+                        </div>
+                        <!-- .feature-content end -->
+                    </div>
+                </div>
+                <!-- .feature-panel end -->
+                <!--  feature panel #4 -->
+                <div class="col-sm-6 col-md-6 col-lg-3">
+                    <div class="feature-panel">
+                        <div class="feature--icon">
+                            <i class="icon-link icon-md"></i>
+                        </div>
+                        <!-- .feature-icon end -->
+                        <div class="feature--content">
+                            <h3>Secure Payment</h3>
+                            <p>100% SECURE PAYMENT</p>
+                        </div>
+                        <!-- .feature-content end -->
+                    </div>
+                </div>
+                <!-- .feature-panel end -->
+            </div>
+            <!-- .row end -->
+        </div>
+        <!-- .container end -->
+    </section>
+    <!-- #feature1 end -->
+{% endblock %}

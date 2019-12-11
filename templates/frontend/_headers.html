@@ -1,0 +1,279 @@
+<header id="navbar-spy" class="header header-1 header-8 header-light">
+    <nav id="primary-menu" class="navbar navbar-expand-lg navbar-light logo-centered">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img class="logo logo-light" src="{{url_for('static',filename='frontend/assets/images/logo/logo.png')}}" alt="logo">
+                <img class="logo logo-dark" src="{{url_for('static',filename='frontend/assets/images/logo/logo.png')}}" alt="logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse justify-content-between" id="navbarContent">
+                <!-- Module Menu -->
+                <div class="module-container">
+                    <div class="module module-lang module-dropdown pull-left">
+                        <div class="module-icon">
+                            <button type="button" class="dropdown-toggle" data-toggle="dropdown">
+                                ENG <i class="fa fa-caret-down"></i>
+                            </button>
+                        </div>
+                        <div class="module-dropdown-menu module-content">
+                            <a class="dropdown-item" href="#">ENG</a>
+                            <!--<a class="dropdown-item" href="#">RU</a>
+                            <a class="dropdown-item" href="#">FR</a>
+                            <a class="dropdown-item" href="#">AR</a>-->
+                        </div>
+                    </div>
+                    <div class="vertical-divider pull-left mr-30"></div>
+                    <!-- Module Search -->
+                    <div class="module module-search module-search-left pull-left">
+                        <div class="module-icon search-icon">
+                            <i class="lnr lnr-magnifier"></i>
+                            <span class="title">Search</span>
+                        </div>
+                        <div class="module-content module--search-box">
+                            <form class="form-search">
+                                <input type="text" class="form-control" placeholder="Search anything">
+                                <button type="submit"><span class="fa fa-arrow-right"></span></button>
+                            </form><!-- .form-search end -->
+                        </div>
+                    </div><!-- .module-search end -->
+                </div>
+                <ul class="navbar-nav mr-auto ml-auto">
+                    <!-- home Menu -->
+                    <li class=" active">
+                        <a href="#" class="menu-item">Home</a>
+                    </li>
+                    <!-- li end -->
+                    <!-- About Menu -->
+                    <li>
+                            <a href="#" class="menu-item">Who we are</a>
+                    </li>
+                    <!-- li end -->
+                    <!-- How Menu -->
+                    <li>
+                            <a href="#" class="menu-item">How it works</a>
+                        </li>
+                    <!-- li end -->
+                    <!-- Shop Menu -->
+                    <li class="has-dropdown mega-dropdown">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle menu-item">Shop</a>
+                        <ul class="dropdown-menu mega-dropdown-menu collections-menu">
+                            <li>
+                                <div class="container">
+                                    <div class="row">
+                                        <!-- Column #1 -->
+                                        <div class="col-md-12 col-lg-5ths">
+                                            <div class="collection--menu-content">
+                                                <h5>Furniture</h5>
+                                                <ul>
+                                                    <li>
+                                                        <a href="">chair</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="">sofa</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="">table</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="">bed</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="menu--img">
+                                                <img src="{{url_for('static',filename='frontend/assets/images/slider/layers/1.png')}}" alt="img" class="img-fluid">
+                                            </div>
+                                        </div>
+                                        <!-- .col-lg-5ths end -->
+
+                                        <!-- Column #2 -->
+                                        <div class="col-md-12 col-lg-5ths">
+                                            <div class="collection--menu-content">
+                                                <h5>Lighting</h5>
+                                                <ul>
+                                                    <li>
+                                                        <a href="">Wall Lamp</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="">Bedroom Lamp</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="">Garden Lamp</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="">Desktop Lamp</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="menu--img">
+                                                <img src="{{url_for('static',filename='frontend/assets/images/slider/layers/37.png')}}" alt="img" class="img-fluid">
+                                            </div>
+                                        </div>
+                                        <!-- .col-lg-5ths end -->
+
+                                        <!-- Column #3 -->
+                                        <div class="col-md-12 col-lg-5ths">
+                                            <div class="collection--menu-content">
+                                                <h5>Wood Shelf</h5>
+                                                <ul>
+                                                    <li>
+                                                        <a href="">wood Living</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="">wood Bedroom</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="">wood Garden</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="">wood tables</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="menu--img">
+                                                <img src="{{url_for('static',filename='frontend/assets/images/slider/layers/34.png')}}" alt="img" class="img-fluid">
+                                            </div>
+                                        </div>
+                                        <!-- .col-lg-5ths end -->
+
+                                        <!-- Column #4 -->
+                                        <div class="col-md-12 col-lg-5ths">
+                                            <div class="collection--menu-content">
+                                                <h5>Accessories</h5>
+                                                <ul>
+                                                    <li>
+                                                        <a href="">Shoes</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="">Bags</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="">Jewellery</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="">Scarves</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="menu--img">
+                                                <img src="{{url_for('static',filename='frontend/assets/images/slider/layers/35.png')}}" alt="img" class="img-fluid">
+                                            </div>
+                                        </div>
+                                        <!-- .col-lg-5ths end -->
+
+                                        <!-- Column #5 -->
+                                        <div class="col-md-12 col-lg-5ths">
+                                            <div class="collection--menu-content">
+                                                <h5>Sale Off</h5>
+                                                <ul>
+                                                    <li>
+                                                        <a href="">Sunglasses</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="">jackets</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="">Shirts</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="">Socks</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="menu--img">
+                                                <img src="{{url_for('static',filename='frontend/assets/images/slider/layers/36.png')}}" alt="img" class="img-fluid">
+                                            </div>
+                                        </div>
+                                        <!-- .col-lg-5ths end -->
+                                    </div>
+                                    <!-- .row end -->
+                                </div>
+                                <!-- container end -->
+                            </li>
+                        </ul>
+                        <!-- .mega-dropdown-menu end -->
+                    </li>
+                    <!-- li end -->
+                    <!-- Blog Menu -->
+                    <li>
+                            <a href="#" class="menu-item">Blog</a>
+                        </li>
+                        <!-- li end -->
+                    <!-- Log in Menu -->
+                    <li>
+                            <a href="login.html" class="menu-item">Log in</a>
+                        </li>
+                        <!-- li end -->
+                    <!-- Register Menu -->
+                    <li>
+                            <a href="#" class="menu-item">Register</a>
+                        </li>
+                        <!-- li end -->
+                </ul>
+                <div class="module-container">
+                    <div class="module module-account module-dropdown module-dropdown-right pull-left">
+                        <div class="module-icon">
+                            <button type="button" class="dropdown-toggle" data-toggle="dropdown">
+                                MY ACCOUNT <i class="fa fa-caret-down"></i>
+                            </button>
+                        </div>
+                        <div class="module-dropdown-menu module-content">
+                            <a class="dropdown-item" href="#">profile</a>
+                            <a class="dropdown-item" href="#">wishlist</a>
+                        </div>
+                    </div>
+                    <!-- Module Cart -->
+                    <div class="module module-cart pull-left">
+                        <div class="module-icon cart-icon">
+                            <i class="icon-bag"></i>
+                            <span class="title">shop cart</span>
+                            <label class="module-label">2</label>
+                        </div>
+                        <div class="module-content module-box cart-box">
+                             <div class="cart-overview">
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <img class="img-fluid" src="{{url_for('static',filename='frontend/assets/images/products/thumb/1.jpg')}}" alt="product" />
+                                        <div class="product-meta">
+                                            <h5 class="product-title">Hebes Great Chair</h5>
+                                            <p class="product-qunt">Quantity:  01</p>
+                                            <p class="product-price">$24.00</p>
+                                        </div>
+                                        <a class="cart-cancel" href="#"><i class="lnr lnr-cross"></i></a>
+                                    </li>
+                                    <li>
+                                        <img class="img-fluid" src="{{url_for('static',filename='frontend/assets/images/products/thumb/2.jpg')}}" alt="product" />
+                                        <div class="product-meta">
+                                            <h5 class="product-title">Hebes Great Chair</h5>
+                                            <p class="product-qunt">Quantity:  01</p>
+                                            <p class="product-price">$24.00</p>
+                                        </div>
+                                        <a class="cart-cancel" href="#"><i class="lnr lnr-cross"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="cart-total">
+                                <div class="total-desc">
+                                    Sub total
+                                </div>
+                                <div class="total-price">
+                                    $48.00
+                                </div>
+                            </div>
+                            <div class="clearfix">
+                            </div>
+                            <div class="cart--control">
+                                <a class="btn btn--white btn--bordered btn--rounded" href="#">view cart </a>
+                                <a class="btn btn--primary btn--rounded" href="#">Checkout</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- .module-cart end -->
+                </div>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </nav>
+</header>

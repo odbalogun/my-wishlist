@@ -2,8 +2,7 @@
 SECRET_KEY = '123456790'
 
 # Create in-memory database
-DATABASE_FILE = 'sample_db.sqlite'
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + DATABASE_FILE
+SQLALCHEMY_DATABASE_URI = 'mysql://root:root@localhost/registry'
 SQLALCHEMY_ECHO = True
 
 # Flask-Security config

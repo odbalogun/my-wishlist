@@ -81,6 +81,7 @@
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
             <!-- Notifications: style can be found in dropdown.less -->
+            <!--
             <li class="dropdown notifications-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <i class="fa fa-bell-o"></i>
@@ -89,7 +90,6 @@
               <ul class="dropdown-menu">
                 <li class="header">You have 10 notifications</li>
                 <li>
-                  <!-- inner menu: contains the actual data -->
                   <ul class="menu">
                     <li>
                       <a href="#">
@@ -122,11 +122,13 @@
                 <li class="footer"><a href="#">View all</a></li>
               </ul>
             </li>
-
+            -->
             <!-- Control Sidebar Toggle Button -->
+            <!--
             <li>
               <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
             </li>
+            -->
             <li>
               {% block access_control %}
               {% endblock %}
@@ -181,6 +183,7 @@
         {% block main_menu %}
         {{ layout.menu() }}
         {% endblock %}
+        <!--
         <li>
           <a href="#">
             <i class="fa fa-envelope"></i> <span>Mailbox</span>
@@ -224,6 +227,7 @@
             <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
           </ul>
         </li>
+        -->
       </ul>
     </section>
     <!-- /.sidebar -->
