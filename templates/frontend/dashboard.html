@@ -1,0 +1,188 @@
+{% extends 'frontend/_layout.html' %}
+
+{% block main %}
+    <!-- Page Title #3
+about #1
+============================================= -->
+<section id="about1" class="about about-1 pt-100">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-6">
+                <div class="heading heading-2">
+                    <h2 class="heading--title">Welcome to your Dashboard</h2>
+                </div>
+            </div>
+            <!-- .col-lg-6 end -->
+            <div class="col-sm-12 col-md-12 col-lg-6">
+                <div class="about--text">
+                    <p>If you're like the average knowledge worker, you spend most of your time sitting in front of a computer screen. Even though your work revolves around it</p>
+                 </div>
+            </div>
+            <!-- .col-lg-6 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<section id="product-detalis2" class="product-detalis product-detalis-2 product-detalis-4 pb-80">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="product--tabs tabs">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li><a href="#myregistry" aria-controls="myregistry" role="tab" data-toggle="tab" class="active">My Registries</a></li>
+        <li><a href="#wishlistordered" aria-controls="wishlistordered" role="tab" data-toggle="tab">Purchased Gifts</a></li>
+        <li><a href="#orders" aria-controls="orders" role="tab" data-toggle="tab">My Orders</a></li>
+        <li><a href="#donations" aria-controls="donations" role="tab" data-toggle="tab">Donations</a></li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane fade show active" id="myregistry">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-10 offset-lg-1">
+
+                    <div class="row">
+                            <div class="cart-table wishlist table-responsive">
+                                {% if current_user.registries %}
+                                <table class="table">
+                                    <thead>
+                                        <tr class="cart-product">
+                                            <th class="cart-product-item">Name</th>
+                                            <th class="cart-product-price">Registry Link</th>
+                                            <th class="cart-product-status">Products Purchased</th>
+                                            <th class="cart-product-status">Honeymoon Fund Raised</th>
+                                            <th class="cart-product-status">Date Created</th>
+                                            <th class="cart-product-status"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in current_user.registries %}
+                                        <tr class="cart-product">
+                                            <td class="cart-product-item"><b style="color: black;">{{ item }}</b></td>
+                                            <td class="cart-product-price">{{ item.url }}</td>
+                                            <td class="cart-product-status">20</td>
+                                            <td class="cart-product-status">N20,000</td>
+                                            <td class="cart-product-status">{{ item.date_created.strftime('%d, %m %Y') }}</td>
+                                            <td class="cart-product-status"></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% else %}
+                                    <p>There are no registries to display</p>
+                                    <a href="{{ url_for('.create_registry') }}">
+                                        <button class="btn btn-info">Create a registry</button>
+                                    </a>
+                                {% endif %}
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <!-- .row end -->
+        </div>
+        <!-- #description end -->
+        <div role="tabpanel" class="tab-pane fade" id="orders">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-10 offset-lg-1">
+
+                        <div class="cart-table wishlist table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="cart-product">
+                                            <th class="cart-product-item">Transaction ID</th>
+                                            <th class="cart-product-price">Amount</th>
+                                            <th class="cart-product-status">Status</th>
+                                            <th class="cart-product-status">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- cart product #1 -->
+                                        <tr class="cart-product">
+                                            <td class="cart-product-item"><b style="color: black;">EA12332134</b></td>
+                                            <td class="cart-product-price">N50,000</td>
+                                            <td class="cart-product-status">Delivered</td>
+                                            <td class="cart-product-status">19/12/2018
+                                                    <div class="cart-product-remove">x</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </div>
+            </div>
+        </div>
+        <!-- #details end -->
+        <div role="tabpanel" class="tab-pane fade" id="wishlistordered">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-8 offset-lg-1">
+
+                        <div class="cart-table wishlist table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr class="cart-product">
+                                            <th class="cart-product-item">Product Name</th>
+                                            <th class="cart-product-price">Price</th>
+                                            <th class="cart-product-status">Product Registry</th>
+                                            <th class="cart-product-status">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- cart product #1 -->
+                                        <tr class="cart-product">
+                                            <td class="cart-product-item"><b style="color: black;">Black Neck Tie</b></td>
+                                            <td class="cart-product-price">N12,000</td>
+                                            <td class="cart-product-status">Birthday Party List</td>
+                                            <td class="cart-product-status">19/12/2018
+                                                    <div class="cart-product-remove">x</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                </div>
+                <!-- .col-lg-8 end -->
+            </div>
+            <!-- .row end -->
+        </div>
+
+        <div role="tabpanel" class="tab-pane fade" id="donations">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-8 offset-lg-1">
+                        <ul class="product--review-comments list-unstyled">
+                            <li class="review--comment">
+                                <div class="author--img">
+                                    <img src="{{url_for('static',filename='frontend/assets/images/testimonials/authors/1.jpg')}}" alt="author">
+                                </div>
+                                <div class="review--comment-content">
+                                    <div class="clearfix">
+                                        <div class="pull-left">
+                                            <h6>Jane Doe</h6>
+                                            <span class="review--date">Donated N200,000</span>
+                                        </div>
+                                    </div>
+                                    <div class="product--comment">
+                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam tempore incidunt fuga ab, fugit id quibusdam facilis vitae velit voluptates recusandae natus itaque beatae architecto, tenetur officia quis corporis temporibus?</p>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                </div>
+                <!-- .col-lg-8 end -->
+            </div>
+            <!-- .row end -->
+        </div>
+        <!-- #reviews end -->
+    </div>
+    <!-- #tab-content end -->
+</div>
+<!-- .product-tabs end -->            </div>
+            <!-- .col-lg-12 end -->
+        </div>
+        <!-- .row end -->
+
+    </div>
+    <!-- .container end -->
+</section>
+
+{%  endblock %}

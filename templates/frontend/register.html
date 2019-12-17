@@ -1,4 +1,5 @@
 {% extends 'frontend/_layout.html' %}
+{% from "frontend/_formhelpers.html" import render_field %}
 
 {% block main %}
 <section id="register-login" class="register-login pt-30 pb-150">
@@ -11,57 +12,46 @@
                     <p>Login to your account to discovery all great features in this item</p>
                 </div>
                 <!-- .register-title end -->
-                <form method="post">
+                <form method="post" action="">
                     {{ form.csrf_token }}
                     <div class="row">
                         <div class="col-sm-12 col-md-12 col-lg-6">
-                            <div class="form-group">
-                                <input type="text" class="form-control" name="first_name" placeholder="Your Name">
-                                {{ form.first_name.errors }}
-                            </div>
+                            {{ render_field(form.first_name) }}
                         </div>
                         <!-- .col-lg-6 end -->
                         <div class="col-sm-12 col-md-12 col-lg-6">
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="register-user-name" placeholder="User Name">
-                            </div>
+                            {{ render_field(form.last_name) }}
                         </div>
                         <!-- .col-lg-6 end -->
                         <div class="col-sm-12 col-md-12 col-lg-6">
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="Phone" placeholder="Phone">
-                            </div>
+                            {{ render_field(form.email) }}
                         </div>
                         <!-- .col-lg-6 end -->
                         <div class="col-sm-12 col-md-12 col-lg-6">
-                            <div class="form-group">
-                                <input type="email" class="form-control" id="email" placeholder="Email">
-                            </div>
+                            {{ render_field(form.phone_number) }}
                         </div>
                         <!-- .col-lg-6 end -->
                         <div class="col-sm-12 col-md-12 col-lg-6">
-                            <div class="form-group">
-                                <input type="password" class="form-control" id="register-password" placeholder="Password">
-                            </div>
+                            {{ render_field(form.password) }}
                         </div>
                         <!-- .col-lg-6 end -->
                         <div class="col-sm-12 col-md-12 col-lg-6">
-                            <div class="form-group mb-40">
-                                <input type="password" class="form-control" id="register-password-confirm" placeholder="Re Password">
-                            </div>
+                            {{ render_field(form.confirm_password) }}
                         </div>
                         <!-- .col-lg-6 end -->
                         <div class="col-sm-12 col-md-12 col-lg-12 mb-40">
                             <div class="input-checkbox inline-block">
-                                <label class="label-checkbox">I agree to the <a href="#">terms and conditions</a>
-                                    <input type="checkbox" checked>
+                                <div class="form-group">
+                                    <label class="label-checkbox">I agree to the <a href="#">terms and conditions</a>
+                                    <input type="checkbox" name="terms_and_conditions" checked>
                                     <span class="check-indicator"></span>
                                 </label>
+                                </div>
                             </div>
                         </div>
                         <!-- .col-lg-12 end -->
                         <div class="col-sm-12 col-md-12 col-lg-12 mb-40">
-                            <a href="#" class="btn btn--primary btn--rounded">Register</a>
+                            <input type="submit" class="btn btn--primary btn--rounded" value="Register">
                         </div>
                         <!-- .col-lg-12 end -->
                         <!--

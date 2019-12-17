@@ -3,8 +3,8 @@ from datetime import date
 from flask_admin.contrib import sqla
 from flask_admin import BaseView, expose, form
 from flask_admin.model import typefmt
-from flask_security import current_user
-from flask import redirect, request, url_for, abort, flash
+from flask_security import current_user, logout_user
+from flask import redirect, request, url_for, flash
 from app import db
 from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage
 from slugify import UniqueSlugify, Slugify
@@ -12,7 +12,7 @@ from wtforms import TextAreaField, FileField
 from flask_admin.actions import action
 from flask_ckeditor import CKEditorField
 from forms import DiscountForm, ArticleForm
-from utils import get_file_path, date_format, generate_folder_name
+from utils import get_file_path, date_format, generate_folder_name, get_relative_file_path
 from flask_admin.model.form import InlineFormAdmin
 
 
@@ -42,10 +42,10 @@ class MyModelView(sqla.ModelView):
         if not self.is_accessible():
             if current_user.is_authenticated:
                 # permission denied
-                abort(403)
-            else:
-                # login
-                return redirect(url_for('security.login', next=request.url))
+                logout_user()
+
+            flash("You are not authorized to access this page", 'error')
+            return redirect(url_for('security.login', next=request.url))
 
     # can_edit = True
     edit_modal = True
@@ -63,7 +63,7 @@ class UserView(MyModelView):
     column_filters = column_editable_list
 
 
-class CustomView(BaseView):
+class CustomView(MyModelView):
     @expose('/')
     def index(self):
         return self.render('admin/custom_index.html')
@@ -99,13 +99,17 @@ class ArticleView(MyModelView):
             'class': 'flat-red'
         },
     }
+    folder_name = generate_folder_name()
+    relative_file_path = get_relative_file_path('articles', folder_name)
+
     form_overrides = dict(content=CKEditorField, summary=TextAreaField, image=FileField)
     form_columns = ['title', 'summary', 'content', 'tags', 'image', 'is_published']
-    form_extra_fields = {'image': form.ImageUploadField('Image', allowed_extensions=['jpg', 'jpeg', 'png'],
-                                                        base_path=get_file_path('articles', generate_folder_name()))}
+    form_extra_fields = {
+        'image': form.ImageUploadField('Image', allowed_extensions=['jpg', 'jpeg', 'png'], base_path=get_file_path(),
+                                       relative_path=relative_file_path)}
 
-    edit_template = "admin/ckeditor_edit.html"
-    create_template = "admin/ckeditor_create.html"
+    # edit_template = "admin/ckeditor_edit.html"
+    # create_template = "admin/ckeditor_create.html"
     #edit_modal = False
     #create_modal = False
 
@@ -204,8 +208,10 @@ class ProductCategoryView(MyModelView):
 class ProductImageInlineForm(InlineFormAdmin):
     form_columns = ['id', 'name', 'is_main_image']
     column_labels = dict(name="Image")
+    folder_name = generate_folder_name()
+    relative_file_path = get_relative_file_path('articles', folder_name)
     form_extra_fields = {'name': form.ImageUploadField('Picture', allowed_extensions=['jpg', 'jpeg', 'png'],
-                                                       base_path=get_file_path('products', generate_folder_name()))}
+                                                       base_path=get_file_path(), relative_path=relative_file_path)}
     form_widget_args = {
         'is_main_image': {
             'type': 'checkbox',

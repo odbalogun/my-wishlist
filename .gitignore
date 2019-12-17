@@ -104,3 +104,6 @@ env/
 # PyCharm
 .idea/
 
+# upload folders
+static/uploads/articles/
+static/uploads/products/

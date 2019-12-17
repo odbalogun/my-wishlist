@@ -1,4 +1,5 @@
 {% extends 'frontend/_layout.html' %}
+{% from "frontend/_formhelpers.html" import render_field %}
 
 {% block main %}
 <section id="register-login" class="register-login pt-50 pb-150">
@@ -6,38 +7,30 @@
         <div class="row">
             <div class="col-sm-12 col-md-6 col-lg-5 offset-lg-3">
                 <div class="register-title">
-                    <h5>Login your account</h5>
-                    <p>Login to your account to discovery all great features in this item</p>
+                    <h5>Verify your account</h5>
+                    <p>Verify your account to discover all great features in this item</p>
                 </div>
                 <!-- .register-title end -->
-                <form>
+                <form method="post" action="">
+                    {{ form.csrf_token }}
                     <div class="row">
                         <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="form-group">
-                                <input type="text" class="form-control" id="user-name" placeholder="User Name">
-                            </div>
+                            {{ render_field(form.email) }}
                         </div>
                         <!-- .col-lg-12 end -->
                         <div class="col-sm-12 col-md-12 col-lg-12">
-                            <div class="form-group">
-                                <input type="password" class="form-control" id="login-password" placeholder="Your Password">
-                            </div>
+                            {{ render_field(form.verification_code) }}
                         </div>
                         <!-- .col-lg-12 end -->
                         <div class="col-sm-12 col-md-12 col-lg-12 mb-40">
-                            <div class="input-checkbox inline-block">
-                                <label class="label-checkbox">Keep me logged in
-                                    <input type="checkbox" checked>
-                                    <span class="check-indicator"></span>
-                                </label>
-                            </div>
-                            <a href="#" class="forget--password"> Forgot your password?</a>
+                            <a href="#" class="forget--password"> Resend verification code?</a>
                         </div>
                         <!-- .col-lg-12 end -->
                         <div class="col-sm-12 col-md-12 col-lg-12 mb-30">
-                            <a href="#" class="btn btn--primary btn--rounded">Login</a>
+                            <input type="submit" class="btn btn--primary btn--rounded" value="Verify">
                         </div>
                         <!-- .col-lg-12 end -->
+                        <!--
                         <div class="col-sm-12 col-md-12 col-lg-12 mb-50">
                             <div class="social--login">
                                 <span class="title">OR LOGIN WITH</span>
@@ -47,6 +40,7 @@
                                 <a href="#" class="instagram"><i class="fa fa-instagram"></i></a>
                             </div>
                         </div>
+                        -->
                         <!-- .col-lg-12 end -->
                     </div>
                     <!-- .row end -->

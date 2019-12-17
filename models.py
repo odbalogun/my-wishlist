@@ -1,4 +1,5 @@
 from flask_security import UserMixin, RoleMixin
+from flask import request
 from database import (
     db,
     Model,
@@ -9,7 +10,10 @@ from database import (
 )
 import datetime as dt
 from sqlalchemy.event import listens_for
+from sqlalchemy.orm import backref
 import random
+import uuid
+from slugify import Slugify
 
 
 # Define models
@@ -33,6 +37,7 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     first_name = db.Column(db.String(255))
     last_name = db.Column(db.String(255))
+    phone_number = db.Column(db.String(50), nullable=True)
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
     verification_code = db.Column(db.String(50), nullable=True)
@@ -63,8 +68,8 @@ class Article(SurrogatePK, Model):
 
     title = Column(db.String(100), nullable=False)
     slug = Column(db.String(100), nullable=False, unique=True)
-    summary = Column(db.String(200), nullable=False)
-    image = Column(db.String(100), nullable=True)
+    summary = Column(db.Text(), nullable=False)
+    image = Column(db.Text, nullable=True)
     content = Column(db.Text, nullable=False)
     is_published = Column(db.Boolean, default=True)
     view_count = Column(db.Integer, default=0)
@@ -96,6 +101,10 @@ class Tag(SurrogatePK, Model):
     date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
 
     created_by = relationship("User")
+
+    @classmethod
+    def get_popular_tags(cls, limit=4):
+        return cls.query.limit(limit)
 
     def __repr__(self):
         """Represent instance as a string."""
@@ -149,7 +158,7 @@ class Product(SurrogatePK, Model):
 class ProductImage(SurrogatePK, Model):
     __tablename__ = 'product_images'
 
-    name = Column(db.String(100), nullable=False)
+    name = Column(db.Text, nullable=False)
     product_id = reference_col("products", nullable=False)
     is_main_image = Column(db.Boolean, default=False)
     date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
@@ -181,6 +190,62 @@ class Discount(SurrogatePK, Model):
         """Represent instance as a string."""
         return self.code
 
+
+class Registry(SurrogatePK, Model):
+    __tablename__ = 'registries'
+
+    name = Column(db.String(100), nullable=False)
+    slug = Column(db.String(100), nullable=False, unique=True)
+    description = Column(db.Text, nullable=False)
+    image = Column(db.Text, nullable=True)
+    will_have_fund = Column(db.Boolean, default=False)
+    created_by_id = reference_col("user", nullable=True)
+    date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    admin_created_id = reference_col("user", nullable=True)
+
+    created_by = relationship("User", backref="registries", primaryjoin="Registry.created_by_id==User.id")
+    admin_created_by = relationship("User", primaryjoin="Registry.admin_created_id==User.id")
+
+    @property
+    def url(self):
+        return "{}/registries/{}".format(request.url_root, self.slug)
+
+    def generate_slug(self):
+        slugify = Slugify(to_lower=True)
+        self.slug = "{}-{}".format(slugify(self.name), str(uuid.uuid4()).split('-')[0])
+
+
+class HoneymoonFund(SurrogatePK, Model):
+    __tablename__ = 'honeymoon_funds'
+
+    registry_id = reference_col("registries", nullable=False)
+    description = Column(db.Text, nullable=False)
+    target_amount = Column(db.Float, nullable=False)
+    has_achieved_target = Column(db.Boolean, default=False)
+    date_target_achieved = Column(db.DateTime, nullable=True)
+    has_been_paid = Column(db.Boolean, default=False)
+    date_paid_status_updated = Column(db.DateTime, nullable=True)
+    admin_updated_id = reference_col("user", nullable=True)
+
+    admin_updated_by = relationship("User")
+    registry = relationship("Registry", backref=backref('fund', uselist=False))
+
+    def __str__(self):
+        return self.registry.name
+
+
+class RegistryProducts(SurrogatePK, Model):
+    __tablename__ = 'registry_products'
+
+    registry_id = reference_col("registries", nullable=False)
+    product_id = reference_col("products", nullable=False)
+    has_been_purchased = Column(db.Boolean, default=False)
+
+    registry = relationship("Registry")
+    product = relationship("Product", backref="products")
+
+    def __str__(self):
+        return self.product.name
 
 # Delete hooks for models, delete files if models are getting deleted
 # @listens_for(Article, 'after_delete')

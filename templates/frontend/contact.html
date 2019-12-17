@@ -1,0 +1,157 @@
+{% extends 'frontend/_layout.html' %}
+
+{% block main %}
+<!-- Page Title #1
+============================================= -->
+<section id="page-title" class="page-title mt-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="title title-1 text-center">
+                    <div class="title--content">
+                        <div class="title--heading">
+                            <h1>Contact Us</h1>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <ol class="breadcrumb breadcrumb-bottom">
+                        <li><a href="{{ url_for('.index') }}">Home</a></li>
+                        <li class="active">Contact Us</li>
+                    </ol>
+                </div>
+                <!-- .title end -->
+            </div>
+            <!-- .col-lg-12 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #page-title end -->
+
+<!-- contact #1
+=========================================-->
+<section id="contact1" class="contact contact-1 pt-50 pb-110">
+    <div class="container">
+        <div class="row">
+            <!-- contact panel #1 -->
+            <div class="col-sm-12 col-md-12 col-lg-4">
+                <div class="contact-panel">
+                    <div class="contact--icon">c</div>
+                    <div class="contact--content">
+                        <h3>CALL US</h3>
+                        <ul class="list-unstyled mb-0">
+                            <li><a href="tel:+03234567890">Phone 01: (+032) 3456 7890</a></li>
+                            <li><a href="tel:+03234567670">Phone 02: (+032) 3427 7670</a></li>
+                        </ul>
+                    </div>
+                    <!-- .contact-content end -->
+                </div>
+            </div>
+            <!-- .contact-panel end -->
+            <!-- contact panel #2 -->
+            <div class="col-sm-12 col-md-12 col-lg-4">
+                <div class="contact-panel">
+                    <div class="contact--icon">v</div>
+                    <div class="contact--content">
+                        <h3>VISIT US</h3>
+                        <ul class="list-unstyled mb-0">
+                            <li>Hebes Store London Oxford Street,</li>
+                            <li>012 United Kingdom</li>
+                        </ul>
+                    </div>
+                    <!-- .contact-content end -->
+                </div>
+            </div>
+            <!-- .contact-panel end -->
+            <!-- contact panel #3 -->
+            <div class="col-sm-12 col-md-12 col-lg-4">
+                <div class="contact-panel">
+                    <div class="contact--icon">E</div>
+                    <div class="contact--content">
+                        <h3>EMAIL</h3>
+                        <ul class="list-unstyled mb-0">
+                            <li><a href=""><span class="__cf_email__" data-cfemail="">info@mywishlist.ng</span></a></li>
+                            <li><a href=""><span class="__cf_email__" data-cfemail="">contactus@mywishlist.ng</span></a></li>
+                        </ul>
+                    </div>
+                    <!-- .contact-content end -->
+                </div>
+            </div>
+            <!-- .contact-panel end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #contact #1 end -->
+
+<!-- google-map
+============================================= -->
+<section id="google-map" class="google-map pb-0 pt-0">
+    <div class="container-fluid pr-0 pl-0">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12 pr-0 pl-0">
+                <script src="https://maps.google.com/maps/api/js?key=AIzaSyDfEfjWUEFVcQK9Uo-CsK88phDPYklqdGk"></script>
+                <div id="googleMap" class="googleMap" data-map-address="121 King St,Melbourne, Australia" data-map-zoom="12" data-map-maker-icon="assets/images/gmap/maker.png" data-map-type="ROADMAP" data-map-info="zytheme Company<br>info@zytheme.com" style="width:100%;height:700px;"></div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- #google-map end -->
+
+<!-- contact #2
+============================================= -->
+<section id="contact2" class="contact contact-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-6 offset-lg-3">
+                <div class="heading heading-2 mb-40 text--center">
+                    <h2 class="heading--title">Get In Touch With Us</h2>
+                    <p class="heading--desc italic">Quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut </p>
+                </div>
+            </div><!-- .col-md-6 end -->
+        </div><!-- .row end -->
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <form method="post" action="" class="contactForm mb-0">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="name" placeholder="Enter your name">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="email" placeholder="Your Email">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-12 col-lg-4">
+                            <div class="form-group">
+                                <input type="email" class="form-control" id="subject" placeholder="subject">
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="form-group mb-80">
+                                <textarea class="form-control" id="message" rows="2" placeholder="Your message here"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-12 col-lg-12 text--center">
+                            <button type="submit" class="btn btn--primary btn--rounded">SEND TO US</button>
+                        </div>
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div id="contactResult" class="contact-result"></div>
+                        </div>
+                    </div>
+                    <!-- .row end -->
+                </form>
+            </div>
+            <!-- .col-lg-12 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #contact2 end -->
+
+{% endblock %}

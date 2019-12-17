@@ -1,0 +1,226 @@
+{% extends 'frontend/_layout.html' %}
+
+{% block main %}
+    <!-- Page Title #1
+============================================= -->
+<section id="page-title" class="page-title mt-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="title title-1 text-center">
+                    <div class="title--content">
+                        <div class="title--heading">
+                            <h1>About MyWishlistNG</h1>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <ol class="breadcrumb breadcrumb-bottom">
+                        <li><a href="{{ url_for('.index') }}">Home</a></li>
+                        <li class="active">About Us</li>
+                    </ol>
+                </div>
+                <!-- .title end -->
+            </div>
+            <!-- .col-lg-12 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #page-title end -->
+
+<!-- about #1
+============================================= -->
+<section id="about1" class="about about-1 pt-100">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-6">
+                <div class="heading heading-2">
+                    <p class="heading--subtitle">HISTORY SINCE 1998</p>
+                    <h2 class="heading--title">Welcome to MyWishlistNG</h2>
+                </div>
+            </div>
+            <!-- .col-lg-6 end -->
+            <div class="col-sm-12 col-md-12 col-lg-6">
+                <div class="about--text">
+                    <p>The third Monday of January is supposed to be most depressing day of the year. <span> Whether you believe that</span> or not, the long nights, cold weather and trying to move</p>
+                    <p>If you're like the average knowledge worker, you spend most of your time sitting in front of a computer screen. Even though your work revolves around it</p>
+                 </div>
+                <div class="about--signature">JONT HENRRY<span>CEO</span></div>
+            </div>
+            <!-- .col-lg-6 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #about1 end -->
+
+<!-- about gallery
+============================================= -->
+<section id="about-gallery" class="about about-gallery pt-0 pb-0">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="carousel owl-carousel" data-slide="1" data-slide-rs="1" data-autoplay="true" data-nav="false" data-dots="false" data-space="0" data-loop="true" data-speed="800">
+                    <div class="gallery--item">
+                        <img src="{{ url_for('static', filename='frontend/assets/images/about/gallery/1.jpg' ) }}" alt="img">
+                    </div>
+                    <!-- .gallery-item end -->
+                    <div class="gallery--item">
+                        <img src="{{ url_for('static', filename='frontend/assets/images/about/gallery/2.jpg' ) }}" alt="img">
+                    </div>
+                    <!-- .gallery-item end -->
+                </div>
+            </div>
+            <!-- .col-lg-12 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #about gallery end -->
+
+<!-- Testimonial #1
+============================================= -->
+<section id="testimonial1" class="testimonial testimonial-1 text-center pt-150 pb-100 pt-60-xs pb-60-xs">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-8 offset-lg-2">
+                <div class="carousel owl-carousel carousel-navs" data-slide="1" data-slide-rs="1" data-autoplay="false" data-nav="true" data-dots="false" data-space="0" data-loop="true" data-speed="800">
+                    <!-- Testimonial panel #1 -->
+                    <div class="testimonial-panel">
+                        <div class="testimonial--meta-img">
+                            <img src="{{ url_for('static', filename='frontend/assets/images/testimonials/authors/2.jpg' ) }}" alt="author">
+                        </div>
+                        <!-- .testimonial-meta-img end -->
+                        <div class="testimonial--body">
+                            <p>“ My project was a simple & small task, but the persistence and determination of the team turned it into an awesome and great project which make me very happy! ”</p>
+                        </div>
+                        <!-- .testimonial-body end -->
+                        <div class="testimonial--meta">
+                            <h4>JONT HENRY</h4>
+                            <span>CEO Zytheme</span>
+                        </div>
+                        <!-- .testimonial-meta end -->
+                    </div>
+                    <!-- .testimonial-panel end -->
+
+                    <!-- Testimonial panel #2 -->
+                    <div class="testimonial-panel">
+                        <div class="testimonial--meta-img">
+                            <img src="{{ url_for('static', filename='frontend/assets/images/testimonials/authors/3.jpg' ) }}" alt="author">
+                        </div>
+                        <!-- .testimonial-meta-img end -->
+                        <div class="testimonial--body">
+                            <p>“ My project was a simple & small task, but the persistence and determination of the team turned it into an awesome and great project which make me very happy! ”</p>
+                        </div>
+                        <!-- .testimonial-body end -->
+                        <div class="testimonial--meta">
+                            <h4>JOHn DOE</h4>
+                            <span>FOUNDER</span>
+                        </div>
+                        <!-- .testimonial-meta end -->
+                    </div>
+                    <!-- .testimonial-panel end -->
+                </div>
+            </div>
+            <!-- .col-lg-8 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #testimonial1 end -->
+
+<!-- interactive banners
+============================================= -->
+<section id="interactive1" class="interactive interactive-1">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-4">
+                <div class="banner-panel">
+                    <div class="num">01</div>
+                    <div class="panel--content">
+                        <h5>STORE LONDON</h5>
+                        <p>PO BOX 1334 COLLINS VICETORIA 200 - LONDON</p>
+                        <ul class="list-unstyled mb-0">
+                            <li><a href="">Email: <span class="__cf_email__" data-cfemail="">[email&#160;protected]</span></a></li>
+                            <li><a href="tel:+03234567890">Phone: +032 3456 7890</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- .banner-panel end -->
+            <div class="col-sm-12 col-md-12 col-lg-4">
+                <div class="banner-panel">
+                    <div class="num">02</div>
+                    <div class="panel--content">
+                        <h5>STORE PARIS</h5>
+                        <p>PO BOX 1334 COLLINS VICETORIA SCARE 200 - PARIS</p>
+                        <ul class="list-unstyled mb-0">
+                            <li><a href="">Email: <span class="__cf_email__" data-cfemail="">[email&#160;protected]</span></a></li>
+                            <li><a href="">Phone: +032 3456 7890</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- .banner-panel end -->
+            <div class="col-sm-12 col-md-12 col-lg-4">
+                <div class="banner-panel">
+                    <div class="num">03</div>
+                    <div class="panel--content">
+                        <h5>STORE LONDON</h5>
+                        <p>PO BOX 1334 COLLINS VICETORIA SCARE 200 - PARIS</p>
+                        <ul class="list-unstyled mb-0">
+                            <li><a href="">Email: <span class="__cf_email__" data-cfemail="">[email&#160;protected]</span></a></li>
+                            <li><a href="">Phone: +032 3456 7890</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- .banner-panel end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #interactive banners end -->
+
+
+<!-- Clients #1
+============================================= -->
+<section id="clients1" class="clients clients-1 text-center pt-0 pb-80">
+    <div class="container">
+    <div class="row">
+            <div class="col">
+                <div class="carousel  owl-carousel" data-slide="6" data-slide-rs="2" data-autoplay="true" data-nav="false" data-dots="false" data-space="0" data-loop="true" data-speed="800">
+                    <div class="client">
+                        <img src="{{ url_for('static', filename='frontend/assets/images/clients/1.png' ) }}" alt="client">
+                    </div>
+                    <div class="client">
+                        <img src="{{ url_for('static', filename='frontend/assets/images/clients/2.png' ) }}" alt="client">
+                    </div>
+                    <div class="client">
+                        <img src="{{ url_for('static', filename='frontend/assets/images/clients/3.png' ) }}" alt="client">
+                    </div>
+                    <div class="client">
+                        <img src="{{ url_for('static', filename='frontend/assets/images/clients/4.png' ) }}" alt="client">
+                    </div>
+                    <div class="client">
+                        <img src="{{ url_for('static', filename='frontend/assets/images/clients/5.png' ) }}" alt="client">
+                    </div>
+                    <div class="client">
+                        <img src="{{ url_for('static', filename='frontend/assets/images/clients/6.png' ) }}" alt="client">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #clients1 end -->
+
+
+{% endblock %}

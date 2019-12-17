@@ -71,7 +71,7 @@ class SurrogatePK(object):
     def get_by_slug(cls, slug):
         """Get record by slug"""
         if hasattr(cls, 'slug'):
-            return cls.query.filter(slug=slug).first()
+            return cls.query.filter_by(slug=slug).first()
         return None
 
 

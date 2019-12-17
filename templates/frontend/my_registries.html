@@ -1,0 +1,30 @@
+{% extends 'frontend/temp/_layout.html' %}
+
+
+{% block main %}
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Registry Link</th>
+                <th>Products Purchased</th>
+                <td>Honeymoon Fund Raised</td>
+                <th>Date Created</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {%  for row in current_user.registries %}
+                <tr>
+                    <td>{{ row.name }}</td>
+                    <td>{{ row.url }}</td>
+                    <td>10</td>
+                    <td>-</td>
+                    <td>{{ row.date_created }}</td>
+                    <td></td>
+                </tr>
+            {%  endfor %}
+        </tbody>
+    </table>
+    <button class="btn btn-info"><a href="{{ url_for('.create_registry') }}">Create registry</a></button>
+{% endblock %}

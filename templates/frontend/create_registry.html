@@ -1,0 +1,60 @@
+{% extends 'frontend/temp/_layout.html' %}
+{% from "frontend/_formhelpers.html" import render_field %}
+
+
+{% block main %}
+    <section id="register-login" class="register-login pt-50 pb-150">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-5 offset-lg-3">
+                <div class="register-title">
+                    <h5>Create a registry</h5>
+                    <p>Provide information and create a registry</p>
+                </div>
+                <!-- .register-title end -->
+                <form method="post" action="" enctype="multipart/form-data">
+                    {{ form.csrf_token }}
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            {{ render_field(form.name) }}
+                        </div>
+                        <!-- .col-lg-12 end -->
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            {{ render_field(form.description) }}
+                        </div>
+                        <!-- .col-lg-12 end -->
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            {{ render_field(form.image) }}
+                        </div>
+
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            {{ render_field(form.will_have_fund) }}
+                        </div>
+                        <!-- .col-lg-12 end -->
+                        <div class="col-sm-12 col-md-12 col-lg-12 mb-30">
+                            <input type="submit" class="btn btn--primary btn--rounded" value="Save & Proceed">
+                        </div>
+                        <!-- .col-lg-12 end -->
+                        <!--
+                        <div class="col-sm-12 col-md-12 col-lg-12 mb-50">
+                            <div class="social--login">
+                                <span class="title">OR LOGIN WITH</span>
+                                <a href="#" class="facebook"><i class="fa fa-facebook"></i></a>
+                                <a href="#" class="twitter"><i class="fa fa-twitter"></i></a>
+                                <a href="#" class="google-plus"><i class="fa fa-pinterest-p"></i></a>
+                                <a href="#" class="instagram"><i class="fa fa-instagram"></i></a>
+                            </div>
+                        </div>
+                        -->
+                        <!-- .col-lg-12 end -->
+                    </div>
+                    <!-- .row end -->
+                </form>
+            </div>
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+    <!-- #checkout end -->
+{% endblock %}

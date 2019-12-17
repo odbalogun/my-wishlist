@@ -1,7 +1,7 @@
 <header id="navbar-spy" class="header header-1 header-8 header-light">
     <nav id="primary-menu" class="navbar navbar-expand-lg navbar-light logo-centered">
         <div class="container">
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="{{ url_for('.index') }}">
                 <img class="logo logo-light" src="{{url_for('static',filename='frontend/assets/images/logo/logo.png')}}" alt="logo">
                 <img class="logo logo-dark" src="{{url_for('static',filename='frontend/assets/images/logo/logo.png')}}" alt="logo">
             </a>
@@ -43,185 +43,47 @@
                 <ul class="navbar-nav mr-auto ml-auto">
                     <!-- home Menu -->
                     <li class=" active">
-                        <a href="#" class="menu-item">Home</a>
+                        <a href="{{ url_for('.index') }}" class="menu-item">Home</a>
                     </li>
                     <!-- li end -->
                     <!-- About Menu -->
                     <li>
-                            <a href="#" class="menu-item">Who we are</a>
+                            <a href="{{ url_for('.about') }}" class="menu-item">Who we are</a>
                     </li>
                     <!-- li end -->
                     <!-- How Menu -->
                     <li>
-                            <a href="#" class="menu-item">How it works</a>
+                            <a href="{{ url_for('.faq') }}" class="menu-item">How it works</a>
                         </li>
-                    <!-- li end -->
-                    <!-- Shop Menu -->
-                    <li class="has-dropdown mega-dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle menu-item">Shop</a>
-                        <ul class="dropdown-menu mega-dropdown-menu collections-menu">
-                            <li>
-                                <div class="container">
-                                    <div class="row">
-                                        <!-- Column #1 -->
-                                        <div class="col-md-12 col-lg-5ths">
-                                            <div class="collection--menu-content">
-                                                <h5>Furniture</h5>
-                                                <ul>
-                                                    <li>
-                                                        <a href="">chair</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">sofa</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">table</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">bed</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="menu--img">
-                                                <img src="{{url_for('static',filename='frontend/assets/images/slider/layers/1.png')}}" alt="img" class="img-fluid">
-                                            </div>
-                                        </div>
-                                        <!-- .col-lg-5ths end -->
-
-                                        <!-- Column #2 -->
-                                        <div class="col-md-12 col-lg-5ths">
-                                            <div class="collection--menu-content">
-                                                <h5>Lighting</h5>
-                                                <ul>
-                                                    <li>
-                                                        <a href="">Wall Lamp</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">Bedroom Lamp</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">Garden Lamp</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">Desktop Lamp</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="menu--img">
-                                                <img src="{{url_for('static',filename='frontend/assets/images/slider/layers/37.png')}}" alt="img" class="img-fluid">
-                                            </div>
-                                        </div>
-                                        <!-- .col-lg-5ths end -->
-
-                                        <!-- Column #3 -->
-                                        <div class="col-md-12 col-lg-5ths">
-                                            <div class="collection--menu-content">
-                                                <h5>Wood Shelf</h5>
-                                                <ul>
-                                                    <li>
-                                                        <a href="">wood Living</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">wood Bedroom</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">wood Garden</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">wood tables</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="menu--img">
-                                                <img src="{{url_for('static',filename='frontend/assets/images/slider/layers/34.png')}}" alt="img" class="img-fluid">
-                                            </div>
-                                        </div>
-                                        <!-- .col-lg-5ths end -->
-
-                                        <!-- Column #4 -->
-                                        <div class="col-md-12 col-lg-5ths">
-                                            <div class="collection--menu-content">
-                                                <h5>Accessories</h5>
-                                                <ul>
-                                                    <li>
-                                                        <a href="">Shoes</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">Bags</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">Jewellery</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">Scarves</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="menu--img">
-                                                <img src="{{url_for('static',filename='frontend/assets/images/slider/layers/35.png')}}" alt="img" class="img-fluid">
-                                            </div>
-                                        </div>
-                                        <!-- .col-lg-5ths end -->
-
-                                        <!-- Column #5 -->
-                                        <div class="col-md-12 col-lg-5ths">
-                                            <div class="collection--menu-content">
-                                                <h5>Sale Off</h5>
-                                                <ul>
-                                                    <li>
-                                                        <a href="">Sunglasses</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">jackets</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">Shirts</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="">Socks</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="menu--img">
-                                                <img src="{{url_for('static',filename='frontend/assets/images/slider/layers/36.png')}}" alt="img" class="img-fluid">
-                                            </div>
-                                        </div>
-                                        <!-- .col-lg-5ths end -->
-                                    </div>
-                                    <!-- .row end -->
-                                </div>
-                                <!-- container end -->
-                            </li>
-                        </ul>
-                        <!-- .mega-dropdown-menu end -->
-                    </li>
                     <!-- li end -->
                     <!-- Blog Menu -->
                     <li>
-                            <a href="#" class="menu-item">Blog</a>
-                        </li>
+                        <a href="{{ url_for('.blog') }}" class="menu-item">Blog</a>
+                    </li>
                         <!-- li end -->
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('.logout')  }}" class="menu-item">Logout</a></li>
+                    {%  else %}
                     <!-- Log in Menu -->
                     <li>
-                            <a href="login.html" class="menu-item">Log in</a>
+                            <a href="{{ url_for('.login') }}" class="menu-item">Log in</a>
                         </li>
                         <!-- li end -->
                     <!-- Register Menu -->
                     <li>
-                            <a href="#" class="menu-item">Register</a>
+                            <a href="{{ url_for('.register') }}" class="menu-item">Register</a>
                         </li>
                         <!-- li end -->
+                    {% endif %}
                 </ul>
                 <div class="module-container">
                     <div class="module module-account module-dropdown module-dropdown-right pull-left">
                         <div class="module-icon">
+                            <a href="{{ url_for('.dashboard') }}">
                             <button type="button" class="dropdown-toggle" data-toggle="dropdown">
-                                MY ACCOUNT <i class="fa fa-caret-down"></i>
+                                MY ACCOUNT
                             </button>
-                        </div>
-                        <div class="module-dropdown-menu module-content">
-                            <a class="dropdown-item" href="#">profile</a>
-                            <a class="dropdown-item" href="#">wishlist</a>
+                            </a>
                         </div>
                     </div>
                     <!-- Module Cart -->

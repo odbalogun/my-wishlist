@@ -1,0 +1,233 @@
+{% extends 'frontend/_layout.html' %}
+
+{% block main %}
+<!-- Blog single
+============================================= -->
+<section id="blog-single" class="blog blog-single pt-100">
+    <div class="container">
+        <div class="row page-title">
+            <div class="col-sm-12 col-sm-6 col-lg-7">
+                <div class="title title-2 pt-0">
+                    <ol class="breadcrumb">
+                        <li><a href="{{ url_for('.index') }}">Home</a></li>
+                        <li><a href="{{ url_for('.blog') }}">Blog & News</a></li>
+                        <li class="active">{{ article }}</li>
+                    </ol>
+                    <div class="title--content">
+                        <div class="title--heading">
+                            <h1>{{ article }}</h1>
+                        </div>
+                    </div>
+                </div>
+                <!-- .title end -->
+            </div>
+            <!-- .col-lg-7 end -->
+            <div class="col-sm-12 col-md-6 col-lg-5">
+                <div class="title--meta entry--meta pt-30">
+                    <span class="meta--author-img"><a href="#"><img src="{{ url_for('static', filename='frontend/assets/images/blog/author/1.png' ) }}" alt="author img"></a></span>
+                    <span class="meta--author">By<a href="#"> admin</a></span>
+                    <span class="meta--time">1 week ago</span>
+                    <!--<span class="meta--cat"><a href="#">FURNITURE LIVING</a></span>-->
+                </div>
+            </div>
+            <!-- .col-lg-5 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12 col-lg-12 mb-70">
+                <div class="entry--img bg-parallax">
+                    <div class="bg-section">
+                        <img src="{{ url_for('static', filename=article.image ) }}" alt="entry image" class="img-fluid">
+                    </div>
+                </div>
+            </div>
+            <!-- .col-lg-12 end -->
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <!-- Blog Entry -->
+                <div class="blog-entry">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-9">
+                            <div class="entry--bio">
+                                <p>{{ article.summary }}</p>
+                                <p>{{ article.content }}</p>
+                            </div>
+                            <!-- .entry-bio end -->
+                            <div class="entry--tags">
+                                <span class="tags--title">TAGS:</span>
+                                {% for tag in article.tags %}
+                                    <a href="#">{{ tag }}{{ "," if not loop.last }}</a>
+                                {% endfor %}
+                            </div>
+                            <!-- .entry-tags end -->
+                            <!--
+                            <div class="entry-widget entry-comments clearfix">
+                                <div class="entry-widget-title">
+                                    <h4>comment <span>( 2 )</span></h4>
+                                </div>
+                                <div class="entry-widget-content">
+                                    <ul class="comments-list">
+                                        <li class="comment-body">
+                                            <div class="comment">
+                                                <h6>Kavin smith</h6>
+                                                <div class="date">AT 17 HOURS AGO</div>
+                                                <p>Hong Kong is embracing blockchain technology search for a new business identity and opportunities. The city has a household name in shipping and finance</p>
+                                                <a class="reply" href="#">reply</a>
+                                            </div>
+                                        </li>
+                                        <li class="comment-body">
+                                            <div class="comment">
+                                                <h6>Jont henrry</h6>
+                                                <div class="date">AT 21 HOURS AGO</div>
+                                                <p>Follow our latest news and thoughts which focuses exclusively on investment strategy guide, blockchain tech, crypto-trading and mining.</p>
+                                                <a class="reply" href="#">reply</a>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="entry-widget entry-add-comment mb-0 clearfix">
+                                <div class="entry-widget-title">
+                                    <h4>Leave A COMMENT</h4>
+                                </div>
+                                <div class="entry-widget-content">
+                                    <form id="post-comment" class="comments-form mb-0 mb-30-xs mb-30-sm">
+                                        <div class="row">
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                                <input type="text" class="form-control" id="name" placeholder="Name">
+                                            </div>
+                                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                                <input type="email" class="form-control" id="email" placeholder="Email">
+                                            </div>
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                                <textarea class="form-control" id="comment" rows="2" placeholder="Your message"></textarea>
+                                            </div>
+                                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                                <button type="submit" class="btn btn--primary btn--rounded">submit<i class="lnr lnr-arrow-right"></i></button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            -->
+                        </div>
+                        <!-- .col-lg-9 end -->
+                        <div class="col-sm-12 col-md-12 col-lg-3">
+                            <div class="sidebar">
+    <div class="widget widget-share mb-40">
+        <span class="share--title">share : </span>
+        <a href="#"><i class="fa fa-facebook"></i></a>
+        <a href="#"><i class="fa fa-twitter"></i></a>
+        <a href="#"><i class="fa fa-pinterest-p"></i></a>
+        <a href="#"><i class="fa fa-behance"></i></a>
+    </div>
+    <!-- .entry-share end -->
+
+    <!-- Search
+    =====================-->
+    <div class="widget widget-search">
+        <div class="widget--content">
+            <form class="form-search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search anything">
+                    <span class="input-group-btn">
+                        <button class="btn" type="button"><i class="fa fa-search"></i></button>
+                    </span>
+                 </div>
+                <!-- /input-group -->
+            </form>
+        </div>
+    </div>
+    <!-- .widget-search end -->
+
+    <!-- Categories
+    =======================->
+    <!--
+    <div class="widget widget-categories">
+        <div class="widget--title">
+            <h3>categories</h3>
+        </div>
+        <div class="widget--content">
+            <ul class="list-unstyled">
+                <li>
+                    <a href="#">Living interior</a>
+                </li>
+                <li>
+                    <a href="#">Architecture</a>
+                </li>
+                <li>
+                    <a href="#">Life style </a>
+                </li>
+                <li>
+                    <a href="#">Magazine furniture</a>
+                </li>
+                <li>
+                    <a href="#">Bedroom Style</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    -->
+
+    <!-- Recent Posts
+    ======================-->
+    <div class="widget widget-recent-posts">
+        <div class="widget--title">
+            <h3>recent posts</h3>
+        </div>
+        <div class="widget--content">
+            {% for recent in recent_articles %}
+            <div class="entry">
+                <a href="#">
+                    <img src="{{ url_for('static', filename=recent.image ) }}" alt="{{ recent }}" />
+                </a>
+                <div class="entry-desc">
+                    <div class="entry-title">
+                        <a href="{{ url_for('.blog_article', slug=recent.slug) }}">{{ recent }}</a>
+                    </div>
+                    <div class="entry-meta">
+                        <a href="#">2 DAYS AGO</a>
+                    </div>
+                </div>
+            </div>
+            <!-- .entry end -->
+            {% endfor %}
+        </div>
+        <!-- .widget-content end -->
+    </div>
+    <!-- .widget-recent end -->
+
+
+    <!-- Tag Clouds
+    =========================-->
+    <div class="widget widget-tags">
+        <div class="widget--title">
+            <h3>tags</h3>
+        </div>
+        <div class="widget--content">
+            {% for tag in tags %}
+                <a href="#">{{ tag }}</a>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- .widget-tags end -->
+</div>                        </div>
+                        <!-- .col-lg-3 end -->
+                    </div>
+                    <!-- .row end -->
+                </div>
+                <!-- .blog-entry end -->
+            </div>
+            <!-- .col-lg-12 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #blog single#2 end -->
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'frontend/_layout.html' %}
+
+{% block main %}
+    <!-- Page Title #1
+============================================= -->
+<section id="page-title" class="page-title mt-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="title title-1 text-center">
+                    <div class="title--content">
+                        <div class="title--heading">
+                            <h1>Blog & News</h1>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <ol class="breadcrumb breadcrumb-bottom">
+                        <li><a href="{{ url_for('.index') }}">Home</a></li>
+                        <li class="active">Blog & News</li>
+                    </ol>
+                </div><!-- .title end -->
+            </div><!-- .col-md-12 end -->
+        </div><!-- .row end -->
+    </div><!-- .container end -->
+</section><!-- #page-title end -->
+<!-- Blog masonry
+=========================================-->
+<section id="blog" class="blog blog-masonry pt-0">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- blog Filter
+			============================================= -->
+            <div class="col-sm-12 col-md-12 col-lg-12  blog-filter">
+                <ul class="list-inline mb-0">
+                    <li><a class="active-filter" href="#" data-filter="*">All Articles</a></li>
+                    {% for tag in tags %}
+                        <li><a href="#" data-filter=".filter-{{ tag.name }}">{{ tag.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <!-- .blog-filter end -->
+        </div>
+        <div id="enrty-all" class="row">
+            {%  for article in articles %}
+                <!-- Blog Entry #1 -->
+                <div class="col-sm-12 col-md-6 col-lg-3 blog-entry {% for i in article.tags %}filter-{{ i.name }} {% endfor %}">
+                    <div class="entry-container">
+                    <div class="entry--img">
+                        <a href="{{ url_for('.blog_article', slug=article.slug) }}">
+                            <img src="{{ url_for('static', filename=article.image ) }}" alt="entry image" />
+                        </a>
+                    </div>
+                    <div class="entry--content">
+                        <div class="entry--meta">
+                            <span class="meta--author">By <a href="#">admin</a></span>
+                            <span class="meta--time">2 days ago</span>
+                        </div>
+                        <div class="entry--title">
+                            <h4><a href="{{ url_for('.blog_article', slug=article.slug) }}">{{ article.title }}</a></h4>
+                        </div>
+                        <div class="entry--footer">
+                            <div class="entry--more">
+                                <a href="{{ url_for('.blog_article', slug=article.slug) }}">read more</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- .entry-content end -->
+                    </div>
+                </div>
+                <!-- .blog-entry end -->
+            {% endfor %}
+        </div>
+        <!-- .blog-masonry-col end -->
+        <!-- .row end -->
+        <div class="row clearfix">
+            <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+                <a href="#" class="btn--more btn--more-1">LOAD MORE</a>
+            </div>
+            <!-- .col-lg-12 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #blog end -->
+{% endblock %}

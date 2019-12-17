@@ -1,0 +1,21 @@
+<html lang="en">
+    <head>
+        <title>My Wishlist</title>
+        <link rel="stylesheet" href="{{url_for('static',filename='frontend/assets/css/style.css')}}">
+    </head>
+    <body>
+        <div class="pt-100 pl-100 pr-100">
+            <div>
+                <span class="mr-20"><a href="{{ url_for('.dashboard') }}">My Dashboard</a></span> |
+                <span class="mr-20"><a href="{{ url_for('.my_registry') }}">Registry</a></span> |
+                <span class="mr-20"><a href="#">Honeymoon Fund</a></span> |
+                <span class="mr-20"><a href="#">My Gifts</a></span> |
+                <span class="mr-20"><a href="#">My Orders</a></span> |
+                <span class="mr-20"><a href="{{ url_for('.logout') }}">Logout {{ current_user }}</a></span>
+            </div>
+            <hr />
+            {% block main %}
+            {% endblock %}
+        </div>
+    </body>
+</html>

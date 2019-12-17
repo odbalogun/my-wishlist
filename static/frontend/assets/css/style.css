@@ -76,10 +76,6 @@ a:active {
   text-decoration: none;
 }
 
-textarea {
-  resize: none;
-}
-
 button.btn {
   margin-bottom: 0;
 }
@@ -1529,7 +1525,7 @@ blockquot {
 }
 
 .breadcrumb > .active {
-  color: #606da6;
+  color: #8e297b;
 }
 
 .breadcrumb > li + li:before {
@@ -15415,4 +15411,18 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   .landing-action p {
     margin-bottom: 30px;
   }
+}
+
+img .select-product{
+  box-shadow: 0 0 0 10px #691b56;
+  transition: box-shadow 0.1s;
+}
+
+input {
+  display: none;
+}
+
+input:checked + img {
+  box-shadow: 0 0 0 10px #691b56;
+  transition: box-shadow 0.11s;
 }
