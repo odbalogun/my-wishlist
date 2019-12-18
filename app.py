@@ -37,4 +37,4 @@ if __name__ == '__main__':
             h=admin_helpers,
             get_url=url_for
         )
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)
