@@ -62,6 +62,7 @@
                     </li>
                         <!-- li end -->
                     {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('.dashboard') }}" class="menu-item">My Dashboard</a> </li>
                         <li><a href="{{ url_for('.logout')  }}" class="menu-item">Logout</a></li>
                     {%  else %}
                     <!-- Log in Menu -->

@@ -1,60 +1,89 @@
-{% extends 'frontend/temp/_layout.html' %}
+{% extends 'frontend/_layout.html' %}
 {% from "frontend/_formhelpers.html" import render_field %}
 
 
 {% block main %}
-    <section id="register-login" class="register-login pt-50 pb-150">
+    <!--login
+============================================= -->
+<section id="register-login" class="register-login pt-50 pb-150">
     <div class="container">
         <div class="row">
             <div class="col-sm-12 col-md-6 col-lg-5 offset-lg-3">
                 <div class="register-title">
-                    <h5>Create a registry</h5>
-                    <p>Provide information and create a registry</p>
+                    <h5>Create Registry</h5>
+                    <p>Create your registry and start adding products to your wishlist</p>
                 </div>
                 <!-- .register-title end -->
-                <form method="post" action="" enctype="multipart/form-data">
-                    {{ form.csrf_token }}
-                    <div class="row">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            {{ render_field(form.name) }}
-                        </div>
-                        <!-- .col-lg-12 end -->
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            {{ render_field(form.description) }}
-                        </div>
-                        <!-- .col-lg-12 end -->
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            {{ render_field(form.image) }}
-                        </div>
-
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            {{ render_field(form.will_have_fund) }}
-                        </div>
-                        <!-- .col-lg-12 end -->
-                        <div class="col-sm-12 col-md-12 col-lg-12 mb-30">
-                            <input type="submit" class="btn btn--primary btn--rounded" value="Save & Proceed">
-                        </div>
-                        <!-- .col-lg-12 end -->
-                        <!--
-                        <div class="col-sm-12 col-md-12 col-lg-12 mb-50">
-                            <div class="social--login">
-                                <span class="title">OR LOGIN WITH</span>
-                                <a href="#" class="facebook"><i class="fa fa-facebook"></i></a>
-                                <a href="#" class="twitter"><i class="fa fa-twitter"></i></a>
-                                <a href="#" class="google-plus"><i class="fa fa-pinterest-p"></i></a>
-                                <a href="#" class="instagram"><i class="fa fa-instagram"></i></a>
+                <div class="form--review">
+                        <form action="" method="post" enctype="multipart/form-data">
+                            {{ form.csrf_token }}
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                    {{ render_field(form.name) }}
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                    {{ render_field(form.description) }}
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-12" style="padding-top: 0%;">
+                                    {{ render_field(form.image) }}
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-12 text--center">
+                                    <button type="submit" class="btn btn--primary btn--rounded">Proceed<i class="lnr lnr-arrow-right"></i></button>
+                                </div>
                             </div>
-                        </div>
-                        -->
-                        <!-- .col-lg-12 end -->
+                        </form>
                     </div>
-                    <!-- .row end -->
-                </form>
             </div>
         </div>
         <!-- .row end -->
     </div>
     <!-- .container end -->
 </section>
-    <!-- #checkout end -->
+<!-- #checkout end -->
+{% endblock %}
+
+{% block extra_js %}
+    <script src="{{url_for('static',filename='frontend/assets/dist/js/dropify.min.js')}}"></script>
+    <script>
+        $(document).ready(function(){
+            // Basic
+            $('.dropify').dropify();
+
+            // Translated
+            $('.dropify-fr').dropify({
+                messages: {
+                    default: 'Glissez-déposez un fichier ici ou cliquez',
+                    replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
+                    remove:  'Supprimer',
+                    error:   'Désolé, le fichier trop volumineux'
+                }
+            });
+
+            // Used events
+            var drEvent = $('#input-file-events').dropify();
+
+            drEvent.on('dropify.beforeClear', function(event, element){
+                return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
+            });
+
+            drEvent.on('dropify.afterClear', function(event, element){
+                alert('File deleted');
+            });
+
+            drEvent.on('dropify.errors', function(event, element){
+                console.log('Has Errors');
+            });
+
+            var drDestroy = $('#input-file-to-destroy').dropify();
+            drDestroy = drDestroy.data('dropify')
+            $('#toggleDropify').on('click', function(e){
+                e.preventDefault();
+                if (drDestroy.isDropified()) {
+                    drDestroy.destroy();
+                } else {
+                    drDestroy.init();
+                }
+            })
+        });
+    </script>
 {% endblock %}

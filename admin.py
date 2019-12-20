@@ -209,7 +209,7 @@ class ProductImageInlineForm(InlineFormAdmin):
     form_columns = ['id', 'name', 'is_main_image']
     column_labels = dict(name="Image")
     folder_name = generate_folder_name()
-    relative_file_path = get_relative_file_path('articles', folder_name)
+    relative_file_path = get_relative_file_path('products', folder_name)
     form_extra_fields = {'name': form.ImageUploadField('Picture', allowed_extensions=['jpg', 'jpeg', 'png'],
                                                        base_path=get_file_path(), relative_path=relative_file_path)}
     form_widget_args = {
@@ -222,7 +222,7 @@ class ProductImageInlineForm(InlineFormAdmin):
 
 class ProductView(MyModelView):
     column_list = ['name', 'category', 'display_price', 'is_available', 'created_by', 'date_created']
-    form_excluded_columns = ['slug', 'created_by', 'date_created']
+    form_excluded_columns = ['slug', 'created_by', 'date_created', 'registry_products']
     column_labels = dict(images='Image', display_price='Price')
     inline_models = (ProductImageInlineForm(ProductImage), )
     form_widget_args = {

@@ -1,60 +1,130 @@
-{% extends 'frontend/temp/_layout.html' %}
+{% extends 'frontend/_layout.html' %}
 {% from "frontend/_formhelpers.html" import render_field %}
 
 
 {% block main %}
-    <section id="register-login" class="register-login pt-50 pb-150">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-12 col-md-6 col-lg-5 offset-lg-3">
-                <div class="register-title">
-                    <h5>Create a registry</h5>
-                    <p>Provide information and create a registry</p>
-                </div>
-                <!-- .register-title end -->
-                <form method="post" action="" enctype="multipart/form-data">
-                    {{ form.csrf_token }}
-                    <div class="row">
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            {{ render_field(form.name) }}
-                        </div>
-                        <!-- .col-lg-12 end -->
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            {{ render_field(form.description) }}
-                        </div>
-                        <!-- .col-lg-12 end -->
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            {{ render_field(form.image) }}
-                        </div>
-
-                        <div class="col-sm-12 col-md-12 col-lg-12">
-                            {{ render_field(form.will_have_fund) }}
-                        </div>
-                        <!-- .col-lg-12 end -->
-                        <div class="col-sm-12 col-md-12 col-lg-12 mb-30">
-                            <input type="submit" class="btn btn--primary btn--rounded" value="Save & Proceed">
-                        </div>
-                        <!-- .col-lg-12 end -->
-                        <!--
-                        <div class="col-sm-12 col-md-12 col-lg-12 mb-50">
-                            <div class="social--login">
-                                <span class="title">OR LOGIN WITH</span>
-                                <a href="#" class="facebook"><i class="fa fa-facebook"></i></a>
-                                <a href="#" class="twitter"><i class="fa fa-twitter"></i></a>
-                                <a href="#" class="google-plus"><i class="fa fa-pinterest-p"></i></a>
-                                <a href="#" class="instagram"><i class="fa fa-instagram"></i></a>
+    <form action="" method="post">
+    {{ form.csrf_token }}
+    <section  class=" pt-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-6 col-lg-5 offset-lg-3">
+                    <div class="newsletter">
+                        <h3 style="margin-bottom: 10px !important;">{{ registry.name }}</h3>
+                        <p>Do you want a Honeymoon fund? Enter your target amount below</p>
+                        <div class="form--review">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                    <!--{{ render_field(form.amount) }}-->
+                                    <input type="text" class="form-control" name="amount" placeholder="Target Amount" />
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                    {{ render_field(form.message) }}
+                                </div>
                             </div>
-                        </div>
-                        -->
-                        <!-- .col-lg-12 end -->
+                            </div>
+                        <div class="subscribe-alert"></div>
+                        <div class="clearfix"></div>
                     </div>
-                    <!-- .row end -->
-                </form>
+                    <!-- .col-lg-4 end -->
+                </div>
             </div>
+            <!-- .row end -->
         </div>
-        <!-- .row end -->
-    </div>
-    <!-- .container end -->
-</section>
+        <!-- .container end -->
+    </section>
+    <section id="category" class="category category-5 pb-80">
+
+                        <div class="heading heading-4 text-center">
+                                <h2 class="heading--title">Add products to your Registry</h2>
+                                <p>Choose products you want your friends and family to purchase and add to your registry</p>
+                            </div>
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-12 col-lg-12 category-options">
+                        <div class="category-num pull-left pull-none-xs">
+                            <h2><span>{{ products | length   }}</span>PRODUCTS FOUND</h2>
+                        </div>
+                        <!-- .category-num end -->
+                        <div class="category-select pull-right text-right text-left-sm pull-none-xs">
+                            <ul class="list-unstyled mb-0">
+                                <li class="option sort--options">
+                                    <span class="option--title">Filter by:</span>
+                                    <div class="select-form">
+                                        <i class="fa fa-caret-down"></i>
+                                        <select name="filter">
+                                            <option selected="" value="">---</option>
+                                            {% for c in categories %}
+                                                <option value="{{ c.id }}">{{ c.name }}</option>
+                                            {% endfor %}
+                                         </select>
+                                    </div>
+                                </li>
+                                <li class="option">
+                                    <span class="option--title">Pages</span>
+                                    <ul class="list-unstyled show--num">
+                                        <li>1</li>
+                                        <li>2</li>
+                                        <li>3</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- .category-options end -->                </div>
+                                    <!-- .row end -->
+                                    <div class="row mb-60">
+                                        {% for p in products %}
+                                        <!-- category item #1 -->
+                                        <div class="col-sm-12 col-md-12 col-lg-4">
+                                            <div class="category-item">
+                                                <div class="category--img">
+                                                    <div class="bg-section">
+                                                        <img src="{{ url_for('static', filename=p.main_image) }}" alt="category" />
+                                                    </div>
+                                                </div>
+                                                <!-- .category-img end -->
+                                                <div class="category--content">
+                                                    <div class="category--title">
+                                                        <h3><a href="#">{{ p }}</a></h3>
+                                                    </div>
+                                                    <div class="category--price">
+                                                        <span>{{ p.display_price }}</span>
+                                                    </div>
+                                                    <div class="category--bio">
+                                                        <p>{{ p.description }}</p>
+                                                    </div>
+                                                    <!-- .category-price end -->
+                                                    <div class="category--action-buttons">
+                                                        {%  if p.id in registry.product_ids %}
+                                                            <a href="{{ url_for('.remove_product', slug=registry.slug, product_id=p.id) }}" class="btn btn--primary btn--rounded btn--bordered"><i class="icon-bag"></i>REMOVE FROM LIST</a>
+                                                        {% else %}
+                                                            <a href="{{ url_for('.add_product', slug=registry.slug, product_id=p.id) }}" class="btn btn--secondary btn--rounded btn--bordered"><i class="icon-bag"></i>ADD TO LIST</a>
+                                                        {% endif %}
+                                                    </div>
+                                                    <!-- .category-action end -->
+                                                </div>
+                                                <!-- .category-content end -->
+                                            </div>
+                                        </div>
+                                        <!-- .category-item end -->
+                                        {% endfor %}
+                                    </div>
+                                    <!-- .row end -->
+
+                                <div class="col-sm-12 col-md-12 col-lg-12 text--center">
+                                        <button type="submit" class="btn btn--primary btn--rounded">Proceed <i class="lnr lnr-arrow-right"></i></button>
+                                    </div>
+                                </div>
+                                <!-- .col-lg-9 end-->
+                            </div>
+                            <!-- .row end-->
+                        </div>
+                        <!-- .container end -->
+                    </section>
+    </section>
+    </form>
     <!-- #checkout end -->
 {% endblock %}

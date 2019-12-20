@@ -46,6 +46,15 @@
         {% include 'frontend/_headers.html' %}
 
     <div id="wrapperParallax" class="wrapper wrapper-boxed clearfix">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+              <div class="{{ category }}">
+                    {{ message }}
+              </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     {% block main  %}{% endblock %}
     <!-- Footer #1
     ============================================= -->
@@ -123,6 +132,6 @@
     <script src="{{url_for('static',filename='frontend/assets/revolution/js/extensions/revolution.extension.parallax.min.js')}}"></script>
     <!-- RS Configration JS Files -->
     <script src="{{url_for('static',filename='frontend/assets/js/rsconfig.js')}}"></script>
-
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

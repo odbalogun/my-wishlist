@@ -152,7 +152,16 @@ class Product(SurrogatePK, Model):
 
     @property
     def display_price(self):
-        return "NGN{}".format(self.price)
+        return "NGN{:,.2f}".format(self.price)
+
+    @property
+    def main_image(self):
+        if self.images:
+            for i in self.images:
+                if i.is_main_image:
+                    return i
+            return self.images[0]
+        return
 
 
 class ProductImage(SurrogatePK, Model):
@@ -198,7 +207,6 @@ class Registry(SurrogatePK, Model):
     slug = Column(db.String(100), nullable=False, unique=True)
     description = Column(db.Text, nullable=False)
     image = Column(db.Text, nullable=True)
-    will_have_fund = Column(db.Boolean, default=False)
     created_by_id = reference_col("user", nullable=True)
     date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     admin_created_id = reference_col("user", nullable=True)
@@ -208,11 +216,18 @@ class Registry(SurrogatePK, Model):
 
     @property
     def url(self):
-        return "{}/registries/{}".format(request.url_root, self.slug)
+        return "{}registry/{}".format(request.url_root, self.slug)
+
+    def __str__(self):
+        return self.name
 
     def generate_slug(self):
         slugify = Slugify(to_lower=True)
         self.slug = "{}-{}".format(slugify(self.name), str(uuid.uuid4()).split('-')[0])
+
+    @property
+    def product_ids(self):
+        return [x.id for x in self.products]
 
 
 class HoneymoonFund(SurrogatePK, Model):
@@ -241,8 +256,8 @@ class RegistryProducts(SurrogatePK, Model):
     product_id = reference_col("products", nullable=False)
     has_been_purchased = Column(db.Boolean, default=False)
 
-    registry = relationship("Registry")
-    product = relationship("Product", backref="products")
+    registry = relationship("Registry", backref="products")
+    product = relationship("Product", backref="registry_products")
 
     def __str__(self):
         return self.product.name

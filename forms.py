@@ -75,9 +75,23 @@ class VerificationForm(form.Form):
 class RegistryForm(form.Form):
     name = form.StringField('Registry Name', validators=[validator.InputRequired(), validator.Length(max=100)],
                             render_kw={"placeholder": "Registry Name"})
-    description = form.TextAreaField('Description', validators=[validator.InputRequired()])
+    description = form.TextAreaField('Description', validators=[validator.InputRequired()],
+                                     render_kw={"placeholder": "Registry Description"})
     image = form.FileField('Image', validators=[validator.Optional()])
-    will_have_fund = form.BooleanField(default=False)
+
+
+class HoneymoonFundForm(form.Form):
+    amount = form.FloatField('Target Amount', validators=[validator.Optional()],
+                             render_kw={"placeholder": "Target Amount"})
+    message = form.TextAreaField('Message', validators=[validator.Optional()], render_kw={"placeholder": "Message to people who donate to your fund"})
+
+    def validate(self):
+        if not super(HoneymoonFundForm, self).validate():
+            return False
+        if self.amount.data and not self.message.data:
+            flash('Please provide a message for your sponsors', 'error')
+            return False
+        return True
 
 
 class ManageProductForm(form.Form):

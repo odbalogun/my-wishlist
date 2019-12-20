@@ -1,12 +1,19 @@
 from flask import redirect, render_template, url_for, Blueprint, flash, request, abort
-from forms import RegistrationForm, LoginForm, VerificationForm, RegistryForm, ManageProductForm
+from forms import RegistrationForm, LoginForm, VerificationForm, RegistryForm, HoneymoonFundForm
 from decorators import custom_login_required
-from models import db, User, Registry, Product, Article, Tag
+from models import db, User, Registry, Product, Article, Tag, RegistryProducts, Category, HoneymoonFund
 from flask_security.utils import hash_password, logout_user, login_user, verify_password
 from flask_security import current_user
+from utils import generate_full_file_path, generate_folder_name
+from werkzeug.utils import secure_filename
+import os
 
 frontend = Blueprint('frontend', __name__, url_prefix='/')
+ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 
 @frontend.route('/')
 def index():
@@ -17,8 +24,9 @@ def index():
 def login():
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
+        email = form.email.data.lower()
         # check if user exists
-        user = User.query.filter(email=form.email.data).first()
+        user = User.query.filter_by(email=email).first()
         if user:
             # check if password is correct
             if verify_password(form.password.data, user.password):
@@ -93,7 +101,7 @@ def my_registry():
     return render_template('frontend/my_registries.html')
 
 
-@frontend.route('/registry/create-registry', methods=['GET', 'POST'])
+@frontend.route('/registry/create', methods=['GET', 'POST'])
 @custom_login_required
 def create_registry():
     form = RegistryForm(request.form)
@@ -103,10 +111,24 @@ def create_registry():
         reg.created_by = current_user
         form.populate_obj(reg)
         reg.generate_slug()
+
+        image = request.files['image']
+        if image:
+            if allowed_file(image.filename):
+                filename = secure_filename(image.filename)
+                folder_name = generate_folder_name()
+
+                image.save(generate_full_file_path('registries', folder_name, filename))
+
+                reg.image = os.path.join('uploads', 'registries', folder_name, filename)
+            else:
+                flash('Please upload an image file', 'error')
+                return redirect(url_for('.create_registry'))
+
         reg.save()
-        # todo save image
+
         flash("Please provide the following information", "success")
-        return redirect(url_for('.add_products', slug=reg.slug))
+        return redirect(url_for('.manage_products', slug=reg.slug))
 
     return render_template('frontend/create_registry.html', form=form)
 
@@ -125,9 +147,67 @@ def manage_products(slug):
 
     # get form
     products = Product.query.filter_by(is_available=True).all()
-    form = ManageProductForm(request.form)
-    form.products.choices = [(p.id, p.name) for p in products]
-    return render_template('frontend/manage_products.html', registry=registry, products=products, form=form)
+    form = HoneymoonFundForm(request.form)
+    categories = Category.query.all()
+
+    if request.method == 'POST' and form.validate():
+        registry.fund = HoneymoonFund(description=form.message.data, target_amount=form.amount.data)
+        db.session.add(registry)
+        db.session.commit()
+
+        flash("Your registry has been successfully updated", "success")
+        return redirect(url_for('.dashboard'))
+
+    return render_template('frontend/manage_products.html', registry=registry, products=products, form=form,
+                           categories=categories)
+
+
+@frontend.route('/registry/<slug>/add-product/<product_id>', methods=['GET'])
+@custom_login_required
+def add_product(slug, product_id):
+    # load registry
+    registry = Registry.get_by_slug(slug)
+    product = Product.query.get(product_id)
+
+    if not registry or not product:
+        abort(404)
+
+    if registry.created_by != current_user:
+        abort(401)
+
+    if product.id in registry.product_ids:
+        flash("This product is already in your registry wishlist", "error")
+        return redirect(url_for('.manage_products', slug=slug))
+
+    registry.products.append(RegistryProducts(product_id=product.id))
+    db.session.add(registry)
+    db.session.commit()
+
+    flash("This product has been added to your registry wishlist", "success")
+    return redirect(url_for('.manage_products', slug=slug))
+
+
+@frontend.route('/registry/<slug>/remove-product/<product_id>', methods=['GET'])
+@custom_login_required
+def remove_product(slug, product_id):
+    registry = Registry.get_by_slug(slug)
+    product = Product.query.get(product_id)
+
+    if not registry or not product:
+        abort(404)
+
+    if registry.created_by != current_user:
+        abort(401)
+
+    if product.id not in registry.product_ids:
+        flash("This product is not in your registry wishlist", "error")
+        return redirect(url_for('.manage_products', slug=slug))
+
+    RegistryProducts.query.filter_by(product_id=product.id, registry_id=registry.id).delete()
+    db.session.commit()
+
+    flash("This product has been removed from your registry wishlist", "success")
+    return redirect(url_for('.manage_products', slug=slug))
 
 
 @frontend.route('/logout', methods=['GET', 'POST'])

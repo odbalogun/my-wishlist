@@ -1,4 +1,5 @@
 {% extends 'frontend/_layout.html' %}
+{% from "frontend/_formhelpers.html" import render_field %}
 
 {% block main %}
 <section id="register-login" class="register-login pt-50 pb-150">
@@ -10,24 +11,25 @@
                     <p>Login to your account to discovery all great features in this item</p>
                 </div>
                 <!-- .register-title end -->
-                <form>
+                <form action="" method="post">
+                    {{ form.csrf_token }}
                     <div class="row">
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="form-group">
-                                <input type="text" class="form-control" id="user-name" placeholder="User Name">
+                                {{ render_field(form.email) }}
                             </div>
                         </div>
                         <!-- .col-lg-12 end -->
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="form-group">
-                                <input type="password" class="form-control" id="login-password" placeholder="Your Password">
+                                {{ render_field(form.password) }}
                             </div>
                         </div>
                         <!-- .col-lg-12 end -->
                         <div class="col-sm-12 col-md-12 col-lg-12 mb-40">
                             <div class="input-checkbox inline-block">
                                 <label class="label-checkbox">Keep me logged in
-                                    <input type="checkbox" checked>
+                                    <input type="checkbox" name="remember_me" checked>
                                     <span class="check-indicator"></span>
                                 </label>
                             </div>
@@ -35,9 +37,11 @@
                         </div>
                         <!-- .col-lg-12 end -->
                         <div class="col-sm-12 col-md-12 col-lg-12 mb-30">
-                            <a href="#" class="btn btn--primary btn--rounded">Login</a>
+                            <!--<a href="#" class="btn btn--primary btn--rounded">Login</a>-->
+                            <input type="submit" class="btn btn--primary btn--rounded" value="Login">
                         </div>
                         <!-- .col-lg-12 end -->
+                        <!--
                         <div class="col-sm-12 col-md-12 col-lg-12 mb-50">
                             <div class="social--login">
                                 <span class="title">OR LOGIN WITH</span>
@@ -47,6 +51,7 @@
                                 <a href="#" class="instagram"><i class="fa fa-instagram"></i></a>
                             </div>
                         </div>
+                        -->
                         <!-- .col-lg-12 end -->
                     </div>
                     <!-- .row end -->
