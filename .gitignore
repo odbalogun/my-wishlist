@@ -107,3 +107,4 @@ env/
 # upload folders
 static/uploads/articles/
 static/uploads/products/
+static/uploads/registries/
