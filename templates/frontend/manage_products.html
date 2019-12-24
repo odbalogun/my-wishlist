@@ -4,127 +4,105 @@
 
 {% block main %}
     <form action="" method="post">
-    {{ form.csrf_token }}
-    <section  class=" pt-100">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12 col-md-6 col-lg-5 offset-lg-3">
-                    <div class="newsletter">
-                        <h3 style="margin-bottom: 10px !important;">{{ registry.name }}</h3>
-                        <p>Do you want a Honeymoon fund? Enter your target amount below</p>
+        {{ form.csrf_token }}
+        <section id="register-login" style="padding-bottom: 0px !important;" class="register-login pt-50">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-9 offset-lg-1">
+                        <div class="register-title">
+                            <h4>Delivery Details</h4>
+                            <p>These are your delivery details</p>
+                        </div>
+                        <!-- .register-title end -->
                         <div class="form--review">
                             <div class="row">
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <!--{{ render_field(form.amount) }}-->
-                                    <input type="text" class="form-control" name="amount" placeholder="Target Amount" />
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    {{ render_field(form.name) }}
                                 </div>
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    {{ render_field(form.phone_number) }}
+                                </div>
+                                <!-- .col-lg-6 end -->
                                 <div class="col-sm-12 col-md-12 col-lg-12">
-                                    {{ render_field(form.message) }}
+                                    {{ render_field(form.address) }}
+                                </div>
+                                <!-- .col-lg-6 end -->
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    {{ render_field(form.city) }}
+                                </div>
+                                <!-- .col-lg-6 end -->
+                                <div class="col-sm-12 col-md-12 col-lg-6">
+                                    {{ render_field(form.state) }}
                                 </div>
                             </div>
-                            </div>
-                        <div class="subscribe-alert"></div>
-                        <div class="clearfix"></div>
+                            <!-- .row end -->
+                        </div>
+
                     </div>
-                    <!-- .col-lg-4 end -->
-                </div>
+                <!-- .row end -->
             </div>
-            <!-- .row end -->
-        </div>
-        <!-- .container end -->
-    </section>
-    <section id="category" class="category category-5 pb-80">
+            </div>
+            <!-- .container end -->
+        </section>
+        <section id="category" style="padding-top: 0px !important;" class="category category-5 pb-80">
+            <div class="heading heading-4 text-center">
+                <h2 class="heading--title">Add products to your Registry</h2>
+                <p>Choose products you want your friends and family to purchase and add to your registry</p>
+            </div>
 
-                        <div class="heading heading-4 text-center">
-                                <h2 class="heading--title">Add products to your Registry</h2>
-                                <p>Choose products you want your friends and family to purchase and add to your registry</p>
-                            </div>
-                        <div class="container-fluid">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="row">
-                                        <div class="col-sm-12 col-md-12 col-lg-12 category-options">
-                        <div class="category-num pull-left pull-none-xs">
-                            <h2><span>{{ products | length   }}</span>PRODUCTS FOUND</h2>
-                        </div>
-                        <!-- .category-num end -->
-                        <div class="category-select pull-right text-right text-left-sm pull-none-xs">
-                            <ul class="list-unstyled mb-0">
-                                <li class="option sort--options">
-                                    <span class="option--title">Filter by:</span>
-                                    <div class="select-form">
-                                        <i class="fa fa-caret-down"></i>
-                                        <select name="filter">
-                                            <option selected="" value="">---</option>
-                                            {% for c in categories %}
-                                                <option value="{{ c.id }}">{{ c.name }}</option>
-                                            {% endfor %}
-                                         </select>
-                                    </div>
-                                </li>
-                                <li class="option">
-                                    <span class="option--title">Pages</span>
-                                    <ul class="list-unstyled show--num">
-                                        <li>1</li>
-                                        <li>2</li>
-                                        <li>3</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- .category-options end -->                </div>
-                                    <!-- .row end -->
-                                    <div class="row mb-60">
-                                        {% for p in products %}
-                                        <!-- category item #1 -->
-                                        <div class="col-sm-12 col-md-12 col-lg-4">
-                                            <div class="category-item">
-                                                <div class="category--img">
-                                                    <div class="bg-section">
-                                                        <img src="{{ url_for('static', filename=p.main_image) }}" alt="category" />
-                                                    </div>
-                                                </div>
-                                                <!-- .category-img end -->
-                                                <div class="category--content">
-                                                    <div class="category--title">
-                                                        <h3><a href="#">{{ p }}</a></h3>
-                                                    </div>
-                                                    <div class="category--price">
-                                                        <span>{{ p.display_price }}</span>
-                                                    </div>
-                                                    <div class="category--bio">
-                                                        <p>{{ p.description }}</p>
-                                                    </div>
-                                                    <!-- .category-price end -->
-                                                    <div class="category--action-buttons">
-                                                        {%  if p.id in registry.product_ids %}
-                                                            <a href="{{ url_for('.remove_product', slug=registry.slug, product_id=p.id) }}" class="btn btn--primary btn--rounded btn--bordered"><i class="icon-bag"></i>REMOVE FROM LIST</a>
-                                                        {% else %}
-                                                            <a href="{{ url_for('.add_product', slug=registry.slug, product_id=p.id) }}" class="btn btn--secondary btn--rounded btn--bordered"><i class="icon-bag"></i>ADD TO LIST</a>
-                                                        {% endif %}
-                                                    </div>
-                                                    <!-- .category-action end -->
-                                                </div>
-                                                <!-- .category-content end -->
-                                            </div>
-                                        </div>
-                                        <!-- .category-item end -->
-                                        {% endfor %}
-                                    </div>
-                                    <!-- .row end -->
-
-                                <div class="col-sm-12 col-md-12 col-lg-12 text--center">
-                                        <button type="submit" class="btn btn--primary btn--rounded">Proceed <i class="lnr lnr-arrow-right"></i></button>
-                                    </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12 category-options">
+                                <div class="category-num pull-left pull-none-xs">
+                                    <h2><span>{{ products | length }}</span>PRODUCTS FOUND</h2>
                                 </div>
-                                <!-- .col-lg-9 end-->
                             </div>
-                            <!-- .row end-->
                         </div>
-                        <!-- .container end -->
-                    </section>
-    </section>
+
+                        <!-- .row end -->
+                        <div class="row mb-60">
+                            <!-- category item #1 -->
+                            {% for product in products %}
+                            <div class="col-sm-12 col-md-12 col-lg-4">
+                                <div class="category-item">
+                                    <input type="checkbox" id="cb-{{ product.id }}" name="products" value="{{ product.id }}" {% if product.id in registry.product_ids %} checked {% endif %}>
+                                    <label class="checkbox" for="cb-{{ product.id }}"><div class="tick"></div></label>
+                                    <div class="category--img">
+                                        <div class="bg-section">
+                                            <img src="{{ url_for('static', filename=product.main_image) }}" alt="category" />
+                                        </div>
+                                    </div>
+                                    <!-- .category-img end -->
+                                    <div class="category--content">
+                                        <div class="category--title">
+                                            <h3><a href="{{ url_for('.product_details', slug=product.slug) }}">{{ product }}</a></h3>
+                                        </div>
+                                        <div class="category--price">
+                                            <span>{{ product.display_price }}</span>
+                                        </div>
+                                        <div class="category--bio">
+                                            <p>{{ product.description }}</p>
+                                        </div>
+                                    </div>
+                                    <!-- .category-content end -->
+                                </div>
+                            </div>
+                            {%  endfor %}
+
+                        </div>
+                        <!-- .row end -->
+
+                        <div class="col-sm-12 col-md-12 col-lg-12 text--center">
+                                <button type="submit" class="btn btn--primary btn--rounded">Proceed <i class="lnr lnr-arrow-right"></i></button>
+                            </div>
+                        </div>
+                        <!-- .col-lg-9 end-->
+                    </div>
+                    <!-- .row end-->
+                </div>
+                <!-- .container end -->
+            </section>
     </form>
-    <!-- #checkout end -->
 {% endblock %}

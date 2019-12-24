@@ -1,0 +1,81 @@
+{% extends 'frontend/_layout.html' %}
+{% from "frontend/_formhelpers.html" import render_field %}
+
+{% block main %}
+<section id="product-detalis10" class="product-detalis product-detalis-3 product-detalis-10  pt-100 pb-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-7">
+                <div class="products-gallery-carousel products-gallery-carousel-1 products-gallery-carousel-3">
+                    <div class="owl-carousel products-slider" data-slider-id="1">
+                        {% for picture in product.images %}
+                            <div class="product-img">
+                                <img src="{{ url_for('static', filename=picture.name) }}" alt="product">
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="owl-thumbs thumbs-bg" data-slider-id="1">
+                        {% for picture in product.images %}
+                            <button class="owl-thumb-item">
+                                <img src="{{ url_for('static', filename=picture.name) }}" alt="product thumb">
+                            </button>
+                        {% endfor %}
+                    </div>
+                    <!-- .owl-thumbs end -->
+                </div>
+                <!-- .products-gallery-carousel end -->
+            </div>
+            <!-- .col-lg-7 end -->
+            <div class="col-sm-12 col-md-12 col-lg-5">
+                <div class="product--title">
+                    <h3>{{ product.name }}</h3>
+                </div>
+                <!-- .product-title end -->
+                <!--
+                <div class="product--rating">
+                    <i class="fa fa-star active"></i>
+                    <i class="fa fa-star active"></i>
+                    <i class="fa fa-star active"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                </div>
+                <div class="product--review">03 Customer Review</div>
+                -->
+                <!--- .product-review end -->
+                <div class="product--price">{{ product.display_price }}</div>
+                <!-- .product-price end -->
+                <div class="product--desc">
+                    <p>{{ product.description }}</p>
+                </div>
+                <!-- .product-desc end -->
+                <div class="product--meta">
+                    <!-- .product-meta-select end -->
+                    <ul class="product--meta-info list-unstyled">
+                        <li>Availability:<span>{{ product.available_text }}</span></li>
+                        <li>SKU:<span>{{ product.sku }}</span></li>
+                    </ul>
+                    <!--
+                    <div class="product--meta-action mb-0">
+                        <div class="mb-40">
+                            <div class="select-order">
+                                <div class="product-quantity">
+                                    <input class="minus" type="button" value="-">
+                                    <input type="text" id="pro1-qunt"  value="2" class="qty" readonly="">
+                                    <input class="plus" type="button" value="+">
+                                </div>
+                            </div>
+                            <a href="page-cart.html" class="btn btn--primary btn--rounded">ADD TO CART</a>
+                        </div>
+                    </div>
+                    -->
+                </div>
+
+            </div>
+            <!-- .col-lg-6 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #product detalis end -->
+{% endblock %}

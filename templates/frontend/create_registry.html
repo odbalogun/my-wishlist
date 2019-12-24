@@ -3,87 +3,121 @@
 
 
 {% block main %}
-    <!--login
+<form action="" method="post" enctype="multipart/form-data">
+{{ form.csrf_token }}
+<!--login
 ============================================= -->
 <section id="register-login" class="register-login pt-50 pb-150">
     <div class="container">
         <div class="row">
-            <div class="col-sm-12 col-md-6 col-lg-5 offset-lg-3">
+            <div class="col-sm-12 col-md-6 col-lg-5">
                 <div class="register-title">
                     <h5>Create Registry</h5>
                     <p>Create your registry and start adding products to your wishlist</p>
                 </div>
                 <!-- .register-title end -->
                 <div class="form--review">
-                        <form action="" method="post" enctype="multipart/form-data">
-                            {{ form.csrf_token }}
-                            <div class="row">
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    {{ render_field(form.name) }}
-                                </div>
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    {{ render_field(form.description) }}
-                                </div>
-                                <div class="col-sm-12 col-md-12 col-lg-12" style="padding-top: 0%;">
-                                    {{ render_field(form.image) }}
-                                </div>
-                                <div class="col-sm-12 col-md-12 col-lg-12 text--center">
-                                    <button type="submit" class="btn btn--primary btn--rounded">Proceed<i class="lnr lnr-arrow-right"></i></button>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            {{ render_field(form.name) }}
+                        </div>
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            {{ render_field(form.description) }}
+                        </div>
+                        <div class="col-sm-12 col-md-12 col-lg-12" style="padding-top: 0%;">
+                            <div class="form-group">
+                                <div class="file-upload">
+                                    <button class="file-upload-btn btn btn--primary btn--rounded" type="button" onclick="$('.file-upload-input').trigger( 'click' )">Add Image</button>
+
+                                    <div class="image-upload-wrap">
+                                      <input class="file-upload-input" type='file' onchange="readURL(this);" name="image" accept="image/*" />
+                                      <div class="drag-text">
+                                        <h3>Image Here</h3>
+                                      </div>
+                                    </div>
+                                    <div class="file-upload-content">
+                                      <img class="file-upload-image" src="#" alt="your image" />
+                                      <div class="image-title-wrap">
+                                        <button type="button" onclick="removeUpload()" class="remove-image btn btn--rounded">Remove <span class="image-title">Uploaded Image</span></button>
+                                      </div>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6 offset-lg-1">
+                <div class="register-title">
+                    <h5>Add Honeymoon Fund Account</h5>
+                    <p>This is your honeymoon details</p>
+                </div>
+                <div class="form--review">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <div class="form-group">
+                                    <input type="text" name="amount" placeholder="Target Amount" class="form-control">
+                                    {% for error in form.amount.errors %}
+                                        {{ error }}
+                                    {% endfor %}
                                 </div>
                             </div>
-                        </form>
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                {{ render_field(form.message) }}
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-lg-12 text--center">
+                                <button type="submit" class="btn btn--primary btn--rounded">Proceed<i class="lnr lnr-arrow-right"></i></button>
+                            </div>
+                        </div>
                     </div>
+                <div class="subscribe-alert"></div>
+                <div class="clearfix"></div>
+                <!-- .col-lg-4 end -->
             </div>
         </div>
         <!-- .row end -->
     </div>
+    </div>
     <!-- .container end -->
 </section>
 <!-- #checkout end -->
+</form>
 {% endblock %}
 
 {% block extra_js %}
-    <script src="{{url_for('static',filename='frontend/assets/dist/js/dropify.min.js')}}"></script>
-    <script>
-        $(document).ready(function(){
-            // Basic
-            $('.dropify').dropify();
+<script>
+function readURL(input) {
+  if (input.files && input.files[0]) {
 
-            // Translated
-            $('.dropify-fr').dropify({
-                messages: {
-                    default: 'Glissez-déposez un fichier ici ou cliquez',
-                    replace: 'Glissez-déposez un fichier ou cliquez pour remplacer',
-                    remove:  'Supprimer',
-                    error:   'Désolé, le fichier trop volumineux'
-                }
-            });
+    var reader = new FileReader();
 
-            // Used events
-            var drEvent = $('#input-file-events').dropify();
+    reader.onload = function(e) {
+      $('.image-upload-wrap').hide();
 
-            drEvent.on('dropify.beforeClear', function(event, element){
-                return confirm("Do you really want to delete \"" + element.file.name + "\" ?");
-            });
+      $('.file-upload-image').attr('src', e.target.result);
+      $('.file-upload-content').show();
 
-            drEvent.on('dropify.afterClear', function(event, element){
-                alert('File deleted');
-            });
+      $('.image-title').html(input.files[0].name);
+    };
 
-            drEvent.on('dropify.errors', function(event, element){
-                console.log('Has Errors');
-            });
+    reader.readAsDataURL(input.files[0]);
 
-            var drDestroy = $('#input-file-to-destroy').dropify();
-            drDestroy = drDestroy.data('dropify')
-            $('#toggleDropify').on('click', function(e){
-                e.preventDefault();
-                if (drDestroy.isDropified()) {
-                    drDestroy.destroy();
-                } else {
-                    drDestroy.init();
-                }
-            })
-        });
-    </script>
+  } else {
+    removeUpload();
+  }
+}
+
+function removeUpload() {
+  $('.file-upload-input').replaceWith($('.file-upload-input').clone());
+  $('.file-upload-content').hide();
+  $('.image-upload-wrap').show();
+}
+$('.image-upload-wrap').bind('dragover', function () {
+		$('.image-upload-wrap').addClass('image-dropping');
+	});
+	$('.image-upload-wrap').bind('dragleave', function () {
+		$('.image-upload-wrap').removeClass('image-dropping');
+});
+
+</script>
 {% endblock %}

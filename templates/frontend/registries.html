@@ -1,0 +1,18 @@
+{% extends 'frontend/_layout.html' %}
+
+{% block main %}
+    <section id="about1" class="about about-1 pt-100">
+        <div class="container">
+            <div class="row">
+                {% for registry in registries %}
+                    <p>
+                        <img src="{{ url_for('static', filename=registry.image) }}" alt="{{ registry }}" /><br/>
+                        <a href="{{ url_for('.view_registry', slug=registry.slug) }}">{{ registry }}</a>
+                    </p>
+                {% else %}
+                    <p>There are no registries to view</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

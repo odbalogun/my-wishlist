@@ -1,0 +1,172 @@
+{% extends 'frontend/_layout.html' %}
+
+{% block main %}
+    <!-- Page Title #3
+============================================= -->
+<section id="page-title" class="page-title bg-parallax">
+    <div class="bg-section">
+        <img src="{{ url_for('static', filename=registry.image) }}" alt="background">
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="title title-3 text-center">
+                </div>
+                <!-- .title end -->
+            </div>
+            <!-- .col-lg-12 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+
+<section id="page-title" class="page-title mt-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="title title-1 text-center">
+                    <div class="title--content">
+                        <div class="title--heading">
+                            <h1>{{ registry }}</h1>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <p>{{ registry.description }}</p>
+                </div>
+                <!-- .title end -->
+            </div>
+            <!-- .col-lg-12 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #page-title end -->
+
+<!-- category
+============================================= -->
+<section id="category" class="category category-1">
+    <div class="container-fluid">
+        <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12 category-options">
+                <div class="category-num pull-left pull-none-xs">
+                    <h2><span>{{ registry.registry_products | length }}</span>PRODUCT(S) FOUND</h2>
+                </div>
+                <!-- .category-num end -->
+                <!--
+                <div class="category-select pull-right text-right text-left-sm pull-none-xs">
+                    <ul class="list-unstyled mb-0">
+                        <li class="option category--filter-wrapper">
+                            <span class="option--title">PRICE</span>
+                            <div class="category--filter">
+                                <div id="slider-range"></div>
+                                <p>
+                                    <input type="text" id="amount" readonly>
+                                </p>
+                            </div>
+                        </li>
+                        <li class="option sort--options">
+                            <span class="option--title">Sort by:</span>
+                            <div class="select-form">
+                                <i class="fa fa-caret-down"></i>
+                                <select>
+                                    <option selected="" value="Default">Name</option>
+                                    <option  value="color">Color</option>
+                                    <option  value="price">Price</option>
+                                    <option  value="branding">Branding</option>
+                                </select>
+                                 </div>
+                                <div class="select-form">
+                                <i class="fa fa-caret-down"></i>
+                                <select>
+                                    <option selected="" value="">Categories</option>
+                                    <option  value="">Furniture</option>
+                                    <option  value="">Lightning</option>
+                                    <option  value="">Accessories</option>
+                                </select>
+                            </div>
+
+                        </li>
+                        <li class="option">
+                            <span class="option--title">SHOW</span>
+                            <ul class="list-unstyled show--num">
+                                <li>2</li>
+                                <li>4</li>
+                                <li>6</li>
+                            </ul>
+                        </li>
+                        <li class="option view--type">
+                            <a id="switch-list" href="#" class=""><i class="fa fa-th"></i></a>
+                            <a id="switch-grid" href="#" class="active"><i class="fa fa-bars"></i></a>
+                        </li>
+                    </ul>
+                 </div>
+                 -->
+            </div>
+            <!-- .category-options end -->        </div>
+        <!-- .row end -->
+        <div class="row row-no-padding mb-60">
+            {% for product in registry.registry_products %}
+            <!-- category item #5 -->
+            <div class="col-sm-6 col-md-6 col-lg-5ths">
+                <div class="category-item">
+                    <div class="category--img">
+                        <img src="{{ url_for('static', filename=product.product.main_image) }}" alt="category" />
+                        {% if loop.last %}
+                            <span class="featured-item featured-item3">ALREADY PURCHASED</span>
+                        {% endif %}
+                    </div>
+                    <!-- .category-img end -->
+                    <div class="category--content">
+                        <div class="category--title">
+                            <h3><a href="#">{{ product }}</a></h3>
+                        </div>
+                        <!-- .category-title end -->
+                        <div class="category--price">
+                             <span>{{ product.product.display_price }}</span>
+                        </div>
+                        <!-- .category-price end -->
+                        <div class="category--hover">
+                            <div class="category--action">
+                                <a href="#" class="btn btn--primary btn--rounded"><i class="icon-bag"></i>ADD TO CART</a>
+                                <!--
+                                <a data-toggle="modal" data-target="#product-popup"><i class="ti-search"></i></a>
+                                <a href="#"><i class="ti-heart"></i></a>
+                                <a href="#" class="compare" data-toggle="modal" data-target="#compare-popup"><i class="ti-control-shuffle"></i></a>
+                                -->
+                            </div>
+                        </div>
+                        <!-- .category-hover end -->
+                    </div>
+                    <!-- .category-content end -->
+                </div>
+            </div>
+            <!-- .category-item end -->
+            {% else %}
+                <p>There are no products to display</p>
+            {% endfor %}
+        </div>
+        <!-- .row end -->
+        <!--
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+                <a href="#" class="btn--loading">
+                    <div class="bullets">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    loading
+                </a>
+            </div>
+        </div>
+        -->
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #category end -->
+
+{% endblock %}

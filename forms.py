@@ -74,19 +74,17 @@ class VerificationForm(form.Form):
 
 class RegistryForm(form.Form):
     name = form.StringField('Registry Name', validators=[validator.InputRequired(), validator.Length(max=100)],
-                            render_kw={"placeholder": "Registry Name"})
+                            render_kw={"placeholder": "Registry Name e.g Seyi & Funke's Wedding"})
     description = form.TextAreaField('Description', validators=[validator.InputRequired()],
                                      render_kw={"placeholder": "Registry Description"})
     image = form.FileField('Image', validators=[validator.Optional()])
-
-
-class HoneymoonFundForm(form.Form):
     amount = form.FloatField('Target Amount', validators=[validator.Optional()],
                              render_kw={"placeholder": "Target Amount"})
-    message = form.TextAreaField('Message', validators=[validator.Optional()], render_kw={"placeholder": "Message to people who donate to your fund"})
+    message = form.TextAreaField('Message', validators=[validator.Optional()],
+                                 render_kw={"placeholder": "Message to people who donate to your fund"})
 
     def validate(self):
-        if not super(HoneymoonFundForm, self).validate():
+        if not super(RegistryForm, self).validate():
             return False
         if self.amount.data and not self.message.data:
             flash('Please provide a message for your sponsors', 'error')
@@ -94,12 +92,14 @@ class HoneymoonFundForm(form.Form):
         return True
 
 
-class ManageProductForm(form.Form):
-    products = MultiCheckboxField()
-    fund_amount = form.FloatField()
-    fund_message = form.TextAreaField('Message')
-    delivery_address = form.TextAreaField()
-    delivery_city = form.StringField()
-    delivery_state = form.SelectField()
-    delivery_name = form.StringField()
-    delivery_phone_number = form.StringField()
+class RegistryProductForm(form.Form):
+    name = form.StringField('Your Name', validators=[validator.InputRequired(), validator.Length(max=100)], render_kw={"placeholder": "Your Name"})
+    phone_number = form.StringField('Your Phone Number', validators=[validator.InputRequired()], render_kw={"placeholder": "Your Phone Number"})
+    address = form.TextAreaField('Delivery Address', validators=[validator.InputRequired()], render_kw={"placeholder": "Your Delivery Address", "rows": 10})
+    city = form.StringField('Your City', validators=[validator.InputRequired()], render_kw={'placeholder': "Your City"})
+    state = form.StringField('Your State', validators=[validator.InputRequired()], render_kw={'placeholder': "Your State"})
+    products = form.SelectMultipleField('Products', coerce=int, validators=[validator.InputRequired(message="Please select at least one product")])
+
+
+class AdminRegistryForm(form.Form):
+    pass

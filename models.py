@@ -51,7 +51,13 @@ class User(db.Model, UserMixin):
         self.verification_code = random.randint(100000, 999999)
 
     def __str__(self):
+        if self.first_name and self.last_name:
+            return "{} {}".format(self.first_name, self.last_name)
         return self.email
+
+    @property
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
 
 
 """
@@ -145,6 +151,7 @@ class Product(SurrogatePK, Model):
 
     created_by = relationship("User")
     category = relationship("Category")
+    products_in_registry = relationship("Registry", secondary="registry_products")
 
     def __repr__(self):
         """Represent instance as a string."""
@@ -162,6 +169,12 @@ class Product(SurrogatePK, Model):
                     return i
             return self.images[0]
         return
+
+    @property
+    def available_text(self):
+        if self.is_available:
+            return "In stock"
+        return "Out of stock"
 
 
 class ProductImage(SurrogatePK, Model):
@@ -210,13 +223,15 @@ class Registry(SurrogatePK, Model):
     created_by_id = reference_col("user", nullable=True)
     date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     admin_created_id = reference_col("user", nullable=True)
+    is_active = Column(db.Boolean, default=True)
 
     created_by = relationship("User", backref="registries", primaryjoin="Registry.created_by_id==User.id")
     admin_created_by = relationship("User", primaryjoin="Registry.admin_created_id==User.id")
+    products = relationship("Product", secondary="registry_products")
 
     @property
     def url(self):
-        return "{}registry/{}".format(request.url_root, self.slug)
+        return "{}registries/{}".format(request.url_root, self.slug)
 
     def __str__(self):
         return self.name
@@ -229,13 +244,23 @@ class Registry(SurrogatePK, Model):
     def product_ids(self):
         return [x.id for x in self.products]
 
+    @property
+    def target_amount(self):
+        if self.fund:
+            return self.fund.target_amount
+        return None
+
+    @property
+    def amount_attained(self):
+        return None
+
 
 class HoneymoonFund(SurrogatePK, Model):
     __tablename__ = 'honeymoon_funds'
 
     registry_id = reference_col("registries", nullable=False)
-    description = Column(db.Text, nullable=False)
-    target_amount = Column(db.Float, nullable=False)
+    message = Column(db.Text, nullable=True)
+    target_amount = Column(db.Float, nullable=True)
     has_achieved_target = Column(db.Boolean, default=False)
     date_target_achieved = Column(db.DateTime, nullable=True)
     has_been_paid = Column(db.Boolean, default=False)
@@ -243,7 +268,7 @@ class HoneymoonFund(SurrogatePK, Model):
     admin_updated_id = reference_col("user", nullable=True)
 
     admin_updated_by = relationship("User")
-    registry = relationship("Registry", backref=backref('fund', uselist=False))
+    registry = relationship("Registry", backref=backref('fund', uselist=False), uselist=False)
 
     def __str__(self):
         return self.registry.name
@@ -256,11 +281,25 @@ class RegistryProducts(SurrogatePK, Model):
     product_id = reference_col("products", nullable=False)
     has_been_purchased = Column(db.Boolean, default=False)
 
-    registry = relationship("Registry", backref="products")
-    product = relationship("Product", backref="registry_products")
+    # product = relationship("Product", backref="registry_products", uselist=False)
+    registry = relationship("Registry", backref=backref("registry_products", cascade="all, delete-orphan"))
+    product = relationship("Product", backref=backref("registry_products", cascade="all, delete-orphan"))
 
     def __str__(self):
         return self.product.name
+
+
+class RegistryDeliveryAddress(SurrogatePK, Model):
+    __tablename__ = 'registry_delivery_addresses'
+
+    registry_id = reference_col("registries", nullable=False)
+    name = Column(db.String(100), nullable=False)
+    phone_number = db.Column(db.String(50), nullable=True)
+    address = Column(db.Text, nullable=False)
+    city = Column(db.String(50), nullable=False)
+    state = Column(db.String(50), nullable=False)
+
+    registry = relationship("Registry", backref=backref("delivery", uselist=False, cascade="all, delete-orphan"))
 
 # Delete hooks for models, delete files if models are getting deleted
 # @listens_for(Article, 'after_delete')

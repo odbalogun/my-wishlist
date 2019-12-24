@@ -1,7 +1,8 @@
 from flask import redirect, render_template, url_for, Blueprint, flash, request, abort
-from forms import RegistrationForm, LoginForm, VerificationForm, RegistryForm, HoneymoonFundForm
+from forms import RegistrationForm, LoginForm, VerificationForm, RegistryForm, RegistryProductForm
 from decorators import custom_login_required
-from models import db, User, Registry, Product, Article, Tag, RegistryProducts, Category, HoneymoonFund
+from models import db, User, Registry, Product, Article, Tag, RegistryProducts, Category, HoneymoonFund, \
+    RegistryDeliveryAddress
 from flask_security.utils import hash_password, logout_user, login_user, verify_password
 from flask_security import current_user
 from utils import generate_full_file_path, generate_folder_name
@@ -126,8 +127,12 @@ def create_registry():
                 return redirect(url_for('.create_registry'))
 
         reg.save()
+        if form.amount.data:
+            db.session.add(HoneymoonFund(message=form.message.data, target_amount=form.amount.data,
+                                         registry_id=reg.id))
+            db.session.commit()
 
-        flash("Please provide the following information", "success")
+        flash("Please provide your delivery details and select products for your registry", "success")
         return redirect(url_for('.manage_products', slug=reg.slug))
 
     return render_template('frontend/create_registry.html', form=form)
@@ -147,19 +152,37 @@ def manage_products(slug):
 
     # get form
     products = Product.query.filter_by(is_available=True).all()
-    form = HoneymoonFundForm(request.form)
+    if registry.delivery:
+        form = RegistryProductForm(request.form, obj=registry.delivery)
+    else:
+        form = RegistryProductForm(request.form, data={'name': current_user.full_name,
+                                                               'phone_number': current_user.phone_number})
+    form.products.choices = [(x.id, x.name) for x in products]
     categories = Category.query.all()
 
     if request.method == 'POST' and form.validate():
-        registry.fund = HoneymoonFund(description=form.message.data, target_amount=form.amount.data)
+        delivery = RegistryDeliveryAddress.query.filter_by(registry_id=registry.id).first()
+
+        if not delivery:
+            delivery = RegistryDeliveryAddress(registry_id=registry.id)
+
+        form.populate_obj(delivery)
+        delivery.save()
+
+        # populate products
+        RegistryProducts.query.filter_by(registry_id=registry.id).delete()
+        db.session.commit()
+        product_list = []
+        for item in form.products.data:
+            product_list.append(RegistryProducts(product_id=item))
+        registry.registry_products.extend(product_list)
         db.session.add(registry)
         db.session.commit()
 
         flash("Your registry has been successfully updated", "success")
         return redirect(url_for('.dashboard'))
 
-    return render_template('frontend/manage_products.html', registry=registry, products=products, form=form,
-                           categories=categories)
+    return render_template('frontend/manage_products.html', registry=registry, products=products, form=form, categories=categories)
 
 
 @frontend.route('/registry/<slug>/add-product/<product_id>', methods=['GET'])
@@ -179,7 +202,7 @@ def add_product(slug, product_id):
         flash("This product is already in your registry wishlist", "error")
         return redirect(url_for('.manage_products', slug=slug))
 
-    registry.products.append(RegistryProducts(product_id=product.id))
+    registry.registry_products.append(RegistryProducts(product_id=product.id))
     db.session.add(registry)
     db.session.commit()
 
@@ -210,20 +233,48 @@ def remove_product(slug, product_id):
     return redirect(url_for('.manage_products', slug=slug))
 
 
+@frontend.route('/registry/<slug>/deactivate', methods=["GET"])
+@custom_login_required
+def deactivate_registry(slug):
+    registry = Registry.get_by_slug(slug)
+
+    if not registry:
+        abort(404)
+
+    if registry.created_by != current_user:
+        abort(401)
+
+    registry.is_active = False
+    db.session.add(registry)
+    db.session.commit()
+
+    flash("Registry has been successfully deactivated", "success")
+    return redirect(url_for('.dashboard'))
+
+
+@frontend.route('/registry/<slug>/activate', methods=["GET"])
+@custom_login_required
+def activate_registry(slug):
+    registry = Registry.get_by_slug(slug)
+
+    if not registry:
+        abort(404)
+
+    if registry.created_by != current_user:
+        abort(401)
+
+    registry.is_active = True
+    db.session.add(registry)
+    db.session.commit()
+
+    flash("Registry has been successfully activated", "success")
+    return redirect(url_for('.dashboard'))
+
+
 @frontend.route('/logout', methods=['GET', 'POST'])
 def logout():
     logout_user()
     return redirect(url_for('.index'))
-
-
-@frontend.app_errorhandler(404)
-def handle_404(e):
-    return render_template('frontend/error.html', code=404, message="The page you're looking for could not be found")
-
-
-@frontend.app_errorhandler(401)
-def handle_401(e):
-    return render_template('frontend/error.html', code=401, message="You are not authorized to view this page")
 
 
 @frontend.route('/blog', methods=['GET'])
@@ -243,6 +294,30 @@ def blog_article(slug):
     return render_template('frontend/blog_single.html', article=article, recent_articles=recent_articles, tags=tags)
 
 
+@frontend.route('/registries', methods=['GET'])
+def registries():
+    registries = Registry.query.filter_by(is_active=True).all()
+    return render_template('frontend/registries.html', registries=registries)
+
+
+@frontend.route('/registries/<slug>', methods=['GET', 'POST'])
+def view_registry(slug):
+    registry = Registry.get_by_slug(slug)
+
+    if not registry:
+        abort(404)
+
+    return render_template('frontend/registry.html', registry=registry)
+
+
+@frontend.route('/products/<slug>', methods=['GET'])
+def product_details(slug):
+    product = Product.get_by_slug(slug)
+    if not product:
+        abort(404)
+    return render_template('frontend/product_details.html', product=product)
+
+
 @frontend.route('/frequently-asked-questions', methods=['GET'])
 def faq():
     return render_template('frontend/about.html')
@@ -256,3 +331,18 @@ def about():
 @frontend.route('/contact-us', methods=['GET', 'POST'])
 def contact():
     return render_template('frontend/contact.html')
+
+
+@frontend.app_errorhandler(404)
+def handle_404(e):
+    return render_template('frontend/error.html', code=404, message="The page you're looking for could not be found")
+
+
+@frontend.app_errorhandler(401)
+def handle_401(e):
+    return render_template('frontend/error.html', code=401, message="You are not authorized to view this page")
+
+
+@frontend.app_errorhandler(500)
+def handle_500(e):
+    return render_template('frontend/error.html', code=500, message="There has been an error. Please contact an administrator")

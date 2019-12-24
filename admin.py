@@ -6,9 +6,9 @@ from flask_admin.model import typefmt
 from flask_security import current_user, logout_user
 from flask import redirect, request, url_for, flash
 from app import db
-from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage
+from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage, Registry, HoneymoonFund
 from slugify import UniqueSlugify, Slugify
-from wtforms import TextAreaField, FileField
+from wtforms import TextAreaField, FileField, FloatField
 from flask_admin.actions import action
 from flask_ckeditor import CKEditorField
 from forms import DiscountForm, ArticleForm
@@ -208,8 +208,7 @@ class ProductCategoryView(MyModelView):
 class ProductImageInlineForm(InlineFormAdmin):
     form_columns = ['id', 'name', 'is_main_image']
     column_labels = dict(name="Image")
-    folder_name = generate_folder_name()
-    relative_file_path = get_relative_file_path('products', folder_name)
+    relative_file_path = get_relative_file_path('products', generate_folder_name())
     form_extra_fields = {'name': form.ImageUploadField('Picture', allowed_extensions=['jpg', 'jpeg', 'png'],
                                                        base_path=get_file_path(), relative_path=relative_file_path)}
     form_widget_args = {
@@ -268,6 +267,55 @@ class ProductView(MyModelView):
             flash(f'Failed to process request. {str(ex)}', 'error')
 
 
+class HoneyMoonFundInlineForm(InlineFormAdmin):
+    form_columns = ['message', 'target_amount']
+
+
+class RegistryView(MyModelView):
+    column_list = ['name', 'url', 'target_amount', 'amount_attained', 'is_active', 'created_by', 'date_created', 'admin_created_by']
+    form_excluded_columns = ['slug', 'admin_created_by', 'date_created', 'registry_products']
+    form_columns = ['created_by', 'name', 'description', 'image', 'products']
+    column_labels = {'admin_created_by': 'Created by Admin', 'created_by': 'Owner', 'fund.target_amount': 'Target Amount', 'fund.message': 'Honeymoon Fund'}
+    column_details_list = ['created_by', 'name', 'slug', 'description', 'image', 'products', 'fund.target_amount',
+                           'fund.message', 'admin_created_by', 'date_created']
+    relative_file_path = get_relative_file_path('registries', generate_folder_name())
+    form_extra_fields = {
+        'image': form.ImageUploadField('Background Image', allowed_extensions=['jpg', 'jpeg', 'png'], base_path=get_file_path(),
+                                       relative_path=relative_file_path)
+    }
+
+    def on_model_change(self, form, model, is_created):
+        if is_created:
+            model.admin_created_by = current_user
+            model.generate_slug()
+
+    @action('activate', 'Mark as Activated', 'Are you sure you want to mark these items as active?')
+    def action_activate(self, ids):
+        try:
+            count = Registry.query.filter(Registry.id.in_(ids)).update({Registry.is_active: True},
+                                                                       synchronize_session='fetch')
+            db.session.commit()
+
+            flash(f'{count} registries were successfully marked as active', 'success')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(f'Failed to process request. {str(ex)}', 'error')
+
+    @action('deactivate', 'Mark as Deactivated', 'Are you sure you want to mark these items as deactivated?')
+    def action_deactivate(self, ids):
+        try:
+            count = Registry.query.filter(Registry.id.in_(ids)).update({Registry.is_active: False},
+                                                                       synchronize_session='fetch')
+            db.session.commit()
+
+            flash(f'{count} registries were successfully marked as deactivated', 'success')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(f'Failed to process request. {str(ex)}', 'error')
+
+
 # Create admin
 admin = flask_admin.Admin(
     name='My Dashboard',
@@ -287,4 +335,5 @@ admin.add_view(ProductCategoryView(Category, db.session, menu_icon_type='fa', me
 admin.add_view(ProductView(Product, db.session, menu_icon_type='fa', menu_icon_value='fa-shopping-basket',
                            name='Products'))
 admin.add_view(UserView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-users', name="Users"))
+admin.add_view(RegistryView(Registry, db.session, menu_icon_type='fa', menu_icon_value='fa-file', name='Registries'))
 
