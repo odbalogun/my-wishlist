@@ -33,18 +33,18 @@ about #1
     <ul class="nav nav-tabs" role="tablist">
         <li><a href="#myregistry" aria-controls="myregistry" role="tab" data-toggle="tab" class="active">My Registries</a></li>
         <li><a href="#wishlistordered" aria-controls="wishlistordered" role="tab" data-toggle="tab">Purchased Gifts</a></li>
-        <li><a href="#orders" aria-controls="orders" role="tab" data-toggle="tab">My Orders</a></li>
+        <li><a href="#orders" aria-controls="orders" role="tab" data-toggle="tab">My Invoices</a></li>
         <li><a href="#donations" aria-controls="donations" role="tab" data-toggle="tab">Donations</a></li>
     </ul>
     <!-- Tab panes -->
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane fade show active" id="myregistry">
             <div class="row">
-                <div class="col-sm-12 col-md-12 col-lg-10 offset-lg-1">
+                <div class="col-sm-12 col-md-12 col-lg-12">
 
                     <div class="row">
+                        {% if current_user.registries %}
                             <div class="cart-table wishlist table-responsive">
-                                {% if current_user.registries %}
                                 <table class="table">
                                     <thead>
                                         <tr class="cart-product">
@@ -77,13 +77,20 @@ about #1
                                         {% endfor %}
                                     </tbody>
                                 </table>
-                                {% else %}
-                                    <p>There are no registries to display</p>
-                                {% endif %}
-                                <a href="{{ url_for('.create_registry') }}">
-                                    <button class="btn btn-info">Create a registry</button>
-                                </a>
+                                <div class="col-sm-12 col-md-12 col-lg-12 pt-60 mb-80">
+                                <a href="{{ url_for('.create_registry') }}" class="btn btn--primary btn--rounded" style="width: 230px;">CREATE REGISTRY</a>
+                                </div>
                             </div>
+                        {% else %}
+                            <div class="row text-center">
+                                <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+                                    <h3 class="pt-60" style="color: dimgrey; text-align: center !important;">You have no registries</h3>
+                                </div>
+                                <div class="col-sm-12 col-md-12 col-lg-12 pt-60 mb-80">
+                                    <a href="{{ url_for('.create_registry') }}" class="btn btn--primary btn--rounded" style="width: 230px;">CREATE REGISTRY</a>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -92,7 +99,7 @@ about #1
         <!-- #description end -->
         <div role="tabpanel" class="tab-pane fade" id="orders">
             <div class="row">
-                <div class="col-sm-12 col-md-12 col-lg-10 offset-lg-1">
+                <div class="col-sm-12 col-md-12 col-lg-12">
 
                         <div class="cart-table wishlist table-responsive">
                                 <table class="table">
@@ -123,7 +130,7 @@ about #1
         <!-- #details end -->
         <div role="tabpanel" class="tab-pane fade" id="wishlistordered">
             <div class="row">
-                <div class="col-sm-12 col-md-12 col-lg-8 offset-lg-1">
+                <div class="col-sm-12 col-md-12 col-lg-12">
 
                         <div class="cart-table wishlist table-responsive">
                                 <table class="table">
@@ -156,7 +163,7 @@ about #1
 
         <div role="tabpanel" class="tab-pane fade" id="donations">
             <div class="row">
-                <div class="col-sm-12 col-md-12 col-lg-8 offset-lg-1">
+                <div class="col-sm-12 col-md-12 col-lg-12">
                         <ul class="product--review-comments list-unstyled">
                             <li class="review--comment">
                                 <div class="author--img">

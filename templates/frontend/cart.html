@@ -1,0 +1,146 @@
+{% extends 'frontend/_layout.html' %}
+
+{% block main %}
+
+<!-- Page Title #1
+============================================= -->
+<section id="page-title" class="page-title mt-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="title title-1 text-center">
+                    <div class="title--content">
+                        <div class="title--heading">
+                            <h1>Shopping Cart</h1>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <ol class="breadcrumb">
+                        <li><a href="{{ url_for('.index') }}">Home</a></li>
+                        <li class="active">Shopping Cart</li>
+                    </ol>
+                </div>
+                <!-- .title end -->
+            </div>
+            <!-- .col-lg-12 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #page-title end -->
+
+<!-- Shop Cart
+============================================= -->
+<section id="shopcart" class="shop shop-cart pt-0 pb-60">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="cart-table table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr class="cart-product">
+                                <th class="cart-product-item">PRODUCT NAME</th>
+                                <th class="cart-product-item">REGISTRY</th>
+                                <th class="cart-product-price">UNIT PRICE</th>
+                                <th class="cart-product-quantity">Quantity</th>
+                                <th class="cart-product-total">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                                <!-- cart product #1 -->
+                                <tr class="cart-product">
+                                    <td class="cart-product-item">
+                                        <div class="cart-product-img">
+                                            <img src="{{ url_for('static', filename=product.product) }}" alt="product" />
+                                        </div>
+                                        <div class="cart-product-content">
+                                            <div class="cart-product-name">
+                                                <h6>{{ product.product }}</h6>
+                                            </div>
+                                            <!--
+                                            <ul class="list-unstyled mb-0">
+                                                <li><span>Color:</span><span>Grey</span></li>
+                                                <li><span>Size:</span><span>XL</span></li>
+                                            </ul>
+                                            -->
+                                        </div>
+                                    </td>
+                                    <td class="cart-product-item">{{ product.registry }}</td>
+                                    <td class="cart-product-price">{{ product.product.display_price }}</td>
+                                    <td class="cart-product-quantity">
+                                        <div class="product-quantity">
+                                            <input class="minus" type="button" value="-">
+                                            <input type="text" id="pro1-qunt"  value="{{ session['cart_item'] }}" class="qty" readonly="">
+                                            <input class="plus" type="button" value="+">
+                                        </div>
+                                    </td>
+                                    <td class="cart-product-total">
+                                        <span>{{ product.product.display_total_price(1) }}</span>
+                                        <div class="cart-product-remove"><a href="{{ url_for('.delete_product', product_id=product.id) }}">x</a></div>
+                                    </td>
+                                </tr>
+                                <!-- .cart-product end -->
+                            {% endfor %}
+                            <tr class="cart-product-action">
+                                <td colspan="4">
+                                    <div class="row clearfix">
+                                        <div class="col-sm-12 col-md-12 col-lg-8">
+                                            <a class="btn btn--secondary btn--bordered btn--rounded mr-30" href="{{ url_for('.empty_cart') }}">CLEAR SHOPPING CART</a>
+                                        </div>
+                                        <!-- .col-lg-6 end -->
+                                        <div class="col-sm-12 col-md-12 col-lg-4 text-right text-left-xs text-left-sm">
+                                            <a class="btn btn--secondary  btn--rounded" href="#">UPDATE SHOPPING CART</a>
+                                        </div>
+                                        <!-- .col-lg-6 end -->
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- .cart-table end -->
+                <div class="cart-product-action">
+                    <div class="cart-copoun">
+                        <div class="row clearfix">
+                            <div class="col-sm-12 col-md-12 col-lg-6">
+                                <h3>Coupon discount</h3>
+                                <p>Enter your code if you have one. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+                                <form class="form-inline">
+                                    <input type="text" class="form-control" id="coupon" placeholder="Enter your code here">
+                                    <button type="submit" class="btn btn--secondary  btn--rounded">Apply Coupon</button>
+                                </form>
+                            </div>
+                            <!-- .col-lg-6 end -->
+                            <div class="col-sm-12 col-md-12 col-lg-5 offset-lg-1">
+                                <div class="checkout--panel">
+                                    <h4>Cart total</h4>
+                                    <hr>
+                                    <div class="sub--total">
+                                        <h5>SUB TOTAL</h5>
+                                        <span>$48.00</span>
+                                    </div>
+                                    <div class="total">
+                                        <h6>GRAND TOTAL</h6>
+                                        <span>$48.00</span>
+                                    </div>
+                                    <p>Checkout with Mutilple Adresses</p>
+                                    <a class="btn btn--primary btn--rounded btn--block" href="#">PROCEED TO CHECKOUT</a>
+                                </div><!-- .checkout-panel end -->
+                            </div>
+                            <!-- .col-lg-6 end -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- .col-lg-12 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #shopcart end -->
+
+{% endblock %}

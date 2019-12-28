@@ -46,15 +46,6 @@
         {% include 'frontend/_headers.html' %}
 
     <div id="wrapperParallax" class="wrapper wrapper-boxed clearfix">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-              <div class="{{ category }}">
-                    {{ message }}
-              </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
     {% block main  %}{% endblock %}
     <!-- Footer #1
     ============================================= -->
@@ -111,6 +102,24 @@
         </div>
         <!-- .footer-widget end -->
     </footer>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                {% if category == 'success' %}
+                    <div class="toast jam" aria-hidden="true">
+                        <span class="close" aria-role="button" tabindex="0">&times;</span>
+                        {{ message }}
+                    </div>
+                {% else %}
+                    <div class="toast-failed failed-jam" aria-hidden="true">
+                        <span class="failed-close" aria-role="button" tabindex="0">&times;</span>
+                        {{ message }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
     </div>
     <!-- Footer Scripts

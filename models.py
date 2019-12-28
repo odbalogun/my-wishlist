@@ -144,6 +144,7 @@ class Product(SurrogatePK, Model):
     slug = Column(db.String(100), nullable=False, unique=True)
     category_id = reference_col("categories", nullable=False)
     description = Column(db.Text, nullable=False)
+    sku = Column(db.String(50), nullable=True)
     price = Column(db.Float, nullable=False)
     is_available = Column(db.Boolean, default=True)
     created_by_id = reference_col("user", nullable=True)
@@ -160,6 +161,12 @@ class Product(SurrogatePK, Model):
     @property
     def display_price(self):
         return "NGN{:,.2f}".format(self.price)
+
+    def total_price(self, quantity):
+        return self.price * quantity
+
+    def display_total_price(self, quantity):
+        return "NGN{:,.2f}".format(self.total_price(quantity))
 
     @property
     def main_image(self):
@@ -253,6 +260,10 @@ class Registry(SurrogatePK, Model):
     @property
     def amount_attained(self):
         return None
+
+    @property
+    def string_id(self):
+        return str(self.id)
 
 
 class HoneymoonFund(SurrogatePK, Model):

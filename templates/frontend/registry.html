@@ -129,7 +129,7 @@
                         <!-- .category-price end -->
                         <div class="category--hover">
                             <div class="category--action">
-                                <a href="#" class="btn btn--primary btn--rounded"><i class="icon-bag"></i>ADD TO CART</a>
+                                <a href="{{ url_for('.add_product_to_cart', product_id=product.id) }}" class="btn btn--primary btn--rounded"><i class="icon-bag"></i>ADD TO CART</a>
                                 <!--
                                 <a data-toggle="modal" data-target="#product-popup"><i class="ti-search"></i></a>
                                 <a href="#"><i class="ti-heart"></i></a>

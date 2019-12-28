@@ -1,4 +1,4 @@
-from flask import redirect, render_template, url_for, Blueprint, flash, request, abort
+from flask import redirect, render_template, url_for, Blueprint, flash, request, abort, session
 from forms import RegistrationForm, LoginForm, VerificationForm, RegistryForm, RegistryProductForm
 from decorators import custom_login_required
 from models import db, User, Registry, Product, Article, Tag, RegistryProducts, Category, HoneymoonFund, \
@@ -346,3 +346,94 @@ def handle_401(e):
 @frontend.app_errorhandler(500)
 def handle_500(e):
     return render_template('frontend/error.html', code=500, message="There has been an error. Please contact an administrator")
+
+
+@frontend.route('/cart', methods=['GET'])
+def cart():
+    if 'cart_item' not in session:
+        flash("There are no items in your cart yet", "error")
+        return redirect(url_for('.registries'))
+    products = RegistryProducts.query.filter(RegistryProducts.id.in_(session['cart_item'].keys()))
+    return render_template('frontend/cart.html', products=products)
+
+
+@frontend.route('/cart/add-product/<product_id>', methods=['GET'])
+def add_product_to_cart(product_id):
+    _quantity = 1
+    product = RegistryProducts.query.get(product_id)
+
+    if not product:
+        abort(404)
+
+    if not product.product.is_available:
+        flash("This product is currently out of stock", "error")
+        return redirect(url_for('.registries'))
+
+    all_total_price = 0
+    all_total_quantity = 0
+    session.modified = True
+
+    if 'cart_item' in session:
+        if product_id in session['cart_item']:
+            for key, value in session['cart_item'].items():
+                if product_id == key:
+                    old_quantity = session['cart_item'][key]['quantity']
+                    total_quantity = old_quantity + _quantity
+                    session['cart_item'][key]['quantity'] = total_quantity
+                    session['cart_item'][key]['total_price'] = total_quantity * product.product.price
+        else:
+            session['cart_item'][product_id] = {'quantity': _quantity,
+                                                'total_price': _quantity * product.product.price}
+    else:
+        session['cart_item'] = {product_id: {'quantity': _quantity, 'total_price': _quantity * product.product.price}}
+
+    for key, value in session['cart_item'].items():
+        individual_quantity = int(session['cart_item'][key]['quantity'])
+        individual_price = float(session['cart_item'][key]['total_price'])
+        all_total_quantity = all_total_quantity + individual_quantity
+        all_total_price = all_total_price + individual_price
+
+    session['all_total_quantity'] = all_total_quantity
+    session['all_total_price'] = all_total_price
+
+    flash('Your cart has been updated', 'success')
+    return redirect(url_for('.view_registry', slug=product.registry.slug))
+
+
+@frontend.route('/cart/empty', methods=['GET'])
+def empty_cart():
+    try:
+        session.clear()
+        return redirect(url_for('.registries'))
+    except Exception as e:
+        print(e)
+
+
+@frontend.route('/cart/delete/<string:product_id>', methods=['GET'])
+def delete_product(product_id):
+    try:
+        all_total_price = 0
+        all_total_quantity = 0
+        session.modified = True
+
+        for item in session['cart_item'].items():
+            if item[0] == product_id:
+                session['cart_item'].pop(item[0], None)
+                if 'cart_item' in session:
+                    for key, value in session['cart_item'].items():
+                        individual_quantity = int(session['cart_item'][key]['quantity'])
+                        individual_price = float(session['cart_item'][key]['total_price'])
+                        all_total_quantity = all_total_quantity + individual_quantity
+                        all_total_price = all_total_price + individual_price
+                break
+
+        if all_total_quantity == 0:
+            session.clear()
+        else:
+            session['all_total_quantity'] = all_total_quantity
+            session['all_total_price'] = all_total_price
+
+        # return redirect('/')
+        return redirect(url_for('.cart'))
+    except Exception as e:
+        print(e)

@@ -42,7 +42,10 @@
                 </div>
                 <ul class="navbar-nav mr-auto ml-auto">
                     <!-- home Menu -->
-                    <li class=" active">
+                    <!--<li class=" active">
+                        <a href="{{ url_for('.index') }}" class="menu-item">Home</a>
+                    </li>-->
+                    <li>
                         <a href="{{ url_for('.index') }}" class="menu-item">Home</a>
                     </li>
                     <!-- li end -->
@@ -93,10 +96,13 @@
                     <!-- Module Cart -->
                     <div class="module module-cart pull-left">
                         <div class="module-icon cart-icon">
-                            <i class="icon-bag"></i>
-                            <span class="title">shop cart</span>
-                            <label class="module-label">2</label>
+                            <a href="{{ url_for('.cart') }}">
+                                <i class="icon-bag"></i>
+                                <span class="title">shop cart</span>
+                                <label class="module-label">{{ session['all_total_quantity'] }}</label>
+                            </a>
                         </div>
+                        <!--
                         <div class="module-content module-box cart-box">
                              <div class="cart-overview">
                                 <ul class="list-unstyled">
@@ -135,6 +141,7 @@
                                 <a class="btn btn--primary btn--rounded" href="#">Checkout</a>
                             </div>
                         </div>
+                        -->
                     </div>
                     <!-- .module-cart end -->
                 </div>
