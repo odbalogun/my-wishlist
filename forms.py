@@ -12,7 +12,7 @@ class MultiCheckboxField(form.SelectMultipleField):
 
 
 class DiscountForm(form.Form):
-    code = form.StringField('Code', validators=[validator.InputRequired(), validator.Length(max=50)])
+    code = form.StringField('Code', validators=[validator.DataRequired(), validator.Length(max=50)])
     amount = form.FloatField('Amount', validators=[validator.Optional(), validator.NumberRange(min=1)])
     percentage = form.FloatField('Percentage', validators=[validator.Optional(), validator.NumberRange(min=1, max=100)])
     is_active = form.BooleanField('Is Active', default=True)
@@ -30,52 +30,52 @@ class DiscountForm(form.Form):
 
 
 class ArticleForm(form.Form):
-    title = form.StringField('Title', validators=[validator.InputRequired(), validator.Length(max=100)])
-    summary = form.TextAreaField('Summary', validators=[validator.InputRequired()])
-    content = form.TextAreaField('Content', validators=[validator.InputRequired()])
+    title = form.StringField('Title', validators=[validator.DataRequired(), validator.Length(max=100)])
+    summary = form.TextAreaField('Summary', validators=[validator.DataRequired()])
+    content = form.TextAreaField('Content', validators=[validator.DataRequired()])
     # tags = form.SelectMultipleField('Tags', validators=[validator.Optional()], choices=[(1, 1), (2,2)])
     image = form.FileField('Image', validators=[validator.Optional()])
     is_published = form.BooleanField('Is Active', default=True)
 
 
 class RegistrationForm(form.Form):
-    first_name = form.StringField('First Name', validators=[validator.InputRequired(), validator.Length(max=50)],
+    first_name = form.StringField('First Name', validators=[validator.DataRequired(), validator.Length(max=50)],
                                   render_kw={"placeholder": "First Name"})
-    last_name = form.StringField('Last Name', validators=[validator.InputRequired(), validator.Length(max=50)],
+    last_name = form.StringField('Last Name', validators=[validator.DataRequired(), validator.Length(max=50)],
                                  render_kw={"placeholder": "Last Name"})
     phone_number = form.StringField('Phone Number', validators=[validator.Length(max=50)],
                                     render_kw={"placeholder": "Phone Number"})
-    email = form.StringField('Email', validators=[validator.InputRequired(), validator.Email(),
+    email = form.StringField('Email', validators=[validator.DataRequired(), validator.Email(),
                                                   validator.Length(max=50)], render_kw={"placeholder": "Email Address"})
-    password = form.PasswordField('Password', validators=[validator.InputRequired(), validator.Length(max=50),
+    password = form.PasswordField('Password', validators=[validator.DataRequired(), validator.Length(max=50),
                                                           validator.EqualTo('confirm_password',
                                                                             message="Passwords must match")],
                                   render_kw={"placeholder": "Password"})
-    confirm_password = form.PasswordField('Confirm Password', validators=[validator.InputRequired(),
+    confirm_password = form.PasswordField('Confirm Password', validators=[validator.DataRequired(),
                                                                           validator.Length(max=50)],
                                           render_kw={"placeholder": "Confirm Password"})
     terms_and_conditions = form.BooleanField(validators=[validator.DataRequired()])
 
 
 class LoginForm(form.Form):
-    email = form.StringField('Email', validators=[validator.InputRequired(), validator.Email(),
+    email = form.StringField('Email', validators=[validator.DataRequired(), validator.Email(),
                                                   validator.Length(max=50)], render_kw={"placeholder": "Email Address"})
-    password = form.PasswordField('Password', validators=[validator.InputRequired(), validator.Length(max=50)],
+    password = form.PasswordField('Password', validators=[validator.DataRequired(), validator.Length(max=50)],
                                   render_kw={"placeholder": "Password"})
     remember_me = form.BooleanField('Remember Me', default=True)
 
 
 class VerificationForm(form.Form):
-    email = form.StringField('Email', validators=[validator.InputRequired(), validator.Email(),
+    email = form.StringField('Email', validators=[validator.DataRequired(), validator.Email(),
                                                   validator.Length(max=50)], render_kw={"placeholder": "Email Address"})
-    verification_code = form.StringField('Verification Code', validators=[validator.InputRequired()],
+    verification_code = form.StringField('Verification Code', validators=[validator.DataRequired()],
                                          render_kw={"placeholder": "Verification Code"})
 
 
 class RegistryForm(form.Form):
-    name = form.StringField('Registry Name', validators=[validator.InputRequired(), validator.Length(max=100)],
+    name = form.StringField('Registry Name', validators=[validator.DataRequired(), validator.Length(max=100)],
                             render_kw={"placeholder": "Registry Name e.g Seyi & Funke's Wedding"})
-    description = form.TextAreaField('Description', validators=[validator.InputRequired()],
+    description = form.TextAreaField('Description', validators=[validator.DataRequired()],
                                      render_kw={"placeholder": "Registry Description"})
     image = form.FileField('Image', validators=[validator.Optional()])
     amount = form.FloatField('Target Amount', validators=[validator.Optional()],
@@ -93,13 +93,27 @@ class RegistryForm(form.Form):
 
 
 class RegistryProductForm(form.Form):
-    name = form.StringField('Your Name', validators=[validator.InputRequired(), validator.Length(max=100)], render_kw={"placeholder": "Your Name"})
-    phone_number = form.StringField('Your Phone Number', validators=[validator.InputRequired()], render_kw={"placeholder": "Your Phone Number"})
-    address = form.TextAreaField('Delivery Address', validators=[validator.InputRequired()], render_kw={"placeholder": "Your Delivery Address", "rows": 10})
-    city = form.StringField('Your City', validators=[validator.InputRequired()], render_kw={'placeholder': "Your City"})
-    state = form.StringField('Your State', validators=[validator.InputRequired()], render_kw={'placeholder': "Your State"})
-    products = form.SelectMultipleField('Products', coerce=int, validators=[validator.InputRequired(message="Please select at least one product")])
+    name = form.StringField('Your Name', validators=[validator.DataRequired(), validator.Length(max=100)], render_kw={"placeholder": "Your Name"})
+    phone_number = form.StringField('Your Phone Number', validators=[validator.DataRequired()], render_kw={"placeholder": "Your Phone Number"})
+    address = form.TextAreaField('Delivery Address', validators=[validator.DataRequired()], render_kw={"placeholder": "Your Delivery Address", "rows": 10})
+    city = form.StringField('Your City', validators=[validator.DataRequired()], render_kw={'placeholder': "Your City"})
+    state = form.StringField('Your State', validators=[validator.DataRequired()], render_kw={'placeholder': "Your State"})
+    products = form.SelectMultipleField('Products', coerce=int, validators=[validator.DataRequired(message="Please select at least one product")])
 
 
 class AdminRegistryForm(form.Form):
     pass
+
+
+class AddCartDiscount(form.Form):
+    code = form.StringField('Dicount code', validators=[validator.DataRequired()], render_kw={'placeholder': "Enter Your Code Here"})
+
+
+class OrderForm(form.Form):
+    first_name = form.StringField('First Name', validators=[validator.DataRequired(), validator.Length(max=100)])
+    last_name = form.StringField('Last Name', validators=[validator.DataRequired(), validator.Length(max=100)])
+    phone_number = form.StringField('Phone Number', validators=[validator.Length(max=50)])
+    email = form.StringField('Email Address', validators=[validator.DataRequired(), validator.Email(), validator.Length(max=50)])
+    message = form.TextAreaField('Message', validators=[validator.Optional()],
+                                 render_kw={"placeholder": "Send a message to the celebrants"})
+

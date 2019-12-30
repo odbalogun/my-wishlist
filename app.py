@@ -17,6 +17,12 @@ migrate = Migrate(app, db)
 ckeditor = CKEditor(app)
 
 
+@app.template_filter()
+def format_money(value):
+    """Format a value as currency"""
+    return "NGN{:,.2f}".format(value)
+
+
 if __name__ == '__main__':
     # Build a sample db on the fly, if one does not exist yet.
     app_dir = os.path.realpath(os.path.dirname(__file__))

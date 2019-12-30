@@ -42,7 +42,46 @@
     </div>
     <!-- .container end -->
 </section>
-<!-- #page-title end -->
+{% if registry.fund %}
+<section id="interactive3" class="interactive interactive-2 interactive-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="heading heading-3 mb-100 text-center">
+                    <h2 class="heading--title">Honeymoon Fund</h2>
+                </div>
+            </div>
+            <!-- .col-lg-12 end -->
+        </div>
+        <!-- .row end -->
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="banner-panel">
+                    <div class="panel--content">
+                        <h5>{{ registry }}</h5>
+                        <h6>We are trying to raise {{ registry.fund.format_price(registry.fund.target_amount) }}</h6>
+                        <p>{{ registry.fund.message }}</p>
+                    </div>
+                    <div class="pt-50">
+                        <div class="progress-bg">
+                            <div class="progress-bar">
+                                <h3 class="raised">{{ registry.fund.format_price(registry.fund.target_amount) }} </h3>
+                            </div>
+                                <h3 class="goal">Goal: {{ registry.fund.format_price(registry.fund.amount_donated) }}</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12 pt-50 text-center">
+                <button type="submit" class="btn btn--primary btn--rounded" data-toggle="modal" data-target="#ModalLoginForm">Donate</button>
+            </div>
+            <!-- .interactive-panel end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+{% endif %}
 
 <!-- category
 ============================================= -->
@@ -114,7 +153,7 @@
                     <div class="category--img">
                         <img src="{{ url_for('static', filename=product.product.main_image) }}" alt="category" />
                         {% if loop.last %}
-                            <span class="featured-item featured-item3">ALREADY PURCHASED</span>
+                            <span class="featured-item featured-item3">PURCHASED ALREADY</span>
                         {% endif %}
                     </div>
                     <!-- .category-img end -->

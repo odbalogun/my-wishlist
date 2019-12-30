@@ -8,3 +8,16 @@
       {% endif %}
     </div>
 {% endmacro %}
+
+
+{% macro render_field_with_label(field) %}
+    <div class="form-group">
+        {{ field.label }}
+        {{ field(class_="form-control", **kwargs)|safe }}
+        {% if field.errors %}
+            {% for error in field.errors %}
+                {{ error }}
+            {% endfor %}
+      {% endif %}
+    </div>
+{% endmacro %}

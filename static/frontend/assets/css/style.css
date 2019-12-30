@@ -6530,7 +6530,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
 /*------------------------------------*\
         #Shop
 
-        
+
 \*------------------------------------*/
 /* category Item */
 .category-item {
@@ -6638,6 +6638,8 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
 .category-item .category--img {
   position: relative;
   margin-bottom: 17px;
+  width: 320px;
+  height: 420px;
 }
 .category-item .category--img img {
   max-width: 100%;
@@ -7388,7 +7390,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   }
 }
 /*------------------------------------*\
-    #CONTACT 
+    #CONTACT
 \*------------------------------------*/
 .contact-panel {
   position: relative;
@@ -12198,7 +12200,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   color: #000000;
 }
 .collection-item .collection--title h3 a:hover {
-  color: #606da6;
+  color: #691b56;
 }
 .collection-item .collection--title h3:hover:after {
   width: 100%;
@@ -12233,6 +12235,8 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
 
 .collection--img {
   position: relative;
+  width: 400px;
+  height: 300px;
 }
 .collection--img img {
   max-width: 100%;
@@ -12285,7 +12289,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   padding-bottom: 2px;
 }
 .btn--underlined:hover {
-  color: #606da6;
+  color: #691b56;
 }
 .btn--underlined:before, .btn--underlined:after {
   content: "";
@@ -12305,7 +12309,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   right: 0;
   left: auto;
   width: 0;
-  background-color: #606da6;
+  background-color: #691b56;
 }
 .btn--underlined:hover:after {
   width: 100%;
@@ -12372,7 +12376,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   color: #000000;
 }
 .collection-2 .collection--hover .collection--action {
-  background-color: rgba(96, 109, 166, 0.8);
+  background-color: rgba(143, 42, 124, 0.8);
 }
 .collection-2 .btn--underlined {
   color: #000000;
@@ -12381,16 +12385,16 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   background-color: #606da6;
 }
 .collection-2 .btn--underlined:hover {
-  color: #606da6;
+  color: #691b56;
 }
 .collection-2 .btn--underlined.btn--view {
   color: #606da6;
 }
 .collection-2 .collection-item .collection--title h3:after {
-  background-color: #606da6;
+  background-color: #691b56;
 }
 .collection-2 .collection-item .collection--title h3 a:hover {
-  color: #606da6;
+  color: #691b56;
 }
 .collection-2 .collection-item .collection--title:hover .btn--underlined {
   color: #606da6;
@@ -13252,7 +13256,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   }
 }
 /*------------------------------------*\
-    #instagram 
+    #instagram
 \*------------------------------------*/
 .instagram .heading .heading--icon {
   margin-bottom: 28px;
@@ -15533,7 +15537,7 @@ label.checkbox {
   -webkit-transition: 400ms 100ms ease-out;
   -o-transition: 400ms 100ms ease-out;
   transition: 400ms 100ms ease-out;
-  
+
   position: absolute;
   top: 1em;
   left: 1em;
@@ -15727,23 +15731,23 @@ input[type="checkbox"]:focus + label {
 	border-radius: 10px;
 	float: left;
 	width: 50%;
-	/* fallback */ 
-	background-color: #1c314a; 
-	
-	/* Safari 4-5, Chrome 1-9 */ 
-	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#691b56), to(#8f2a7c)); 
-	
-	/* Safari 5.1, Chrome 10+ */ 
-	background: -webkit-linear-gradient(top, #691b56, #8f2a7c); 
-	
-	/* Firefox 3.6+ */ 
-	background: -moz-linear-gradient(top, #691b56, #8f2a7c); 
-	
-	/* IE 10 */ 
-	background: -ms-linear-gradient(top, #691b56, #8f2a7c); 
-	
-	/* Opera 11.10+ */ 
-	background: -o-linear-gradient(top, #691b56, #8f2a7c);	
+	/* fallback */
+	background-color: #1c314a;
+
+	/* Safari 4-5, Chrome 1-9 */
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#691b56), to(#8f2a7c));
+
+	/* Safari 5.1, Chrome 10+ */
+	background: -webkit-linear-gradient(top, #691b56, #8f2a7c);
+
+	/* Firefox 3.6+ */
+	background: -moz-linear-gradient(top, #691b56, #8f2a7c);
+
+	/* IE 10 */
+	background: -ms-linear-gradient(top, #691b56, #8f2a7c);
+
+	/* Opera 11.10+ */
+	background: -o-linear-gradient(top, #691b56, #8f2a7c);
 }
 
 .progress-bg h3.goal, .progress-bg h3.raised {

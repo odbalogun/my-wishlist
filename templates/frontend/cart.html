@@ -1,4 +1,5 @@
 {% extends 'frontend/_layout.html' %}
+{% from "frontend/_formhelpers.html" import render_field %}
 
 {% block main %}
 
@@ -44,20 +45,20 @@
                                 <th class="cart-product-item">REGISTRY</th>
                                 <th class="cart-product-price">UNIT PRICE</th>
                                 <th class="cart-product-quantity">Quantity</th>
-                                <th class="cart-product-total">Total</th>
+                                <th class="cart-product-total">Total Price</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for product in products %}
+                            {% for key, product in products.items() %}
                                 <!-- cart product #1 -->
                                 <tr class="cart-product">
                                     <td class="cart-product-item">
                                         <div class="cart-product-img">
-                                            <img src="{{ url_for('static', filename=product.product) }}" alt="product" />
+                                            <img height="50px" src="{{ url_for('static', filename=product['product']['image']) }}" alt="product" />
                                         </div>
                                         <div class="cart-product-content">
                                             <div class="cart-product-name">
-                                                <h6>{{ product.product }}</h6>
+                                                <h6>{{ product['product']['name'] }}</h6>
                                             </div>
                                             <!--
                                             <ul class="list-unstyled mb-0">
@@ -67,18 +68,18 @@
                                             -->
                                         </div>
                                     </td>
-                                    <td class="cart-product-item">{{ product.registry }}</td>
-                                    <td class="cart-product-price">{{ product.product.display_price }}</td>
+                                    <td class="cart-product-item">{{ product['registry']['name'] }}</td>
+                                    <td class="cart-product-price">{{ product['unit_price'] | format_money }}</td>
                                     <td class="cart-product-quantity">
                                         <div class="product-quantity">
                                             <input class="minus" type="button" value="-">
-                                            <input type="text" id="pro1-qunt"  value="{{ session['cart_item'] }}" class="qty" readonly="">
+                                            <input type="text" id="pro1-qunt"  value="{{ product['quantity'] }}" class="qty" readonly="">
                                             <input class="plus" type="button" value="+">
                                         </div>
                                     </td>
                                     <td class="cart-product-total">
-                                        <span>{{ product.product.display_total_price(1) }}</span>
-                                        <div class="cart-product-remove"><a href="{{ url_for('.delete_product', product_id=product.id) }}">x</a></div>
+                                        <span>{{ product['total_price'] | format_money }}</span>
+                                        <div class="cart-product-remove"><a href="{{ url_for('.delete_product', product_id=key) }}">x</a></div>
                                     </td>
                                 </tr>
                                 <!-- .cart-product end -->
@@ -107,8 +108,9 @@
                             <div class="col-sm-12 col-md-12 col-lg-6">
                                 <h3>Coupon discount</h3>
                                 <p>Enter your code if you have one. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
-                                <form class="form-inline">
-                                    <input type="text" class="form-control" id="coupon" placeholder="Enter your code here">
+                                <form action="{{ url_for('.add_cart_discount') }}" method="post" class="form-inline">
+                                    {{ discount_form.csrf_token }}
+                                    {{ render_field(discount_form.code) }}
                                     <button type="submit" class="btn btn--secondary  btn--rounded">Apply Coupon</button>
                                 </form>
                             </div>
@@ -118,15 +120,27 @@
                                     <h4>Cart total</h4>
                                     <hr>
                                     <div class="sub--total">
-                                        <h5>SUB TOTAL</h5>
-                                        <span>$48.00</span>
+                                        <h5>SUB-TOTAL</h5>
+                                        <span>{{ session['all_total_price'] | format_money }}</span>
                                     </div>
+                                    {% if session['discount_amount'] %}
+                                        <div class="sub--total">
+                                            <h5>DISCOUNT</h5>
+                                            <span>{{ session['discount_amount'] | format_money }}</span>
+                                        </div>
+                                    {% endif %}
                                     <div class="total">
                                         <h6>GRAND TOTAL</h6>
-                                        <span>$48.00</span>
+                                        <span>
+                                            {% if session['discount_amount'] %}
+                                                {{ session['discounted_price'] | format_money }}
+                                            {% else %}
+                                                {{ session['all_total_price'] | format_money }}
+                                            {% endif %}
+                                        </span>
                                     </div>
-                                    <p>Checkout with Mutilple Adresses</p>
-                                    <a class="btn btn--primary btn--rounded btn--block" href="#">PROCEED TO CHECKOUT</a>
+                                    <!--    <p>Checkout with Mutilple Adresses</p>-->
+                                    <a class="btn btn--primary btn--rounded btn--block" href="{{ url_for('.checkout') }}">PROCEED TO CHECKOUT</a>
                                 </div><!-- .checkout-panel end -->
                             </div>
                             <!-- .col-lg-6 end -->

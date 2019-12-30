@@ -1,12 +1,13 @@
 from flask import redirect, render_template, url_for, Blueprint, flash, request, abort, session
-from forms import RegistrationForm, LoginForm, VerificationForm, RegistryForm, RegistryProductForm
+from forms import RegistrationForm, LoginForm, VerificationForm, RegistryForm, RegistryProductForm, AddCartDiscount, OrderForm
 from decorators import custom_login_required
 from models import db, User, Registry, Product, Article, Tag, RegistryProducts, Category, HoneymoonFund, \
-    RegistryDeliveryAddress
+    RegistryDeliveryAddress, Discount, Order, OrderItem
 from flask_security.utils import hash_password, logout_user, login_user, verify_password
 from flask_security import current_user
 from utils import generate_full_file_path, generate_folder_name
 from werkzeug.utils import secure_filename
+from payment import PaystackPay
 import os
 
 frontend = Blueprint('frontend', __name__, url_prefix='/')
@@ -156,7 +157,7 @@ def manage_products(slug):
         form = RegistryProductForm(request.form, obj=registry.delivery)
     else:
         form = RegistryProductForm(request.form, data={'name': current_user.full_name,
-                                                               'phone_number': current_user.phone_number})
+                                                       'phone_number': current_user.phone_number})
     form.products.choices = [(x.id, x.name) for x in products]
     categories = Category.query.all()
 
@@ -296,8 +297,8 @@ def blog_article(slug):
 
 @frontend.route('/registries', methods=['GET'])
 def registries():
-    registries = Registry.query.filter_by(is_active=True).all()
-    return render_template('frontend/registries.html', registries=registries)
+    reg_list = Registry.query.filter_by(is_active=True).all()
+    return render_template('frontend/registries.html', registries=reg_list)
 
 
 @frontend.route('/registries/<slug>', methods=['GET', 'POST'])
@@ -345,7 +346,8 @@ def handle_401(e):
 
 @frontend.app_errorhandler(500)
 def handle_500(e):
-    return render_template('frontend/error.html', code=500, message="There has been an error. Please contact an administrator")
+    return render_template('frontend/error.html', code=500,
+                           message="There has been an error. Please contact an administrator")
 
 
 @frontend.route('/cart', methods=['GET'])
@@ -353,8 +355,69 @@ def cart():
     if 'cart_item' not in session:
         flash("There are no items in your cart yet", "error")
         return redirect(url_for('.registries'))
-    products = RegistryProducts.query.filter(RegistryProducts.id.in_(session['cart_item'].keys()))
-    return render_template('frontend/cart.html', products=products)
+
+    discount_form = AddCartDiscount()
+    products = session['cart_item']
+    return render_template('frontend/cart.html', products=products, discount_form=discount_form)
+
+
+@frontend.route('/checkout', methods=['GET', 'POST'])
+def checkout():
+    form = OrderForm(request.form)
+    if request.method == 'POST' and form.validate():
+        order = Order()
+        form.populate_obj(order)
+        order.total_amount = session['all_total_price']
+        order.save()
+        order.generate_order_number()
+        if 'discount_id' in session:
+            order.discount_id = session['discount_id']
+            order.discounted_amount = session['discount_amount']
+        order.save()
+
+        # save order items
+        for key, product in session['cart_item'].items():
+            item = OrderItem(order_id=order.id, registry_id=product['registry']['id'], reg_product_id=key,
+                             quantity=product['quantity'], unit_price=product['unit_price'],
+                             total_price=product['total_price'])
+            item.save()
+
+        # initialize payments
+        paystack = PaystackPay()
+        amount = order.discounted_amount if order.discounted_amount else order.total_amount
+        response = paystack.fetch_authorization_url(email=order.email, amount=amount)
+
+        if response.status_code == 200:
+            json_response = response.json()
+            # try to pay
+            return redirect(json_response['data']['authorization_url'])
+
+    products = session['cart_item']
+    return render_template('frontend/checkout.html', form=form, products=products)
+
+
+@frontend.route('/add-cart-discount', methods=['POST'])
+def add_cart_discount():
+    discount_form = AddCartDiscount(request.form)
+
+    if request.method == 'POST' and discount_form.validate():
+        discount = Discount.query.filter_by(code=discount_form.code.data).first()
+
+        if discount:
+            if discount.is_active:
+                # calculate discount
+                discount_amount = discount.get_discount_amount(session['all_total_price'])
+                session.modified = True
+                # update cart
+                session['discount_amount'] = discount_amount
+                session['discounted_price'] = session['all_total_price'] - discount_amount
+                session['discount_id'] = discount.id
+                flash("Your discount has been successfully applied", 'success')
+            else:
+                flash("The discount code you entered has expired", 'error')
+        else:
+            flash("Invalid discount code provided", 'error')
+    return redirect(url_for('.cart'))
 
 
 @frontend.route('/cart/add-product/<product_id>', methods=['GET'])
@@ -380,12 +443,18 @@ def add_product_to_cart(product_id):
                     old_quantity = session['cart_item'][key]['quantity']
                     total_quantity = old_quantity + _quantity
                     session['cart_item'][key]['quantity'] = total_quantity
+                    session['cart_item'][key]['unit_price'] = product.product.price
                     session['cart_item'][key]['total_price'] = total_quantity * product.product.price
+                    session['cart_item'][key]['product'] = product.product.to_json
+                    session['cart_item'][key]['registry'] = product.registry.to_json
         else:
-            session['cart_item'][product_id] = {'quantity': _quantity,
+            session['cart_item'][product_id] = {'quantity': _quantity, 'unit_price': product.product.price,
+                                                'product': product.product.to_json, 'registry': product.registry.to_json,
                                                 'total_price': _quantity * product.product.price}
     else:
-        session['cart_item'] = {product_id: {'quantity': _quantity, 'total_price': _quantity * product.product.price}}
+        session['cart_item'] = {product_id: {'quantity': _quantity, 'unit_price': product.product.price,
+                                              'product': product.product.to_json, 'registry': product.registry.to_json,
+                                              'total_price': _quantity * product.product.price}}
 
     for key, value in session['cart_item'].items():
         individual_quantity = int(session['cart_item'][key]['quantity'])
@@ -433,7 +502,7 @@ def delete_product(product_id):
             session['all_total_quantity'] = all_total_quantity
             session['all_total_price'] = all_total_price
 
-        # return redirect('/')
+        flash("Your cart has been updated", 'success')
         return redirect(url_for('.cart'))
     except Exception as e:
         print(e)

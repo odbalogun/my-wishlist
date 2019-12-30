@@ -1,0 +1,130 @@
+{% extends 'frontend/_layout.html' %}
+{% from "frontend/_formhelpers.html" import render_field_with_label %}
+
+{% block main %}
+<!-- Page Title #1
+============================================= -->
+<section id="page-title" class="page-title mt-0">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="title title-1 text-center">
+                    <div class="title--content">
+                        <div class="title--heading">
+                            <h1>checkout</h1>
+                        </div>
+                    </div>
+                </div>
+                <!-- .title end -->
+            </div>
+            <!-- .col-lg-12 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #page-title end -->
+
+<!-- checkout
+============================================= -->
+<form action="" method="post">
+{{ form.csrf_token }}
+<section id="checkout" class="shop shop-cart checkout pt-30">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <div class="cart-shiping">
+                    <div class="cart--shiping-text">
+                        <!--
+                        <p>Returning customer ? <a href="#">Click here to login</a></p>
+                        <p>Have a Coupon ? <a href="#">Click here to enter your code</a></p>
+                        -->
+                        <h3>Billing detail</h3>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            {{ render_field_with_label(form.first_name) }}
+                        </div>
+                        <!-- .col-lg-6 end -->
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            {{ render_field_with_label(form.last_name) }}
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            {{ render_field_with_label(form.email) }}
+                        </div>
+                        <!-- .col-lg-6 end -->
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            {{ render_field_with_label(form.phone_number) }}
+                        </div>
+                        <!-- .col-lg-6 end -->
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            {{ render_field_with_label(form.message) }}
+                        </div>
+                        <!-- .col-lg-12 end -->
+                    </div><!-- .row end -->
+                </div>
+                <!-- .cart-shiping end -->
+            </div>
+            <!-- .col-lg-6 end -->
+            <div class="col-sm-12 col-md-6 col-lg-5 offset-lg-1">
+                <div class="cart-total-amount">
+                    <h4>Your order</h4>
+                    <div class="cart--products">
+                        <h6>Products</h6>
+                        <div class="clearfix"></div>
+                        <ul class="list-unstyled">
+                            {% for key, product in products.items() %}
+                                <li>{{ product['product']['name'] }}<span class="price">{{ product['total_price'] | format_money }}</span></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="cart--subtotal">
+                        <h6>Subtotal</h6>
+                        <span class="price">{{ session['all_total_price'] | format_money }}</span>
+                    </div>
+                    {% if session['discount_amount'] %}
+                        <div class="cart--shipping">
+                            <h6>Discount</h6>
+                            <span class="price">{{ session['discount_amount'] | format_money }}</span>
+                        </div>
+                    {% endif %}
+                    <div class="cart--total">
+                        <div class="clearfix">
+                            <h6>Total</h6>
+                            <span class="price">
+                                {% if session['discount_amount'] %}
+                                    {{ session['discounted_price'] | format_money }}
+                                {% else %}
+                                    {{ session['all_total_price'] | format_money }}
+                                {% endif %}
+                            </span>
+                        </div>
+                        <fieldset class="mb-30">
+                            <div class="input-radio">
+                                <label class="label-radio">PayStack
+                                    <span class="currency--icons">
+                                        <i class="fa fa-cc-mastercard"></i>
+                                        <i class="fa fa-cc-visa"></i>
+                                        <i class="fa fa-paypal"></i>
+                                        <i class="fa fa-cc-discover"></i>
+                                    </span>
+                                    <input type="radio" name="methodSelect" checked>
+                                    <span class="radio-indicator"></span>
+                                </label>
+                            </div><!-- .input-radio end -->
+                        </fieldset>
+                        <!--<a href="#" class="btn btn--primary btn--rounded btn--block">PLACE ORDER</a>-->
+                        <button type="submit" class="btn btn--primary btn--block btn--rounded">Place Order</button>
+                    </div>
+                </div>
+                <!-- .cart-total-amount end -->
+            </div>
+            <!-- .col-lg-5 end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #checkout end -->
+</form>
+{% endblock %}
