@@ -183,6 +183,7 @@
         {% block main_menu %}
         {{ layout.menu() }}
         {% endblock %}
+        <li><a href="{{ url_for('security.logout') }}"><i class="fa fa-sign-out"></i>Logout</a></li>
         <!--
         <li>
           <a href="#">

@@ -1,4 +1,5 @@
 import requests
+from flask import request
 
 
 class PaystackPay(object):
@@ -11,7 +12,12 @@ class PaystackPay(object):
         self.bvn_verification_url = 'https://api.paystack.co/bank/resolve_bvn/{}'
 
     def fetch_authorization_url(self, email, amount):
-        response = requests.post(self.authorization_url, json={'email': email, 'amount': int(amount*100)},
+        payload = {
+            'email': email,
+            'amount': int(amount * 100),
+            'callback_url': f'{request.url_root}/cart/verify-payment'
+        }
+        response = requests.post(self.authorization_url, json=payload,
                                  headers={'Authorization': 'Bearer sk_test_3f33d1a7e198c4ca0af6b19b90f9c26e0c79ddbe'})
         return response
 

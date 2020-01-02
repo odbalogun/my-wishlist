@@ -1,4 +1,4 @@
-from flask import redirect, render_template, url_for, Blueprint, flash, request, abort, session
+from flask import redirect, render_template, url_for, Blueprint, flash, request, abort, session, jsonify
 from forms import RegistrationForm, LoginForm, VerificationForm, RegistryForm, RegistryProductForm, AddCartDiscount, OrderForm
 from decorators import custom_login_required
 from models import db, User, Registry, Product, Article, Tag, RegistryProducts, Category, HoneymoonFund, \
@@ -9,6 +9,7 @@ from utils import generate_full_file_path, generate_folder_name
 from werkzeug.utils import secure_filename
 from payment import PaystackPay
 import os
+import datetime
 
 frontend = Blueprint('frontend', __name__, url_prefix='/')
 ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -369,6 +370,7 @@ def checkout():
         form.populate_obj(order)
         order.total_amount = session['all_total_price']
         order.save()
+
         order.generate_order_number()
         if 'discount_id' in session:
             order.discount_id = session['discount_id']
@@ -389,11 +391,71 @@ def checkout():
 
         if response.status_code == 200:
             json_response = response.json()
-            # try to pay
+
+            order.update(payment_txn_number=json_response['data']['reference'])
             return redirect(json_response['data']['authorization_url'])
 
     products = session['cart_item']
     return render_template('frontend/checkout.html', form=form, products=products)
+
+
+@frontend.route('/cart/verify-payment', methods=['GET', 'POST'])
+def verify_payment():
+    reference = request.args.get('reference')
+
+    if not reference:
+        flash('Payment failed. Please try again', 'error')
+        return redirect(url_for('.registries'))
+
+    # get order
+    order = Order.query.filter_by(payment_txn_number=reference).first()
+
+    if not order:
+        flash('Something went wrong. Please contact an administrator', 'error')
+        return redirect(url_for('.registries'))
+
+    if order.payment_status == 'paid':
+        flash('Payment successful', 'success')
+        return redirect(url_for('.registries'))
+
+    paystack = PaystackPay()
+    response = paystack.verify_reference_transaction(reference)
+
+    if response.status_code == 200:
+        order.update(payment_status='paid', date_paid=datetime.datetime.now())
+        # todo send emails to admin, customer, and purchaser
+        flash('Your purchase has been completed', 'success')
+    else:
+        flash('The transaction could not be completed. Please try again', 'error')
+    return redirect(url_for('.registries'))
+
+
+@frontend.route('/cart/verify-payment-webhook', methods=['GET', 'POST'])
+def verify_payment_webhook():
+    reference = request.args.get('reference')
+
+    if not reference:
+        return jsonify({'error': 'No reference provided'}), 400
+
+    # get order
+    order = Order.query.filter_by(payment_txn_number=reference).first()
+
+    if not order:
+        return jsonify({'error': 'Reference code not found'}), 404
+
+    if order.payment_status == 'paid':
+        return jsonify({'message': "Success"}), 200
+
+    paystack = PaystackPay()
+    response = paystack.verify_reference_transaction(reference)
+
+    if response.status_code == 200:
+        order.update(payment_status='paid', date_paid=datetime.datetime.now())
+
+        # todo send emails to admin, customer, and purchaser
+        return jsonify({'message': "Your purchase has been completed"}), 200
+    else:
+        return jsonify({'error': "The transaction could not be verified"}), 400
 
 
 @frontend.route('/add-cart-discount', methods=['POST'])

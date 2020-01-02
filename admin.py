@@ -6,7 +6,7 @@ from flask_admin.model import typefmt
 from flask_security import current_user, logout_user
 from flask import redirect, request, url_for, flash
 from app import db
-from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage, Registry, HoneymoonFund
+from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage, Registry, HoneymoonFund, Order
 from slugify import UniqueSlugify, Slugify
 from wtforms import TextAreaField, FileField, FloatField
 from flask_admin.actions import action
@@ -14,11 +14,13 @@ from flask_ckeditor import CKEditorField
 from forms import DiscountForm, ArticleForm
 from utils import get_file_path, date_format, generate_folder_name, get_relative_file_path
 from flask_admin.model.form import InlineFormAdmin
+from flask_admin.model import typefmt
 
 
 MY_DEFAULT_FORMATTERS = dict(typefmt.BASE_FORMATTERS)
 MY_DEFAULT_FORMATTERS.update({
-    date: date_format
+    date: date_format,
+    type(None): typefmt.null_formatter,
 })
 
 
@@ -61,6 +63,34 @@ class UserView(MyModelView):
     column_exclude_list = ['password']
     column_details_exclude_list = column_exclude_list
     column_filters = column_editable_list
+
+    def get_query(self):
+        return super(UserView, self).get_query().filter(User.roles.any(Role.name == 'basic'))
+
+    def get_count_query(self):
+        return super(UserView, self).get_count_query().filter(User.roles.any(Role.name == 'basic'))
+
+    def get_one(self, id):
+        query = self.get_query()
+        return query.filter(self.model.id == id).filter(User.roles.any(Role.name == 'basic')).one()
+
+
+class AdminView(MyModelView):
+    column_editable_list = ['email', 'first_name', 'last_name']
+    column_searchable_list = column_editable_list
+    column_exclude_list = ['password']
+    column_details_exclude_list = column_exclude_list
+    column_filters = column_editable_list
+
+    def get_query(self):
+        return super(AdminView, self).get_query().filter(User.roles.any(Role.name == 'superuser'))
+
+    def get_count_query(self):
+        return super(AdminView, self).get_count_query().filter(User.roles.any(Role.name == 'superuser'))
+
+    def get_one(self, id):
+        query = self.get_query()
+        return query.filter(self.model.id == id).filter(User.roles.any(Role.name == 'superuser')).one()
 
 
 class CustomView(MyModelView):
@@ -275,10 +305,12 @@ class RegistryView(MyModelView):
     column_list = ['name', 'url', 'target_amount', 'amount_attained', 'is_active', 'created_by', 'date_created', 'admin_created_by']
     form_excluded_columns = ['slug', 'admin_created_by', 'date_created', 'registry_products']
     form_columns = ['created_by', 'name', 'description', 'image', 'products']
-    column_labels = {'admin_created_by': 'Created by Admin', 'created_by': 'Owner', 'fund.target_amount': 'Target Amount', 'fund.message': 'Honeymoon Fund'}
+    column_labels = {'admin_created_by': 'Created by Admin', 'created_by': 'Owner',
+                     'fund.target_amount': 'Target Amount', 'fund.message': 'Honeymoon Fund'}
     column_details_list = ['created_by', 'name', 'slug', 'description', 'image', 'products', 'fund.target_amount',
                            'fund.message', 'admin_created_by', 'date_created']
     relative_file_path = get_relative_file_path('registries', generate_folder_name())
+    column_searchable_list = ['name']
     form_extra_fields = {
         'image': form.ImageUploadField('Background Image', allowed_extensions=['jpg', 'jpeg', 'png'], base_path=get_file_path(),
                                        relative_path=relative_file_path)
@@ -316,6 +348,16 @@ class RegistryView(MyModelView):
             flash(f'Failed to process request. {str(ex)}', 'error')
 
 
+class OrderView(MyModelView):
+    column_list = ['order_number', 'full_name', 'total_amount', 'discount', 'get_amount_paid', 'payment_status',
+                   'payment_txn_number', 'status', 'date_created']
+    column_labels = {'order_number': "Order No.", 'get_amount_paid': "Amount Due", 'first_name': "First Name",
+                     'last_name': "Last Name"}
+    column_searchable_list = ['order_number', 'first_name', 'last_name']
+    can_create = False
+    can_edit = False
+
+
 # Create admin
 admin = flask_admin.Admin(
     name='My Dashboard',
@@ -335,5 +377,8 @@ admin.add_view(ProductCategoryView(Category, db.session, menu_icon_type='fa', me
 admin.add_view(ProductView(Product, db.session, menu_icon_type='fa', menu_icon_value='fa-shopping-basket',
                            name='Products'))
 admin.add_view(UserView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-users', name="Users"))
+admin.add_view(AdminView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-user', name="Administrators",
+                         endpoint='administrator'))
 admin.add_view(RegistryView(Registry, db.session, menu_icon_type='fa', menu_icon_value='fa-file', name='Registries'))
+admin.add_view(OrderView(Order, db.session, menu_icon_type='fa', menu_icon_value='fa-first-order', name='Orders'))
 

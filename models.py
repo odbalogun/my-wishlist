@@ -14,7 +14,18 @@ from sqlalchemy.orm import backref
 import random
 import uuid
 from slugify import Slugify
+from sqlalchemy_utils.types.choice import ChoiceType
 
+
+PAYMENT_STATUS = [
+        (u'unpaid', u'Unpaid'),
+        (u'paid', u'Paid')
+    ]
+
+STATUS = [
+    (u'pending', u'Pending'),
+    (u'fulfilled', u'Fulfilled')
+]
 
 # Define models
 roles_users = db.Table(
@@ -355,17 +366,29 @@ class Order(SurrogatePK, Model):
     phone_number = db.Column(db.String(50), nullable=True)
     email = db.Column(db.String(255))
     message = Column(db.Text, nullable=True)
-    payment_status = Column(db.String(50), default="unpaid")
-    status = Column(db.String(50), default="pending")
+    # payment_status = Column(db.String(50), default="unpaid")
+    payment_status = Column(ChoiceType(PAYMENT_STATUS, impl=db.String(50)))
+    # status = Column(db.String(50), default="pending")
+    status = Column(ChoiceType(STATUS, impl=db.String(50)))
     total_amount = Column(db.Float, nullable=False)
     discounted_amount = Column(db.Float, nullable=True)
     discount_id = reference_col("discounts", nullable=True)
     date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    date_paid = Column(db.DateTime, nullable=True)
+    payment_txn_number = Column(db.String(255), nullable=True)
 
     discount = relationship("Discount")
 
     def generate_order_number(self):
         self.order_number = f"ORD{dt.date.today().strftime('%Y%m%d')}00000{self.id}"
+
+    @property
+    def get_amount_paid(self):
+        return self.discounted_amount if self.discounted_amount else self.total_amount
+
+    @property
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
 
 
 class OrderItem(SurrogatePK, Model):
