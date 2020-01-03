@@ -1,5 +1,6 @@
 import os
 from datetime import date
+import random
 
 
 def get_file_path():
@@ -33,3 +34,7 @@ def date_format(view, value):
 
 def generate_folder_name():
     return date.today().strftime('%Y%m%d')
+
+
+def generate_random_string(length=6):
+    pass

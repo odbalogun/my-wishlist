@@ -52,8 +52,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
     verification_code = db.Column(db.String(50), nullable=True)
-    active = db.Column(db.Boolean())
-    has_verified_account = db.Column(db.Boolean())
+    active = db.Column(db.Boolean(), default=False)
+    has_verified_account = db.Column(db.Boolean(), default=False)
     confirmed_at = db.Column(db.DateTime())
     roles = db.relationship('Role', secondary=roles_users,
                             backref=db.backref('users', lazy='dynamic'))

@@ -18,6 +18,7 @@ ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
 
+
 @frontend.route('/')
 def index():
     return render_template('frontend/index.html')
@@ -40,6 +41,7 @@ def login():
                 else:
                     if not user.has_verified_account:
                         flash('Please verify your account to proceed', 'error')
+                        return redirect(url_for('.verify'))
                     else:
                         flash('Your account is inactive. Please contact an administrator', 'error')
             else:

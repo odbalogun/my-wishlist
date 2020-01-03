@@ -4,6 +4,7 @@ from flask_admin.contrib import sqla
 from flask_admin import BaseView, expose, form
 from flask_admin.model import typefmt
 from flask_security import current_user, logout_user
+from flask_security.utils import hash_password
 from flask import redirect, request, url_for, flash
 from app import db
 from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage, Registry, HoneymoonFund, Order
@@ -12,7 +13,7 @@ from wtforms import TextAreaField, FileField, FloatField
 from flask_admin.actions import action
 from flask_ckeditor import CKEditorField
 from forms import DiscountForm, ArticleForm
-from utils import get_file_path, date_format, generate_folder_name, get_relative_file_path
+from utils import get_file_path, date_format, generate_folder_name, get_relative_file_path, generate_random_string
 from flask_admin.model.form import InlineFormAdmin
 from flask_admin.model import typefmt
 
@@ -61,6 +62,7 @@ class UserView(MyModelView):
     column_editable_list = ['email', 'first_name', 'last_name']
     column_searchable_list = column_editable_list
     column_exclude_list = ['password']
+    form_columns = ['first_name', 'last_name', 'email', 'phone_number']
     column_details_exclude_list = column_exclude_list
     column_filters = column_editable_list
 
@@ -73,6 +75,18 @@ class UserView(MyModelView):
     def get_one(self, id):
         query = self.get_query()
         return query.filter(self.model.id == id).filter(User.roles.any(Role.name == 'basic')).one()
+
+    def after_model_change(self, form, model, is_created):
+        if is_created:
+            model.roles.append(Role.query.filter_by(name='basic').first())
+            _password = generate_random_string()
+            model.password = hash_password(_password)
+            model.active = False
+            model.generate_verification_code()
+            # todo send creation email
+            # todo send verification email
+            db.session.add(model)
+            db.session.commit()
 
 
 class AdminView(MyModelView):
@@ -91,6 +105,18 @@ class AdminView(MyModelView):
     def get_one(self, id):
         query = self.get_query()
         return query.filter(self.model.id == id).filter(User.roles.any(Role.name == 'superuser')).one()
+
+    def after_model_change(self, form, model, is_created):
+        if is_created:
+            model.roles.append(Role.query.filter_by(name='superuser').first())
+            _password = generate_random_string()
+            model.password = hash_password(_password)
+            model.generate_verification_code()
+            model.active = True
+            model.has_verified_account = True
+            # todo send creation email
+            db.session.add(model)
+            db.session.commit()
 
 
 class CustomView(MyModelView):
