@@ -93,6 +93,7 @@ class AdminView(MyModelView):
     column_editable_list = ['email', 'first_name', 'last_name']
     column_searchable_list = column_editable_list
     column_exclude_list = ['password']
+    form_columns = ['first_name', 'last_name', 'email', 'phone_number']
     column_details_exclude_list = column_exclude_list
     column_filters = column_editable_list
 
