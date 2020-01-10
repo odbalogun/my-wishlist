@@ -392,7 +392,7 @@ def handle_500(e):
 @frontend.route('/cart', methods=['GET'])
 def cart():
     if 'cart_item' not in session:
-        flash("There are no items in your cart yet", "error")
+        flash("There are no items in your cart", "error")
         return redirect(url_for('.registries'))
 
     discount_form = AddCartDiscount()

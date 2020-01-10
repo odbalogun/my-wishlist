@@ -41,9 +41,6 @@
                     <li>
                         <a href="{{ url_for('.blog') }}" class="link-hover">Blog</a>
                     </li>
-                    {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('.dashboard') }}" class="menu-item">Dashboard</a> </li>
-                    {%  endif %}
                 </ul>
 
                 <div class="module-container">
@@ -75,7 +72,17 @@
                     <div class="module pull-left">
                         <ul class="navbar-nav mr-auto">
                             {% if current_user.is_authenticated %}
-                                <li><a href="{{ url_for('.logout')  }}">Logout</a></li>
+                                <li class="has-dropdown">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle menu-item">{{ current_user.first_name }} <span class="fa fa-chevron-right"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a href="{{ url_for('.dashboard') }}">Dashboard</a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ url_for('.logout') }}">Log out</a>
+                                        </li>
+                                    </ul>
+                                </li>
                             {%  else %}
                                 <li><a href="{{ url_for('.login')  }}">Login</a></li>
                             {% endif %}
@@ -88,28 +95,21 @@
                             <span class="title">shop cart</span>
                             <label class="module-label">{{ session['all_total_quantity'] }}</label>
                         </div>
-                        <!--
+                        {% if session['cart_item'] %}
                         <div class="module-content module-box cart-box">
                             <div class="cart-overview">
                                 <ul class="list-unstyled">
+                                    {% for key, value in session['cart_item'].items() %}
                                     <li>
-                                        <img class="img-fluid" src="assets/images/products/thumb/1.jpg" alt="product" />
+                                        <img class="img-fluid" src="{{ url_for('static', filename=value['product']['image']) }}" alt="product" />
                                         <div class="product-meta">
-                                            <h5 class="product-title">Hebes Great Chair</h5>
-                                            <p class="product-qunt">Quantity:  01</p>
-                                            <p class="product-price">$24.00</p>
+                                            <h5 class="product-title">{{ value['product']['name'] }}</h5>
+                                            <p class="product-qunt">Quantity: {{ value['quantity'] }}</p>
+                                            <p class="product-price">{{ value['total_price'] | format_money }}</p>
                                         </div>
-                                        <a class="cart-cancel" href="#"><i class="lnr lnr-cross"></i></a>
+                                        <a class="cart-cancel" href="{{ url_for('.delete_product', product_id=key) }}"><i class="lnr lnr-cross"></i></a>
                                     </li>
-                                    <li>
-                                        <img class="img-fluid" src="assets/images/products/thumb/2.jpg" alt="product" />
-                                        <div class="product-meta">
-                                            <h5 class="product-title">Hebes Great Chair</h5>
-                                            <p class="product-qunt">Quantity:  01</p>
-                                            <p class="product-price">$24.00</p>
-                                        </div>
-                                        <a class="cart-cancel" href="#"><i class="lnr lnr-cross"></i></a>
-                                    </li>
+                                    {% endfor %}
                                 </ul>
                             </div>
                             <div class="cart-total">
@@ -117,17 +117,17 @@
                                     Sub total
                                 </div>
                                 <div class="total-price">
-                                    $48.00
+                                    {{ session['all_total_price'] | format_money }}
                                 </div>
                             </div>
                             <div class="clearfix">
                             </div>
                             <div class="cart--control">
-                                <a class="btn btn--white btn--bordered btn--rounded" href="#">view cart </a>
-                                <a class="btn btn--primary btn--rounded" href="#">Checkout</a>
+                                <a class="btn btn--white btn--bordered btn--rounded" href="{{ url_for('.cart') }}">view cart </a>
+                                <a class="btn btn--primary btn--rounded" href="{{ url_for('.checkout') }}">Checkout</a>
                             </div>
                         </div>
-                        -->
+                        {% endif %}
                     </div><!-- .module-cart end -->
                 </div>
 

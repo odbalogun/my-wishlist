@@ -2,16 +2,14 @@ import flask_admin
 from datetime import date
 from flask_admin.contrib import sqla
 from flask_admin import BaseView, expose, form
-from flask_admin.model import typefmt
 from flask_security import current_user, logout_user
 from flask_security.utils import hash_password
-from flask import redirect, request, url_for, flash
+from flask import redirect, request, url_for, flash, Markup
 from app import db
 from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage, Registry, HoneymoonFund, Order, Newsletter
 from slugify import UniqueSlugify, Slugify
 from wtforms import TextAreaField, FileField, FloatField
 from flask_admin.actions import action
-from flask_ckeditor import CKEditorField
 from forms import DiscountForm, ArticleForm
 from utils import get_file_path, date_format, generate_folder_name, get_relative_file_path, generate_random_string
 from flask_admin.model.form import InlineFormAdmin
@@ -23,6 +21,14 @@ MY_DEFAULT_FORMATTERS.update({
     date: date_format,
     type(None): typefmt.null_formatter,
 })
+
+
+def strip_html_tags(view, context, model, name):
+    text = getattr(model, name, None)
+
+    if text:
+        return Markup(text).striptags()
+    return ''
 
 
 # Create customized model view class
@@ -56,8 +62,8 @@ class MyModelView(sqla.ModelView):
     can_export = True
     can_view_details = True
     details_modal = True
-    edit_template = "admin/ckeditor_edit.html"
-    create_template = "admin/ckeditor_create.html"
+    edit_modal_template = "admin/ckeditor_edit.html"
+    create_modal_template = "admin/ckeditor_create.html"
 
 
 class UserView(MyModelView):
@@ -160,6 +166,10 @@ class ArticleView(MyModelView):
             'class': 'flat-red'
         },
     }
+    column_formatters = {
+        'summary': strip_html_tags,
+        'content': strip_html_tags,
+    }
     folder_name = generate_folder_name()
     relative_file_path = get_relative_file_path('articles', folder_name)
 
@@ -168,11 +178,6 @@ class ArticleView(MyModelView):
     form_extra_fields = {
         'image': form.ImageUploadField('Image', allowed_extensions=['jpg', 'jpeg', 'png'], base_path=get_file_path(),
                                        relative_path=relative_file_path)}
-
-    # edit_template = "admin/ckeditor_edit.html"
-    # create_template = "admin/ckeditor_create.html"
-    #edit_modal = False
-    #create_modal = False
 
     def on_model_change(self, form, model, is_created):
         if is_created:
@@ -295,6 +300,9 @@ class ProductView(MyModelView):
             'class': "form-control textarea"
         },
     }
+    column_formatters = {
+        'description': strip_html_tags
+    }
 
     def on_model_change(self, form, model, is_created):
         if is_created:
@@ -352,7 +360,7 @@ class RegistryView(MyModelView):
         },
         'description': {
             'rows': 15,
-            'class': "form-control textarea"
+            # 'class': "form-control textarea"
         },
     }
     column_searchable_list = ['name']
