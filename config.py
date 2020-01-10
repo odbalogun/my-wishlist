@@ -3,7 +3,7 @@ SECRET_KEY = '123456790'
 
 # Create in-memory database
 SQLALCHEMY_DATABASE_URI = 'mysql://root:root@localhost/registry'
-SQLALCHEMY_ECHO = True
+SQLALCHEMY_ECHO = False
 
 # Flask-Security config
 SECURITY_URL_PREFIX = "/admin"

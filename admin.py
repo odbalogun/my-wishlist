@@ -425,11 +425,10 @@ admin.add_view(ProductCategoryView(Category, db.session, menu_icon_type='fa', me
                                    name="Product Categories"))
 admin.add_view(ProductView(Product, db.session, menu_icon_type='fa', menu_icon_value='fa-shopping-basket',
                            name='Products'))
-admin.add_view(UserView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-users', name="Users"))
-admin.add_view(AdminView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-user', name="Administrators",
-                         endpoint='administrator'))
 admin.add_view(RegistryView(Registry, db.session, menu_icon_type='fa', menu_icon_value='fa-file', name='Registries'))
 # admin.add_view(OrderView(Order, db.session, menu_icon_type='fa', menu_icon_value='fa-first-order', name='Orders'))
 admin.add_view(NewsletterView(Newsletter, db.session, menu_icon_type='fa', menu_icon_value='fa-newspaper-o',
                               name='Newsletters'))
-
+admin.add_view(UserView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-users', name="Users"))
+admin.add_view(AdminView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-user', name="Administrators",
+                         endpoint='administrator'))
