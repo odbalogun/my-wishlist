@@ -8,7 +8,7 @@
                 <div class="col-sm-12 col-md-6 col-lg-6">
                     <div class="collection-item collection-item-1">
                         <div class="collection-img">
-                            <img src="{{ url_for('static', filename=registry.image) }}" />
+                            <img src="{{ url_for('static', filename=registry.image) }}" alt="{{ registry.name }}" />
                             <div class="collection--hover">
                                 <a href="{{ url_for('.view_registry', slug=registry.slug) }}">
                                     <div class="collection--action">

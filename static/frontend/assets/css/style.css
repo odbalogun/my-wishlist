@@ -1,3 +1,40 @@
+@font-face {
+  font-family: 'ShutterStoneStandar';
+  font-weight: normal;
+  font-style: normal;
+  src: url('../fonts/ShutterStoneStandar.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'CeraPro-Black';
+  font-weight: normal;
+  font-style: normal;
+  src: url('../fonts/CeraPro-Black.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'CeraPro-Bold';
+  font-weight: normal;
+  font-style: normal;
+  src: url('../fonts/CeraPro-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'CeraPro-Medium';
+  font-weight: normal;
+  font-style: normal;
+  src: url('../fonts/CeraPro-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'CeraPro-Regular';
+  font-weight: normal;
+  font-style: normal;
+  src: url('../fonts/CeraPro-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'CeraPro-BoldItalic';
+  font-weight: normal;
+  font-style: normal;
+  src: url('../fonts/CeraPro-BoldItalic.ttf') format('truetype');
+}
+
 @charset "UTF-8";
 /*------------------------------------*\
     #GLOBAL STYLES
@@ -13,7 +50,7 @@ html {
 
 body {
   background-color: white;
-  font-family: "Lato", sans-serif;
+  font-family: "CeraPro-Regular", sans-serif;
   font-size: 13px;
   font-weight: 400;
   color: #a1a1a1;
@@ -153,7 +190,7 @@ h4,
 h5,
 h6 {
   color: #000000;
-  font-family: "Montserrat", sans-serif;
+  font-family: "CeraPro-Bold", sans-serif;
   font-weight: 700;
   margin: 0 0 28px;
   line-height: 1;
@@ -382,7 +419,7 @@ ul {
 }
 
 section {
-  padding-top: 130px;
+  padding-top: 70px;
   padding-bottom: 130px;
   overflow: hidden;
   background-color: white;
@@ -1375,7 +1412,9 @@ blockquot {
 .blockquote-4 .quote-author {
   color: white;
 }
-
+.img-responsive{
+  width: 100%;
+}
 /*------------------------------------*\
     #BACKGROUNDS
 \*------------------------------------*/
@@ -1388,7 +1427,11 @@ blockquot {
 }
 
 .bg-lightpurple {
-  background-color: #fdb0d4 !important;
+  background-color: #ffffff !important;
+}
+
+.bg-purple {
+  background-color: #ffdff7 !important;
 }
 
 .bg-white {
@@ -1511,7 +1554,7 @@ blockquot {
   font-weight: 700;
   line-height: 1;
   text-transform: capitalize;
-  font-family: "Lato", sans-serif;
+  font-family: "CeraPro-Medium";
   display: block;
 }
 
@@ -1544,7 +1587,7 @@ blockquot {
     #BUTTONS
 \*------------------------------------*/
 .btn {
-  font-family: "Montserrat", sans-serif;
+  font-family: "CeraPro-Bold", sans-serif;
   position: relative;
   z-index: 2;
   font-size: 14px;
@@ -1970,7 +2013,7 @@ blockquot {
 
 .form-control {
   color: #000000;
-  font-family: "Lato", sans-serif;
+  font-family: "CeraPro-Regular", sans-serif;
   font-size: 15px;
   font-weight: 400;
   height: 50px;
@@ -3015,7 +3058,7 @@ table tbody tr td {
     #Heading
 \*------------------------------------*/
 .heading .heading--title {
-  font-family: "Montserrat", sans-serif;
+  font-family: "CeraPro-Bold";
   color: #000000;
   font-size: 36px;
   font-weight: 700;
@@ -3023,7 +3066,7 @@ table tbody tr td {
   margin-bottom: 22px;
 }
 .heading .heading--subtitle {
-  font-family: "Lato", sans-serif;
+  font-family: "CeraPro-Medium";
   color: #a1a1a1;
   font-size: 12px;
   font-weight: 700;
@@ -3036,6 +3079,7 @@ table tbody tr td {
   font-weight: 400;
   line-height: 28px;
   margin-bottom: 0;
+  color: #21201f;
 }
 .heading .heading--img {
   margin-bottom: 18px;
@@ -3286,7 +3330,7 @@ table tbody tr td {
   position: relative;
 }
 .header .navbar-nav > li > a {
-  font-family: "Montserrat", sans-serif;
+  font-family: "CeraPro-Medium";
   font-size: 14px;
   text-transform: capitalize;
   font-weight: 500;
@@ -3836,7 +3880,7 @@ ul.mega-menu > li {
 
   ul.dropdown-menu li a,
 ul.mega-menu li ul li a {
-    font-family: "Montserrat", sans-serif;
+    font-family: "CeraPro-Medium", sans-serif;
     line-height: 40px;
     color: #a1a1a1;
     display: block;
@@ -5579,8 +5623,8 @@ li.has-dropdown > ul.dropdown-menu > li.dropdown-submenu > ul.dropdown-menu {
 \*------------------------------------*/
 .testimonial-panel .testimonial--body p {
   color: #898989;
-  font-family: "Montserrat", sans-serif;
-  font-size: 20px;
+  font-family: "CeraPro-Regular";
+  font-size: 22px;
   line-height: 30px;
   margin-bottom: 39px;
 }
@@ -5780,7 +5824,7 @@ li.has-dropdown > ul.dropdown-menu > li.dropdown-submenu > ul.dropdown-menu {
   transition: all 0.35s;
 }
 .feature-panel .feature--content h3 {
-  font-family: "Montserrat", sans-serif;
+  font-family: "CeraPro-Medium";
   font-size: 18px;
   font-weight: 700;
   line-height: 1;
@@ -6072,7 +6116,7 @@ li.has-dropdown > ul.dropdown-menu > li.dropdown-submenu > ul.dropdown-menu {
 }
 .blog-filter li a {
   color: #a1a1a1;
-  font-family: "Lato", sans-serif;
+  font-family: "CeraPro-Regular";
   font-size: 12px;
   font-weight: 700;
   line-height: 1;
@@ -6530,7 +6574,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
 /*------------------------------------*\
         #Shop
 
-
+        
 \*------------------------------------*/
 /* category Item */
 .category-item {
@@ -6617,7 +6661,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
 }
 .category-item .category--title h3 {
   font-size: 16px;
-  font-family: "Montserrat", sans-serif;
+  font-family: "CeraPro-Medium", sans-serif;
   font-weight: 700;
   line-height: 22px;
   margin-bottom: 7px;
@@ -6626,13 +6670,13 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   color: #000000;
 }
 .category-item .category--title h3 a:hover {
-  color: #606da6;
+  color: #8f2a7c;
 }
 .category-item .category--price {
   color: #555555;
   font-size: 16px;
   font-weight: 700;
-  font-family: "Lato", sans-serif;
+  font-family: "CeraPro-Regular", sans-serif;
   line-height: 1;
 }
 .category-item .category--img {
@@ -6834,8 +6878,8 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   margin-right: 7px;
 }
 .category-5 .category--content .btn:hover {
-  background-color: #606da6;
-  border-color: #606da6;
+  background-color: #8f2a7c;
+  border-color: #8f2a7c;
 }
 .category-5 .category--price {
   font-size: 18px;
@@ -7085,7 +7129,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
 }
 
 .category-num h2 {
-  font-family: "Montserrat", sans-serif;
+  font-family: "CeraPro-Medium", sans-serif;
   font-size: 14px;
   font-weight: 700;
   line-height: 55px;
@@ -7096,7 +7140,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   display: inline-block;
 }
 .category-num h2 span {
-  color: #606da6;
+  color: #691b56;
   margin-right: 7px;
 }
 
@@ -7232,12 +7276,19 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   line-height: 28px;
 }
 .cat-list .cat--list-item img {
-  margin-bottom: 39px;
+  margin-bottom: 20px;
   -webkit-transition: all 0.3s ease;
   -moz-transition: all 0.3s ease;
   -ms-transition: all 0.3s ease;
   -o-transition: all 0.3s ease;
   transition: all 0.3s ease;
+  border-radius: 100%;
+  border: 10px solid #ca85b8;
+  width: 100%;
+}
+
+.cat-list .cat--list-item h5 {
+  margin-top: 20px;
 }
 .cat-list .cat--list-item img:hover {
   -moz-box-shadow: 0px 0px 30.4px 1.6px rgba(204, 204, 223, 0.57);
@@ -7252,7 +7303,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   color: #606da6;
 }
 .cat-list + .clearfix {
-  padding-top: 300px;
+  padding-top: 150px;
   position: relative;
   z-index: 1;
 }
@@ -7390,7 +7441,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   }
 }
 /*------------------------------------*\
-    #CONTACT
+    #CONTACT 
 \*------------------------------------*/
 .contact-panel {
   position: relative;
@@ -8243,7 +8294,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
 
 /* Footer Widgets */
 .footer-widget {
-  padding: 120px 0;
+  padding: 60px 0;
   border-top: 1px solid #ebebeb;
 }
 
@@ -8254,7 +8305,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
 
 .widget--links li a {
   color: #363636;
-  font-family: "Lato", sans-serif;
+  font-family: "CeraPro-Regular";
   font-size: 15px;
   line-height: 30px;
   font-weight: 700;
@@ -8570,7 +8621,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   margin-bottom: 0;
 }
 .page-404 h4 {
-  font-family: "Lato", sans-serif;
+  font-family: "CeraPro-BoldItalic";
   font-style: italic;
   font-size: 36px;
   line-height: 1;
@@ -8976,7 +9027,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
 
 /* newsletter #3 */
 .newsletter-3 {
-  padding: 100px 0;
+  padding: 10px 0;
 }
 .newsletter-3 .heading--title {
   color: white;
@@ -9304,6 +9355,33 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   bottom: 0;
   left: 0;
   margin: 0 auto;
+}
+
+.divider--line2 {
+  position: absolute;
+  height: 3px;
+}
+.divider--line2:after {
+  position: absolute;
+  content: "";
+  height: 3px;
+  width: 100px;
+  background-color: #8e297b;
+  left: 115px;
+}
+
+.divider--line3 {
+  position: absolute;
+  height: 3px;
+  padding-bottom: 30px;
+}
+.divider--line3:after {
+  position: absolute;
+  content: "";
+  height: 3px;
+  width: 80px;
+  background-color: #8e297b;
+  left: 95px;
 }
 
 /*------------------------------------*\
@@ -9857,7 +9935,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   font-size: 11px;
   font-weight: 700;
   line-height: 1;
-  font-family: "Lato", sans-serif;
+  font-family: "CeraPro-Regular";
   text-transform: uppercase;
 }
 .about .about--signature span {
@@ -10160,10 +10238,10 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
 }
 
 .product--price {
-  color: #606da6;
+  color: #8e297b;
   font-size: 24px;
   font-weight: 700;
-  font-family: "Lato", sans-serif;
+  font-family: "CeraPro-Regular", sans-serif;
   line-height: 1;
   margin-bottom: 33px;
 }
@@ -11161,7 +11239,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   background-color: transparent;
 }
 .cart-table .table thead tr th {
-  font-family: "Montserrat", sans-serif;
+  font-family: "CeraPro-Bold", sans-serif;
   font-size: 14px;
   font-weight: 700;
   text-transform: uppercase;
@@ -11177,13 +11255,13 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
 }
 .cart-table .table tbody tr td.cart-product-price, .cart-table .table tbody tr td.cart-product-total {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 400;
   line-height: 40px;
   color: #a1a1a1;
-  font-family: "Lato", sans-serif;
+  font-family: "CeraPro-Bold", sans-serif;
 }
 .cart-table .table tbody tr td.cart-product-total {
-  color: #606da6;
+  color: #a75894;
 }
 .cart-table .table tbody tr td.cart-product-total .btn i {
   margin-right: 10px;
@@ -11321,7 +11399,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
 .cart-product-action .checkout--panel .total span {
   font-size: 24px;
   font-weight: 700;
-  color: #606da6;
+  color: #8e297b;
   line-height: 1;
 }
 .cart-product-action .checkout--panel p {
@@ -11380,8 +11458,8 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   transition: 0.3s ease;
 }
 .cart-product-remove:hover {
-  background-color: #606da6;
-  border-color: #606da6;
+  background-color: #681a55;
+  border-color: #681a55;
   color: white;
 }
 
@@ -11869,7 +11947,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   font-weight: 700;
   line-height: 1.2;
   margin-bottom: 0;
-  font-family: "Montserrat", sans-serif;
+  font-family: "CeraPro-Bold", sans-serif;
   text-transform: capitalize;
 }
 .page-title .title .title--desc p {
@@ -12173,29 +12251,14 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
 }
 .collection-item .collection--title h3 {
   font-size: 30px;
-  font-family: "Montserrat", sans-serif;
+  font-family: "CeraPro-Bold";
   line-height: 35px;
   margin-bottom: 11px;
   position: relative;
   padding-bottom: 3px;
   display: inline-block;
 }
-.collection-item .collection--title h3:after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  width: 0;
-  height: 2px;
-  background-color: #606da6;
-  -webkit-transition: all 0.3s ease;
-  -moz-transition: all 0.3s ease;
-  -ms-transition: all 0.3s ease;
-  -o-transition: all 0.3s ease;
-  transition: all 0.3s ease;
-}
+
 .collection-item .collection--title h3 a {
   color: #000000;
 }
@@ -12205,14 +12268,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
 .collection-item .collection--title h3:hover:after {
   width: 100%;
 }
-.collection-item .collection--desc p {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 32px;
-}
+
 .collection-item .vertical--text {
   position: absolute;
   left: 95px;
@@ -12235,7 +12291,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
 
 .collection--img {
   position: relative;
-  width: 400px;
+  width: auto;
   height: 300px;
 }
 .collection--img img {
@@ -13256,7 +13312,7 @@ ul.comments-list ul.comment-children ul .comment-body .comment {
   }
 }
 /*------------------------------------*\
-    #instagram
+    #instagram 
 \*------------------------------------*/
 .instagram .heading .heading--icon {
   margin-bottom: 28px;
@@ -15485,7 +15541,7 @@ input:checked + img {
 .drag-text h3 {
   font-weight: 100;
   text-transform: uppercase;
-  color: #15824B;
+  color: #8E297B;
   padding: 60px 0;
 }
 
@@ -15537,7 +15593,7 @@ label.checkbox {
   -webkit-transition: 400ms 100ms ease-out;
   -o-transition: 400ms 100ms ease-out;
   transition: 400ms 100ms ease-out;
-
+  
   position: absolute;
   top: 1em;
   left: 1em;
@@ -15709,11 +15765,6 @@ input[type="checkbox"]:focus + label {
   color: #fff;
 }
 
-.show {
-  background-color: #fff;
-  border-radius: 3px;
-  cursor: pointer;
-}
 
 .progress-bg {
 	margin: 0 auto;
@@ -15731,23 +15782,23 @@ input[type="checkbox"]:focus + label {
 	border-radius: 10px;
 	float: left;
 	width: 50%;
-	/* fallback */
-	background-color: #1c314a;
-
-	/* Safari 4-5, Chrome 1-9 */
-	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#691b56), to(#8f2a7c));
-
-	/* Safari 5.1, Chrome 10+ */
-	background: -webkit-linear-gradient(top, #691b56, #8f2a7c);
-
-	/* Firefox 3.6+ */
-	background: -moz-linear-gradient(top, #691b56, #8f2a7c);
-
-	/* IE 10 */
-	background: -ms-linear-gradient(top, #691b56, #8f2a7c);
-
-	/* Opera 11.10+ */
-	background: -o-linear-gradient(top, #691b56, #8f2a7c);
+	/* fallback */ 
+	background-color: #1c314a; 
+	
+	/* Safari 4-5, Chrome 1-9 */ 
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#691b56), to(#8f2a7c)); 
+	
+	/* Safari 5.1, Chrome 10+ */ 
+	background: -webkit-linear-gradient(top, #691b56, #8f2a7c); 
+	
+	/* Firefox 3.6+ */ 
+	background: -moz-linear-gradient(top, #691b56, #8f2a7c); 
+	
+	/* IE 10 */ 
+	background: -ms-linear-gradient(top, #691b56, #8f2a7c); 
+	
+	/* Opera 11.10+ */ 
+	background: -o-linear-gradient(top, #691b56, #8f2a7c);	
 }
 
 .progress-bg h3.goal, .progress-bg h3.raised {
@@ -15839,4 +15890,129 @@ body .progress-bg div {
 @keyframes progress-bar {
     from { width: 0%; }
     to { width: 50%; }
+}
+
+
+.nav-logo{
+  background-image: url(../images/logo/main-logo.png);
+  background-repeat: no-repeat;
+  background-size: 170px 28px;
+  height: 28px;
+  width: 170px;
+  position: relative;
+}
+
+
+.modal {
+  text-align: left;
+}
+.modal-content {
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 16px 28px 0 rgba(0, 0, 0, 0.22),
+    0 25px 55px 0 rgba(0, 0, 0, 0.21);
+}
+.modal-header {
+  border-bottom: 0;
+  padding-top: 15px;
+  padding-right: 26px;
+  padding-left: 26px;
+  padding-bottom: 0px;
+}
+.modal-title {
+  font-size: 34px;
+}
+.modal-body {
+  border-bottom: 0;
+  padding-top: 5px;
+  padding-right: 26px;
+  padding-left: 26px;
+  padding-bottom: 10px;
+  font-size: 15px;
+}
+.modal-footer {
+  border-top: 0;
+  padding-top: 0px;
+  padding-right: 26px;
+  padding-bottom: 26px;
+  padding-left: 26px;
+}
+
+.f-website {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+}
+.f-website h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 100;
+  padding: 5px 10px;
+  font-style: italic;
+  color: #eee;
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.98), 2px 2px 0px rgba(0, 0, 0, 0.96),
+    3px 3px 0px rgba(0, 0, 0, 0.94), 4px 4px 0px rgba(0, 0, 0, 0.92),
+    5px 5px 0px rgba(0, 0, 0, 0.9), 6px 6px 0px rgba(0, 0, 0, 0.88),
+    7px 7px 0px rgba(0, 0, 0, 0.86), 8px 8px 0px rgba(0, 0, 0, 0.84),
+    9px 9px 0px rgba(0, 0, 0, 0.82), 10px 10px 0px rgba(0, 0, 0, 0.8),
+    11px 11px 0px rgba(0, 0, 0, 0.78), 12px 12px 0px rgba(0, 0, 0, 0.76),
+    13px 13px 0px rgba(0, 0, 0, 0.74), 14px 14px 0px rgba(0, 0, 0, 0.72),
+    15px 15px 0px rgba(0, 0, 0, 0.7), 16px 16px 0px rgba(0, 0, 0, 0.68),
+    17px 17px 0px rgba(0, 0, 0, 0.66), 18px 18px 0px rgba(0, 0, 0, 0.64),
+    19px 19px 0px rgba(0, 0, 0, 0.62), 20px 20px 0px rgba(0, 0, 0, 0.6),
+    21px 21px 0px rgba(0, 0, 0, 0.58), 22px 22px 0px rgba(0, 0, 0, 0.56),
+    23px 23px 0px rgba(0, 0, 0, 0.54), 24px 24px 0px rgba(0, 0, 0, 0.52),
+    25px 25px 0px rgba(0, 0, 0, 0.5), 26px 26px 0px rgba(0, 0, 0, 0.48),
+    27px 27px 0px rgba(0, 0, 0, 0.46), 28px 28px 0px rgba(0, 0, 0, 0.44),
+    29px 29px 0px rgba(0, 0, 0, 0.42), 30px 30px 0px rgba(0, 0, 0, 0.4),
+    31px 31px 0px rgba(0, 0, 0, 0.38), 32px 32px 0px rgba(0, 0, 0, 0.36),
+    33px 33px 0px rgba(0, 0, 0, 0.34), 34px 34px 0px rgba(0, 0, 0, 0.32),
+    35px 35px 0px rgba(0, 0, 0, 0.3), 36px 36px 0px rgba(0, 0, 0, 0.28),
+    37px 37px 0px rgba(0, 0, 0, 0.26), 38px 38px 0px rgba(0, 0, 0, 0.24),
+    39px 39px 0px rgba(0, 0, 0, 0.22), 40px 40px 0px rgba(0, 0, 0, 0.2),
+    41px 41px 0px rgba(0, 0, 0, 0.18), 42px 42px 0px rgba(0, 0, 0, 0.16),
+    43px 43px 0px rgba(0, 0, 0, 0.14), 44px 44px 0px rgba(0, 0, 0, 0.12),
+    45px 45px 0px rgba(0, 0, 0, 0.1), 46px 46px 0px rgba(0, 0, 0, 0.08),
+    47px 47px 0px rgba(0, 0, 0, 0.06), 48px 48px 0px rgba(0, 0, 0, 0.04),
+    50px 50px 0px transparent;
+}
+
+
+.videoModal {
+  position: fixed;
+  z-index: 999999999999;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.3s ease;
+}
+.videoModal iframe {
+  width: 740px;
+  height: 416px;
+  transform: scale(0, 0);
+  border-radius: 5px;
+}
+.videoModal.toggle {
+  opacity: 1;
+  visibility: visible;
+}
+
+.OpenVideo {
+  animation: OpenVideo .3s ease forwards;
+}
+
+@keyframes OpenVideo {
+  0% {
+    transform: scale(0.6, 0.6);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
 }

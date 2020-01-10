@@ -47,7 +47,7 @@
             <!--404
 =============================================-->
 <section class="page-404 text-center bg-parallax">
-        <div class="bg-section"><!--<img src="assets/images/background/2.jpg" alt="background">--></div>
+        <div class="bg-section"><img src="{{ url_for('static', filename='frontend/assets/images/background/2.jpg') }}" alt="background"></div>
         <div class="container">
             <div class="row">
                 <div class="col-sm-12 col-md-12 col-lg-12">
@@ -71,9 +71,9 @@
                     <div class="col-sm-12 col-md-12 col-lg-4 text-center-xs widget--links">
                         <div class="widget--content">
                             <ul class="list-unstyled">
-                                <li><a href="page-about-1.html">About Us </a></li>
-                                <li><a href="page-privacy.html">Privacy Policy</a></li>
-                                <li><a href="page-terms.html">Term & Conditions</a></li>
+                                <li><a href="{{ url_for('frontend.about') }}">About Us </a></li>
+                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Term & Conditions</a></li>
                             </ul>
                         </div>
                     </div>
@@ -81,7 +81,7 @@
                     <div class="col-sm-12 col-md-12 col-lg-4 text-center widget--logo">
                         <div class="widget--content">
                             <div class="widget--logo-img">
-                                <img src="{{ url_for('static', filename='frontend/assets/images/logo/logo.png' ) }}" alt="logo">
+                                <img src="{{ url_for('static', filename='frontend/assets/images/logo/logo.png') }}" alt="logo">
                             </div>
                         </div>
                         <div class="footer--copyright">

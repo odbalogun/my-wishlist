@@ -1,0 +1,412 @@
+{% extends 'frontend/_layout.html' %}
+{% block main %}
+<div class="slider slider-11">
+    <div id="rev_slider_12_1_wrapper" class="rev_slider_wrapper fullscreen-container" data-alias="hebes-home-11" data-source="gallery" style="background:transparent;padding:0px;">
+    <!-- START REVOLUTION SLIDER 5.4.7 fullscreen mode -->
+        <div id="rev_slider_12_1" class="rev_slider fullscreenbanner" style="display:none;" data-version="5.4.7">
+            <ul>	<!-- SLIDE  -->
+                <li data-index="rs-45" data-transition="parallaxtoleft"
+                data-easein="Power4.easeInOut"
+                data-easeout="Power4.easeInOut"
+                data-masterspeed="2000" >
+                <!-- MAIN IMAGE -->
+                <img src="{{ url_for('static', filename='frontend/assets/images/slider/bg/gift.jpg') }}"  alt=""  data-bgposition="center center" data-bgfit="cover" data-bgrepeat="no-repeat" data-bgparallax="off" class="rev-slidebg" data-no-retina>
+                <!-- LAYERS -->
+                <!-- LAYER NR. 1 -->
+                <div class="tp-caption   tp-resizeme"
+                    id="slide-45-layer-5"
+                    data-x="['left','left','left','left']" data-hoffset="['100','100','70','50']"
+                    data-y="['top','top','top','top']" data-voffset="['200','200','350','320']"
+                   data-fontsize="['72','72','72','60']"
+                   data-lineheight="['72','72','72','60']"
+                   data-width="none"
+                   data-height="none"
+                   data-whitespace="nowrap"
+                   data-type="text"
+                   data-responsive_offset="on"
+                   data-frames='[{"delay":2000,"speed":2000,"frame":"0","from":"y:[100%];z:0;rX:0deg;rY:0;rZ:0;sX:1;sY:1;skX:0;skY:0;opacity:0;","to":"o:1;","ease":"Power4.easeInOut"},{"delay":"wait","speed":300,"frame":"999","to":"opacity:0;","ease":"Power3.easeInOut"}]'
+                   data-textAlign="['inherit','inherit','inherit','inherit']"
+                   data-paddingtop="[0,0,0,0]"
+                   data-paddingright="[0,0,0,0]"
+                   data-paddingbottom="[0,0,0,0]"
+                   data-paddingleft="[0,0,0,0]"
+                    style="z-index: 6; white-space: nowrap; font-size: 72px; line-height: 72px; font-weight: 700; color: #000000; letter-spacing: 0px;font-family:CeraPro-Bold;">Let your guests <br>
+                   <span style="color:#9e2a97; font-family: 'ShutterStoneStandar', cursive;">be a part of your </span><br> experience.
+
+                </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script>
+    var revapi12,
+        tpj;
+    (function() {
+        if (!/loaded|interactive|complete/.test(document.readyState)) document.addEventListener("DOMContentLoaded", onLoad)
+        else
+            onLoad();
+
+        function onLoad() {
+            if (tpj === undefined) {
+                tpj = jQuery;
+
+                if ("off" == "on") tpj.noConflict();
+            }
+            if (tpj("#rev_slider_12_1").revolution == undefined) {
+                revslider_showDoubleJqueryError("#rev_slider_12_1");
+            } else {
+                revapi12 = tpj("#rev_slider_12_1").show().revolution({
+                    sliderType: "standard",
+                    jsFileLocation: "assets/revolution/js/",
+                    sliderLayout: "auto",
+                    dottedOverlay: "none",
+                    delay: 9000,
+                    navigation: {
+                        keyboardNavigation: "off",
+                        keyboard_direction: "horizontal",
+                        mouseScrollNavigation: "off",
+                        mouseScrollReverse: "default",
+                        onHoverStop: "off",
+                        arrows: {
+                            style: "uranus",
+                            enable: true,
+                            hide_onmobile: false,
+                            hide_onleave: false,
+                            tmp: '',
+                            left: {
+                                h_align: "left",
+                                v_align: "center",
+                                h_offset: 20,
+                                v_offset: 0
+                            },
+                            right: {
+                                h_align: "right",
+                                v_align: "center",
+                                h_offset: 20,
+                                v_offset: 0
+                            }
+                        }
+                    },
+                    responsiveLevels: [1240, 1024, 778, 480],
+                    visibilityLevels: [1240, 1024, 778, 480],
+                    gridwidth: [1240, 1024, 778, 480],
+                    gridheight: [700, 768, 960, 720],
+                    lazyType: "none",
+                    parallax: {
+                        type: "mouse",
+                        origo: "enterpoint",
+                        speed: 400,
+                        speedbg: 0,
+                        speedls: 0,
+                        levels: [5, 10, 15, 20, 25, 30, 35, 40, 45, 46, 47, 48, 49, 3, 2, 55],
+                    },
+                    shadow: 0,
+                    spinner: "spinner0",
+                    stopLoop: "off",
+                    stopAfterLoops: -1,
+                    stopAtSlide: -1,
+                    shuffle: "off",
+                    autoHeight: "off",
+                    fullScreenAutoWidth: "off",
+                    fullScreenAlignForce: "off",
+                    fullScreenOffsetContainer: "",
+                    fullScreenOffset: "",
+                    disableProgressBar: "on",
+                    hideThumbsOnMobile: "off",
+                    hideSliderAtLimit: 0,
+                    hideCaptionAtLimit: 0,
+                    hideAllCaptionAtLilmit: 0,
+                    debugMode: false,
+                    fallbacks: {
+                        simplifyAll: "off",
+                        nextSlideOnWindowFocus: "off",
+                        disableFocusListener: false,
+                    }
+                });
+                var api = revapi12;
+
+                /* no need to edit below */
+                var divider = ' / ',
+                    totalSlides,
+                    numberText;
+
+                api.one('revolution.slide.onloaded', function() {
+
+                    totalSlides = api.revmaxslide();
+                    numberText = api.find('.slide-status-numbers').text('1' + divider + totalSlides);
+
+                    api.on('revolution.slide.onbeforeswap', function(e, data) {
+
+                        numberText.text((data.nextslide.index() + 1) + divider + totalSlides);
+
+                    });
+
+                });
+            }; /* END OF revapi call */
+        }; /* END OF ON LOAD FUNCTION */
+    }()); /* END OF WRAPPING FUNCTION */
+</script>
+<!-- collection #4
+============================================= -->
+<section id="collection4" class="collection collection-4 pt-50 pb-0">
+    <div class="container">
+        <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+                    <div class="heading text--center mb-50">
+                        <h2 class="heading--title"><span style="font-family: 'ShutterStoneStandar', cursive; font-size: 66px; font-weight: 500;">Step 1</span></h2>
+                        <h4>Together, we’ll help you select your favorite gifts.</h4>
+                        <p class="heading--desc">You can register for anything you could ever want at MyWishListNg. <br>Together, we’ll walk through all the types of
+                            gifts we have and make sure you’ve added enough to your registry, <br>so your guests have plenty of options, to choose from.</p>
+                    </div>
+                </div>
+                <!-- .col-lg-12 end -->
+            </div>
+            <!-- .row end -->
+        <div class="row">
+            <!-- collection item #1 -->
+            <div class="col-sm-12 col-md-6 col-lg-4">
+                <div class="collection-item collection-item-3 text--center">
+                    <div class="collection--img">
+                        <img src="{{ url_for('static', filename='frontend/assets/images/collection/col4/unique-gift.svg') }}" alt="collection" />
+                        <!-- .collection-hover end -->
+                    </div>
+                    <!-- .collection-img end -->
+                    <div class="collection--content pt-40">
+                        <div class="collection--title">
+                            <h3>Classic & Unique Gifts</h3>
+                        </div>
+                        <div class="divider--line2"></div>
+                        <!-- .collection-title end -->
+                        <div class="collection--desc pt-10">
+                            <p>Our store has it all from kitchen essentials to camping gear. Great prices, too.</p>
+                        </div>
+                        <!-- .collection-desc end -->
+                    </div>
+                    <!-- .collection-content end -->
+                </div>
+                <!-- .collection-item end -->
+            </div>
+            <!-- .col-lg-4 end -->
+            <!-- collection item #2 -->
+            <div class="col-sm-12 col-md-6 col-lg-4">
+                <div class="collection-item collection-item-4 text--center">
+                    <div class="collection--img">
+                        <img src="{{ url_for('static', filename='frontend/assets/images/collection/col4/gift-card.svg') }}" alt="collection" />
+                        <!-- .collection-hover end -->
+                    </div>
+                    <!-- .collection-img end -->
+                    <div class="collection--content pt-40">
+                        <div class="collection--title">
+                            <h3>Gift Cards</h3>
+                        </div>
+                        <div class="divider--line2"></div>
+                        <!-- .collection-title end -->
+                        <div class="collection--desc pt-10">
+                            <p>For exquisite dates, premium hotels, food and wine and everything in between.</p>
+                        </div>
+                        <!-- .collection-desc end -->
+                    </div>
+                    <!-- .collection-content end -->
+                </div>
+                <!-- .collection-item end -->
+            </div>
+            <!-- .col-lg-4 end -->
+            <!-- collection item #3 -->
+            <div class="col-sm-12 col-md-6 col-lg-4">
+                <div class="collection-item collection-item-5 text--center">
+                    <div class="collection--img">
+                        <img src="{{ url_for('static', filename='frontend/assets/images/collection/col4/fund.svg') }}" alt="collection" />
+                        <!-- .collection-hover end -->
+                    </div>
+                    <!-- .collection-img end -->
+                    <div class="collection--content pt-40">
+                        <div class="collection--title">
+                            <h3>Honeymoon Fund</h3>
+                        </div>
+                        <div class="divider--line2"></div>
+                        <!-- .collection-title end -->
+                        <div class="collection--desc pt-10">
+                            <p>Gift your couple a special treat, by contributing to their love get away experience.</p>
+                        </div>
+                        <!-- .collection-desc end -->
+                    </div>
+                    <!-- .collection-content end -->
+                </div>
+                <!-- .collection-item end -->
+            </div>
+            <!-- .col-lg-4 end -->
+
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- .collections4 end -->
+<section class="collection collection-4 bg-purple pb-50">
+    <div class="container">
+        <div class="row">
+            <!-- collection item #1 -->
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                        <img src="{{ url_for('static', filename='frontend/assets/images/collection/col4/step2.svg') }}" alt="collection" class="img-responsive"/>
+            </div>
+            <!-- .col-lg-4 end -->
+            <!-- collection item #2 -->
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <div class="heading mb-50">
+                    <h2 class="heading--title"><span style="font-family: 'ShutterStoneStandar', cursive; font-size: 66px; font-weight: 500;">Step 2</span></h2>
+                    <h4>Your Registry Made, Guest-Friendly.</h4>
+                    <p class="heading--desc">Guests love when your registry reveals who you are as a person or couple. So add a photo and notes saying why you
+                        guys truly desire that specific gift(s). You can even list gifts you’re most excited about to the top of your registry, so your guests see that soft wink!</p>
+                </div>
+                <!-- .collection-item end -->
+            </div>
+        </div>
+        <!-- .row end -->
+    </div>
+</section>
+<section class="collection collection-4 pb-50">
+    <div class="container">
+        <div class="row">
+            <!-- .col-lg-4 end -->
+            <!-- collection item #2 -->
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <div class="heading mb-50">
+                    <h2 class="heading--title"><span style="font-family: 'ShutterStoneStandar', cursive; font-size: 66px; font-weight: 500;">Step 3</span></h2>
+                    <h4>Get Notified, Every Time Guests Buy You Gifts.</h4>
+                    <p class="heading--desc">Guests will shop your registry just like they shop any other store online. They’ll get shipping and price matching, plus they’ll love how easy it is to contribute to your honeymoon.
+                        And if your guests ever need help, we’re just a phone call or email away!
+                        </p>
+                </div>
+                <!-- .collection-item end -->
+            </div>
+            <!-- collection item #1 -->
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                        <img src="{{ url_for('static', filename='frontend/assets/images/collection/col4/step3.svg') }}" alt="collection" class="img-responsive"/>
+            </div>
+        </div>
+        <!-- .row end -->
+    </div>
+</section>
+<section class="collection collection-4 bg-purple pb-50">
+    <div class="container">
+        <div class="row">
+            <!-- collection item #1 -->
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                        <img src="{{ url_for('static', filename='frontend/assets/images/collection/col4/step4.svg') }}" alt="collection" class="img-responsive"/>
+            </div>
+            <!-- .col-lg-4 end -->
+            <!-- collection item #2 -->
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <div class="heading mb-50">
+                    <h2 class="heading--title"><span style="font-family: 'ShutterStoneStandar', cursive; font-size: 66px; font-weight: 500;">Step 4</span></h2>
+                    <h4>Your Gifts Shipped, Right Away.</h4>
+                    <p class="heading--desc">At MyWishListNg, you can ship your gifts home to use them right away, or wait to ship them when you have room for them.</p>
+                </div>
+                <!-- .collection-item end -->
+            </div>
+        </div>
+        <!-- .row end -->
+    </div>
+</section>
+<!-- newsletter #3
+============================================= -->
+<section id="newsletter3" class="newsletter newsletter-3 text-center bg-theme pb-50">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12 text-center">
+                    <div class="heading heading-4">
+                        <h5 class="heading--title">stay connected to <span style="color:#fdb0d4; font-family: 'ShutterStoneStandar', cursive; font-size: 72px; font-weight: 500;">discover</span> more about us</h5>
+                        <p class="heading--desc">Get notified about the latest news and updates. No spam, we promise!</p>
+                    </div>
+                    <form class="mailchimp" action="{{ url_for('.newsletter_subscription') }}" method="post">
+                        {{ form.csrf_token }}
+                        <div class="form-group">
+                            <input type="text" name="email" class="form-control" id="newsletter-email" placeholder="Enter your email">
+                            <button type="submit" class="btn">SUBSCRIBE<i class="lnr lnr-arrow-right"></i></button>
+                        </div>
+                    </form>
+                    <div class="subscribe-alert"></div>
+                    <div class="clearfix"></div>
+                </div>
+                <!-- .col-lg-8 end -->
+            </div>
+            <!-- .row end -->
+        </div>
+        <!-- .container end -->
+    </section>
+    <!-- #newsletter end -->
+<!-- categories list #1
+============================================= -->
+<!-- feature #1
+============================================= -->
+<section id="feature1" class="feature feature-1  pt-50 pb-80 pb-60-xs">
+    <div class="container">
+        <div class="row">
+            <!--  feature panel #1 -->
+            <div class="col-sm-6 col-md-6 col-lg-3">
+                <div class="feature-panel">
+                    <div class="feature--icon">
+                        <i class="icon-bolt"></i>
+                    </div>
+                    <!-- .feature-icon end -->
+                    <div class="feature--content">
+                        <h3>Creative &amp; Unique</h3>
+                        <p>GREAT FROM US</p>
+                    </div>
+                    <!-- .feature-content end -->
+                </div>
+            </div>
+            <!-- .feature-panel end -->
+            <!--  feature panel #2 -->
+            <div class="col-sm-6 col-md-6 col-lg-3">
+                <div class="feature-panel">
+                    <div class="feature--icon">
+                        <i class="icon-location"></i>
+                    </div>
+                    <!-- .feature-icon end -->
+                    <div class="feature--content">
+                        <h3>Free Shipping</h3>
+                        <p>ALL ORDER OVER $30</p>
+                    </div>
+                    <!-- .feature-content end -->
+                </div>
+            </div>
+            <!-- .feature-panel end -->
+            <!--  feature panel #3 -->
+            <div class="col-sm-6 col-md-6 col-lg-3">
+                <div class="feature-panel">
+                    <div class="feature--icon">
+                        <i class="icon-phone"></i>
+                    </div>
+                    <!-- .feature-icon end -->
+                    <div class="feature--content">
+                        <h3>Support Customer</h3>
+                        <p>SUPPORT 24/7</p>
+                    </div>
+                    <!-- .feature-content end -->
+                </div>
+            </div>
+            <!-- .feature-panel end -->
+            <!--  feature panel #4 -->
+            <div class="col-sm-6 col-md-6 col-lg-3">
+                <div class="feature-panel">
+                    <div class="feature--icon">
+                        <i class="icon-link icon-md"></i>
+                    </div>
+                    <!-- .feature-icon end -->
+                    <div class="feature--content">
+                        <h3>Secure Payment</h3>
+                        <p>100% SECURE PAYMENT</p>
+                    </div>
+                    <!-- .feature-content end -->
+                </div>
+            </div>
+            <!-- .feature-panel end -->
+        </div>
+        <!-- .row end -->
+    </div>
+    <!-- .container end -->
+</section>
+<!-- #feature1 end -->
+{% endblock %}

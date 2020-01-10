@@ -1,8 +1,9 @@
 from flask import redirect, render_template, url_for, Blueprint, flash, request, abort, session, jsonify
-from forms import RegistrationForm, LoginForm, VerificationForm, RegistryForm, RegistryProductForm, AddCartDiscount, OrderForm
+from forms import RegistrationForm, LoginForm, VerificationForm, RegistryForm, RegistryProductForm, AddCartDiscount, \
+    OrderForm, NewsletterForm
 from decorators import custom_login_required
 from models import db, User, Registry, Product, Article, Tag, RegistryProducts, Category, HoneymoonFund, \
-    RegistryDeliveryAddress, Discount, Order, OrderItem
+    RegistryDeliveryAddress, Discount, Order, OrderItem, Newsletter, Transaction
 from flask_security.utils import hash_password, logout_user, login_user, verify_password
 from flask_security import current_user
 from utils import generate_full_file_path, generate_folder_name
@@ -21,7 +22,41 @@ def allowed_file(filename):
 
 @frontend.route('/')
 def index():
-    return render_template('frontend/index.html')
+    form = NewsletterForm(request.form)
+
+    return render_template('frontend/index.html', form=form)
+
+
+@frontend.route('/registries/search', methods=['GET'])
+def search():
+    search_term = "%{}%".format(request.args.get('q'))
+    registries = Registry.query.filter(Registry.name.like(search_term)).all()
+
+    return render_template('frontend/search.html', registries=registries)
+
+
+@frontend.route('/newsletter/subscribe', methods=['POST'])
+def newsletter_subscription():
+    form = NewsletterForm(request.form)
+
+    if form.validate_on_submit():
+        # check if email is unique
+        email = Newsletter.query.filter_by(email=form.email.data).first()
+
+        if not email:
+            # save email
+            email = Newsletter(email=form.email.data)
+            email.save()
+            flash("Thank you for subscribing to our newsletter", "success")
+        else:
+            flash("You are already subscribed to our newsletter", "error")
+    else:
+        for errors in form.errors.values():
+            for error in errors:
+                flash(f'{error}', "error")
+                break
+            break
+    return redirect(url_for('.index'))
 
 
 @frontend.route('/login', methods=['GET', 'POST'])
@@ -322,9 +357,10 @@ def product_details(slug):
     return render_template('frontend/product_details.html', product=product)
 
 
-@frontend.route('/frequently-asked-questions', methods=['GET'])
+@frontend.route('/how-it-works', methods=['GET', 'POST'])
 def faq():
-    return render_template('frontend/about.html')
+    form = NewsletterForm(request.form)
+    return render_template('frontend/how_it_works.html', form=form)
 
 
 @frontend.route('/about-us', methods=['GET'])
@@ -368,19 +404,33 @@ def cart():
 def checkout():
     form = OrderForm(request.form)
     if request.method == 'POST' and form.validate():
-        order = Order()
-        form.populate_obj(order)
-        order.total_amount = session['all_total_price']
-        order.save()
+        tran = Transaction()
+        form.populate_obj(tran)
+        tran.total_amount = session['all_total_price']
+        tran.payment_status = 'unpaid'
+        tran.save()
 
-        order.generate_order_number()
+        tran.generate_order_number()
         if 'discount_id' in session:
-            order.discount_id = session['discount_id']
-            order.discounted_amount = session['discount_amount']
-        order.save()
+            tran.discount_id = session['discount_id']
+            tran.discounted_amount = session['discount_amount']
+        tran.save()
 
         # save order items
         for key, product in session['cart_item'].items():
+            # check if there is an existing order
+            order = Order.query.filter_by(transaction_id=tran.id, registry_id=product['registry']['id']).first()
+
+            if not order:
+                order = Order()
+                order.registry_id = product['registry']['id']
+                order.transaction_id = tran.id
+                order.status = 'pending'
+                order.save()
+
+                order.generate_order_number()
+                order.save()
+
             item = OrderItem(order_id=order.id, registry_id=product['registry']['id'], reg_product_id=key,
                              quantity=product['quantity'], unit_price=product['unit_price'],
                              total_price=product['total_price'])
@@ -388,14 +438,17 @@ def checkout():
 
         # initialize payments
         paystack = PaystackPay()
-        amount = order.discounted_amount if order.discounted_amount else order.total_amount
-        response = paystack.fetch_authorization_url(email=order.email, amount=amount)
+        amount = tran.discounted_amount if tran.discounted_amount else tran.total_amount
+        response = paystack.fetch_authorization_url(email=tran.email, amount=amount)
 
         if response.status_code == 200:
             json_response = response.json()
 
-            order.update(payment_txn_number=json_response['data']['reference'])
+            tran.update(payment_txn_number=json_response['data']['reference'])
             return redirect(json_response['data']['authorization_url'])
+        else:
+            flash('Something went wrong. Please try again', 'error')
+            return redirect(url_for('.checkout'))
 
     products = session['cart_item']
     return render_template('frontend/checkout.html', form=form, products=products)
@@ -410,13 +463,13 @@ def verify_payment():
         return redirect(url_for('.registries'))
 
     # get order
-    order = Order.query.filter_by(payment_txn_number=reference).first()
+    tran = Transaction.query.filter_by(payment_txn_number=reference).first()
 
-    if not order:
+    if not tran:
         flash('Something went wrong. Please contact an administrator', 'error')
         return redirect(url_for('.registries'))
 
-    if order.payment_status == 'paid':
+    if tran.payment_status == 'paid':
         flash('Payment successful', 'success')
         return redirect(url_for('.registries'))
 
@@ -424,7 +477,7 @@ def verify_payment():
     response = paystack.verify_reference_transaction(reference)
 
     if response.status_code == 200:
-        order.update(payment_status='paid', date_paid=datetime.datetime.now())
+        tran.update(payment_status='paid', date_paid=datetime.datetime.now())
         # todo send emails to admin, customer, and purchaser
         flash('Your purchase has been completed', 'success')
     else:
@@ -440,19 +493,19 @@ def verify_payment_webhook():
         return jsonify({'error': 'No reference provided'}), 400
 
     # get order
-    order = Order.query.filter_by(payment_txn_number=reference).first()
+    tran = Transaction.query.filter_by(payment_txn_number=reference).first()
 
-    if not order:
+    if not tran:
         return jsonify({'error': 'Reference code not found'}), 404
 
-    if order.payment_status == 'paid':
+    if tran.payment_status == 'paid':
         return jsonify({'message': "Success"}), 200
 
     paystack = PaystackPay()
     response = paystack.verify_reference_transaction(reference)
 
     if response.status_code == 200:
-        order.update(payment_status='paid', date_paid=datetime.datetime.now())
+        tran.update(payment_status='paid', date_paid=datetime.datetime.now())
 
         # todo send emails to admin, customer, and purchaser
         return jsonify({'message': "Your purchase has been completed"}), 200

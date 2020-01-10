@@ -1,113 +1,99 @@
-<header id="navbar-spy" class="header header-1 header-8 header-light">
-    <nav id="primary-menu" class="navbar navbar-expand-lg navbar-light logo-centered">
+<header id="navbar-spy" class="header header-1">
+    <nav id="primary-menu" class="navbar navbar-expand-lg navbar-light">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('.index') }}">
-                <img class="logo logo-light" src="{{url_for('static',filename='frontend/assets/images/logo/logo.png')}}" alt="logo">
-                <img class="logo logo-dark" src="{{url_for('static',filename='frontend/assets/images/logo/logo.png')}}" alt="logo">
+            <a class="navbar-brand" href="">
+                <div class="nav-logo">
+                </div>
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse justify-content-between" id="navbarContent">
-                <!-- Module Menu -->
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav mr-auto">
+                    <li>
+                        <a href="{{ url_for('.about') }}" class="menu-item">Who we are</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('.faq') }}" class="link-hover">How it works</a>
+                    </li>
+                    <li class="has-dropdown">
+                        <a href="{{ url_for('.registries') }}" data-toggle="dropdown" class="dropdown-toggle menu-item">Registry</a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="#">Wedding</a>
+                            </li>
+                            <li>
+                                <a href="#">bridal</a>
+                            </li>
+                            <li>
+                                <a href="#">birthday</a>
+                            </li>
+                            <li>
+                                <a href="#">babyshower</a>
+                            </li>
+                            <li>
+                                <a href="{{ url_for('.registries') }}">all</a>
+                            </li>
+                        </ul>
+                    </li><!-- li end -->
+                    <li>
+                        <a href="{{ url_for('.blog') }}" class="link-hover">Blog</a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                        <li><a href="{{ url_for('.dashboard') }}" class="menu-item">Dashboard</a> </li>
+                    {%  endif %}
+                </ul>
+
                 <div class="module-container">
-                    <div class="module module-lang module-dropdown pull-left">
-                        <div class="module-icon">
-                            <button type="button" class="dropdown-toggle" data-toggle="dropdown">
-                                ENG <i class="fa fa-caret-down"></i>
-                            </button>
-                        </div>
-                        <div class="module-dropdown-menu module-content">
-                            <a class="dropdown-item" href="#">ENG</a>
-                            <!--<a class="dropdown-item" href="#">RU</a>
-                            <a class="dropdown-item" href="#">FR</a>
-                            <a class="dropdown-item" href="#">AR</a>-->
-                        </div>
-                    </div>
-                    <div class="vertical-divider pull-left mr-30"></div>
                     <!-- Module Search -->
-                    <div class="module module-search module-search-left pull-left">
+                    <div class="module module-search pull-left">
                         <div class="module-icon search-icon">
                             <i class="lnr lnr-magnifier"></i>
-                            <span class="title">Search</span>
+                            <span class="title">find a registry</span>
                         </div>
                         <div class="module-content module--search-box">
-                            <form class="form-search">
-                                <input type="text" class="form-control" placeholder="Search anything">
+                            <form class="form-search" action="{{ url_for('.search') }}" method="get">
+                                <input type="text" name="q" class="form-control" placeholder="Search anything">
                                 <button type="submit"><span class="fa fa-arrow-right"></span></button>
                             </form><!-- .form-search end -->
                         </div>
                     </div><!-- .module-search end -->
-                </div>
-                <ul class="navbar-nav mr-auto ml-auto">
-                    <!-- home Menu -->
-                    <!--<li class=" active">
-                        <a href="{{ url_for('.index') }}" class="menu-item">Home</a>
-                    </li>-->
-                    <li>
-                        <a href="{{ url_for('.index') }}" class="menu-item">Home</a>
-                    </li>
-                    <!-- li end -->
-                    <!-- About Menu -->
-                    <li>
-                            <a href="{{ url_for('.about') }}" class="menu-item">Who we are</a>
-                    </li>
-                    <!-- li end -->
-                    <!-- How Menu -->
-                    <li>
-                            <a href="{{ url_for('.faq') }}" class="menu-item">How it works</a>
-                        </li>
-                    <li>
-                            <a href="{{ url_for('.registries') }}" class="menu-item">Registries</a>
-                        </li>
-                    <!-- li end -->
-                    <!-- Blog Menu -->
-                    <li>
-                        <a href="{{ url_for('.blog') }}" class="menu-item">Blog</a>
-                    </li>
-                        <!-- li end -->
-                    {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('.dashboard') }}" class="menu-item">My Dashboard</a> </li>
-                        <li><a href="{{ url_for('.logout')  }}" class="menu-item">Logout</a></li>
-                    {%  else %}
-                    <!-- Log in Menu -->
-                    <li>
-                            <a href="{{ url_for('.login') }}" class="menu-item">Log in</a>
-                        </li>
-                        <!-- li end -->
-                    <!-- Register Menu -->
-                    <li>
-                            <a href="{{ url_for('.register') }}" class="menu-item">Register</a>
-                        </li>
-                        <!-- li end -->
-                    {% endif %}
-                </ul>
-                <div class="module-container">
-                    <div class="module module-account module-dropdown module-dropdown-right pull-left">
+
+                    <div class="vertical-divider pull-left mr-30"></div>
+                    <div class="module pull-left">
                         <div class="module-icon">
-                            <a href="{{ url_for('.dashboard') }}">
-                            <button type="button" class="dropdown-toggle" data-toggle="dropdown">
-                                MY ACCOUNT
-                            </button>
-                            </a>
+                            {% if current_user.is_authenticated %}
+                                <a href="{{ url_for('.create_registry') }}" class="btn btn--primary btn--rounded">Create registry</a>
+                            {% else %}
+                                <a href="{{ url_for('.register') }}" class="btn btn--primary btn--rounded">Create registry</a>
+                            {% endif %}
                         </div>
                     </div>
-                    <!-- Module Cart -->
+
+                    <div class="module pull-left">
+                        <ul class="navbar-nav mr-auto">
+                            {% if current_user.is_authenticated %}
+                                <li><a href="{{ url_for('.logout')  }}">Logout</a></li>
+                            {%  else %}
+                                <li><a href="{{ url_for('.login')  }}">Login</a></li>
+                            {% endif %}
+                        </ul>
+                    </div><!-- Module Cart -->
+
                     <div class="module module-cart pull-left">
                         <div class="module-icon cart-icon">
-                            <a href="{{ url_for('.cart') }}">
-                                <i class="icon-bag"></i>
-                                <span class="title">shop cart</span>
-                                <label class="module-label">{{ session['all_total_quantity'] }}</label>
-                            </a>
+                            <i class="icon-bag"></i>
+                            <span class="title">shop cart</span>
+                            <label class="module-label">{{ session['all_total_quantity'] }}</label>
                         </div>
                         <!--
                         <div class="module-content module-box cart-box">
-                             <div class="cart-overview">
+                            <div class="cart-overview">
                                 <ul class="list-unstyled">
                                     <li>
-                                        <img class="img-fluid" src="{{url_for('static',filename='frontend/assets/images/products/thumb/1.jpg')}}" alt="product" />
+                                        <img class="img-fluid" src="assets/images/products/thumb/1.jpg" alt="product" />
                                         <div class="product-meta">
                                             <h5 class="product-title">Hebes Great Chair</h5>
                                             <p class="product-qunt">Quantity:  01</p>
@@ -116,7 +102,7 @@
                                         <a class="cart-cancel" href="#"><i class="lnr lnr-cross"></i></a>
                                     </li>
                                     <li>
-                                        <img class="img-fluid" src="{{url_for('static',filename='frontend/assets/images/products/thumb/2.jpg')}}" alt="product" />
+                                        <img class="img-fluid" src="assets/images/products/thumb/2.jpg" alt="product" />
                                         <div class="product-meta">
                                             <h5 class="product-title">Hebes Great Chair</h5>
                                             <p class="product-qunt">Quantity:  01</p>
@@ -142,11 +128,12 @@
                             </div>
                         </div>
                         -->
-                    </div>
-                    <!-- .module-cart end -->
+                    </div><!-- .module-cart end -->
                 </div>
+
             </div>
+            <!-- /.navbar-collapse -->
         </div>
-        <!-- /.navbar-collapse -->
+        <!-- /.container -->
     </nav>
 </header>

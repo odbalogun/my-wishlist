@@ -252,6 +252,8 @@ class Registry(SurrogatePK, Model):
 
     name = Column(db.String(100), nullable=False)
     slug = Column(db.String(100), nullable=False, unique=True)
+    # registry_type
+    # hashtag
     description = Column(db.Text, nullable=False)
     image = Column(db.Text, nullable=True)
     created_by_id = reference_col("user", nullable=True)
@@ -357,19 +359,23 @@ class RegistryDeliveryAddress(SurrogatePK, Model):
     registry = relationship("Registry", backref=backref("delivery", uselist=False, cascade="all, delete-orphan"))
 
 
-class Order(SurrogatePK, Model):
-    __tablename__ = 'orders'
+class Newsletter(SurrogatePK, Model):
+    __tablename__ = 'newsletter'
 
-    order_number = Column(db.String(255), unique=True)
+    email = db.Column(db.String(255), unique=True)
+    date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+
+
+class Transaction(SurrogatePK, Model):
+    __tablename__ = 'transactions'
+
+    txn_no = Column(db.String(255), unique=True)
     first_name = db.Column(db.String(255))
     last_name = db.Column(db.String(255))
     phone_number = db.Column(db.String(50), nullable=True)
     email = db.Column(db.String(255))
     message = Column(db.Text, nullable=True)
-    # payment_status = Column(db.String(50), default="unpaid")
-    payment_status = Column(ChoiceType(PAYMENT_STATUS, impl=db.String(50)))
-    # status = Column(db.String(50), default="pending")
-    status = Column(ChoiceType(STATUS, impl=db.String(50)))
+    payment_status = Column(ChoiceType(PAYMENT_STATUS, impl=db.String()))
     total_amount = Column(db.Float, nullable=False)
     discounted_amount = Column(db.Float, nullable=True)
     discount_id = reference_col("discounts", nullable=True)
@@ -379,8 +385,8 @@ class Order(SurrogatePK, Model):
 
     discount = relationship("Discount")
 
-    def generate_order_number(self):
-        self.order_number = f"ORD{dt.date.today().strftime('%Y%m%d')}00000{self.id}"
+    def generate_txn_number(self):
+        self.txn_no = f"TXN{dt.date.today().strftime('%Y%m%d')}00000{self.id}"
 
     @property
     def get_amount_paid(self):
@@ -391,17 +397,31 @@ class Order(SurrogatePK, Model):
         return f'{self.first_name} {self.last_name}'
 
 
+class Order(SurrogatePK, Model):
+    __tablename__ = 'orders'
+
+    order_number = Column(db.String(255), unique=True)
+    transaction_id = reference_col("transactions", nullable=False)
+    registry_id = reference_col("registries", nullable=False)
+    status = Column(ChoiceType(STATUS, impl=db.String()))
+    date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+
+    registry = relationship("Registry", backref=backref("orders", uselist=True))
+    transaction = relationship("Transaction", backref=backref("orders", uselist=True))
+
+    def generate_order_number(self):
+        self.order_number = f"ORD{dt.date.today().strftime('%Y%m%d')}00000{self.id}"
+
+
 class OrderItem(SurrogatePK, Model):
     __tablename__ = 'order_items'
 
     order_id = reference_col("orders", nullable=False)
-    registry_id = reference_col("registries", nullable=False)
     reg_product_id = reference_col("registry_products", nullable=False)
     quantity = Column(db.Integer, default=1)
     unit_price = Column(db.Float, nullable=False)
     total_price = Column(db.Float, nullable=False)
 
-    registry = relationship("Registry", backref=backref("order_items", uselist=True))
     order = relationship("Order")
     registry_product = relationship("RegistryProducts")
 

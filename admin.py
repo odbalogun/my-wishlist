@@ -7,7 +7,7 @@ from flask_security import current_user, logout_user
 from flask_security.utils import hash_password
 from flask import redirect, request, url_for, flash
 from app import db
-from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage, Registry, HoneymoonFund, Order
+from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage, Registry, HoneymoonFund, Order, Newsletter
 from slugify import UniqueSlugify, Slugify
 from wtforms import TextAreaField, FileField, FloatField
 from flask_admin.actions import action
@@ -56,11 +56,13 @@ class MyModelView(sqla.ModelView):
     can_export = True
     can_view_details = True
     details_modal = True
+    edit_template = "admin/ckeditor_edit.html"
+    create_template = "admin/ckeditor_create.html"
 
 
 class UserView(MyModelView):
-    column_editable_list = ['email', 'first_name', 'last_name']
-    column_searchable_list = column_editable_list
+    column_editable_list = ['first_name', 'last_name']
+    column_searchable_list = ['first_name', 'last_name', 'email']
     column_exclude_list = ['password']
     form_columns = ['first_name', 'last_name', 'email', 'phone_number']
     column_details_exclude_list = column_exclude_list
@@ -90,8 +92,8 @@ class UserView(MyModelView):
 
 
 class AdminView(MyModelView):
-    column_editable_list = ['email', 'first_name', 'last_name']
-    column_searchable_list = column_editable_list
+    column_editable_list = ['first_name', 'last_name']
+    column_searchable_list = ['first_name', 'last_name', 'email']
     column_exclude_list = ['password']
     form_columns = ['first_name', 'last_name', 'email', 'phone_number']
     column_details_exclude_list = column_exclude_list
@@ -147,9 +149,11 @@ class ArticleView(MyModelView):
     form_widget_args = {
         'content': {
             'rows': 20,
+            'class': "form-control textarea"
         },
         'summary': {
             'rows': 5,
+            'class': "form-control textarea"
         },
         'is_published': {
             'type': 'checkbox',
@@ -159,7 +163,7 @@ class ArticleView(MyModelView):
     folder_name = generate_folder_name()
     relative_file_path = get_relative_file_path('articles', folder_name)
 
-    form_overrides = dict(content=CKEditorField, summary=TextAreaField, image=FileField)
+    form_overrides = dict(image=FileField)
     form_columns = ['title', 'summary', 'content', 'tags', 'image', 'is_published']
     form_extra_fields = {
         'image': form.ImageUploadField('Image', allowed_extensions=['jpg', 'jpeg', 'png'], base_path=get_file_path(),
@@ -278,13 +282,17 @@ class ProductImageInlineForm(InlineFormAdmin):
 
 class ProductView(MyModelView):
     column_list = ['name', 'category', 'display_price', 'is_available', 'created_by', 'date_created']
-    form_excluded_columns = ['slug', 'created_by', 'date_created', 'registry_products']
+    form_excluded_columns = ['slug', 'created_by', 'date_created', 'products_in_registry', 'registry_products']
     column_labels = dict(images='Image', display_price='Price')
     inline_models = (ProductImageInlineForm(ProductImage), )
     form_widget_args = {
         'is_available': {
             'type': 'checkbox',
             'class': 'flat-red'
+        },
+        'description': {
+            'rows': 15,
+            'class': "form-control textarea"
         },
     }
 
@@ -337,6 +345,16 @@ class RegistryView(MyModelView):
     column_details_list = ['created_by', 'name', 'slug', 'description', 'image', 'products', 'fund.target_amount',
                            'fund.message', 'admin_created_by', 'date_created']
     relative_file_path = get_relative_file_path('registries', generate_folder_name())
+    form_widget_args = {
+        'is_available': {
+            'type': 'checkbox',
+            'class': 'flat-red'
+        },
+        'description': {
+            'rows': 15,
+            'class': "form-control textarea"
+        },
+    }
     column_searchable_list = ['name']
     form_extra_fields = {
         'image': form.ImageUploadField('Background Image', allowed_extensions=['jpg', 'jpeg', 'png'], base_path=get_file_path(),
@@ -375,14 +393,18 @@ class RegistryView(MyModelView):
             flash(f'Failed to process request. {str(ex)}', 'error')
 
 
-class OrderView(MyModelView):
-    column_list = ['order_number', 'full_name', 'total_amount', 'discount', 'get_amount_paid', 'payment_status',
-                   'payment_txn_number', 'status', 'date_created']
-    column_labels = {'order_number': "Order No.", 'get_amount_paid': "Amount Due", 'first_name': "First Name",
-                     'last_name': "Last Name"}
-    column_searchable_list = ['order_number', 'first_name', 'last_name']
-    can_create = False
-    can_edit = False
+# class OrderView(MyModelView):
+#     column_list = ['order_number', 'full_name', 'total_amount', 'discount', 'get_amount_paid', 'payment_status',
+#                    'payment_txn_number', 'status', 'date_created']
+#     column_labels = {'order_number': "Order No.", 'get_amount_paid': "Amount Due", 'first_name': "First Name",
+#                      'last_name': "Last Name"}
+#     column_searchable_list = ['order_number', 'first_name', 'last_name']
+#     can_create = False
+#     can_edit = False
+
+
+class NewsletterView(MyModelView):
+    form_excluded_columns = ['date_created']
 
 
 # Create admin
@@ -407,5 +429,7 @@ admin.add_view(UserView(User, db.session, menu_icon_type='fa', menu_icon_value='
 admin.add_view(AdminView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-user', name="Administrators",
                          endpoint='administrator'))
 admin.add_view(RegistryView(Registry, db.session, menu_icon_type='fa', menu_icon_value='fa-file', name='Registries'))
-admin.add_view(OrderView(Order, db.session, menu_icon_type='fa', menu_icon_value='fa-first-order', name='Orders'))
+# admin.add_view(OrderView(Order, db.session, menu_icon_type='fa', menu_icon_value='fa-first-order', name='Orders'))
+admin.add_view(NewsletterView(Newsletter, db.session, menu_icon_type='fa', menu_icon_value='fa-newspaper-o',
+                              name='Newsletters'))
 

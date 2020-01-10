@@ -1,5 +1,5 @@
-    <!DOCTYPE html>
-    <html dir="ltr" lang="en-US">
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
     <head>
         <!-- Document Meta
         ============================================= -->
@@ -9,26 +9,24 @@
         <meta name="author" content="" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <meta name="description" content="">
-        <link href="{{url_for('static',filename='frontend/assets/images/logo/fav.png')}}" rel="icon">
+        <link href="{{ url_for('static', filename='frontend/assets/images/logo/fav.png') }}" rel="icon">
 
         <!-- Fonts
         ============================================= -->
-        <link href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i%7CMontserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i%7CPlayfair+Display:400,400i" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Alatsi|Sacramento&display=swap" rel="stylesheet">
         <!-- Stylesheets
         ============================================= -->
-        <link href="{{url_for('static',filename='frontend/assets/css/external.css')}}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='frontend/assets/css/external.css') }}" rel="stylesheet">
         <!-- RS5.0 Main Stylesheet -->
-        <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='frontend/assets/revolution/css/settings.css')}}">
-        <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='frontend/assets/revolution/css/layers.css')}}">
-        <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='frontend/assets/revolution/css/navigation.css')}}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='frontend/assets/revolution/css/settings.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='frontend/assets/revolution/css/layers.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='frontend/assets/revolution/css/navigation.css') }}">
 
-        <link rel="stylesheet" href="{{url_for('static',filename='frontend/assets/css/style.css')}}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='frontend/assets/css/style.css') }}">
 
         <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
         <!--[if lt IE 9]>
-          <script src="{{url_for('static',filename='frontend/assets/js/html5shiv.js')}}"></script>
-          <script src="{{url_for('static',filename='frontend/assets/js/respond.min.js')}}"></script>
+          <script src="{{ url_for('static', filename='frontend/assets/js/html5shiv.js') }}"></script>
+          <script src="{{ url_for('static', filename='frontend/assets/js/respond.min.js') }}"></script>
         <![endif]-->
 
         <!-- Document Title
@@ -37,110 +35,130 @@
     </head>
 
     <body>
+
+        <div class="videoModal">
+            <iframe src="https://www.youtube.com/embed/GTBaQ2DcGUk?rel=0" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+        </div>
         <div class="preloader">
             <div class="loader-eclipse">
                 <div class="loader-content"></div>
             </div>
         </div>    <!-- Document Wrapper
         ============================================= -->
-        {% include 'frontend/_headers.html' %}
+        <div id="wrapperParallax" class="wrapper clearfix">
+            {% include 'frontend/_headers.html' %}
 
-    <div id="wrapperParallax" class="wrapper wrapper-boxed clearfix">
-    {% block main  %}{% endblock %}
-    <!-- Footer #1
-    ============================================= -->
-    <footer id="footerParallax" class="footer footer-1">
-        <div class="container pr-40 pl-40">
-            <div class="footer-widget">
-                <div class="row">
-                    <div class="col-sm-12 col-md-12 col-lg-4 text-center-xs widget--links">
-                        <div class="widget--content">
-                            <ul class="list-unstyled">
-                                <li><a href="{{ url_for('.about') }}">About Us </a></li>
-                                <li><a href="{{ url_for('.contact') }}">Contact Us</a></li>
-                                <li><a href="page-terms.html">Term & Conditions</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <!-- .col-lg-4 end -->
-                    <div class="col-sm-12 col-md-12 col-lg-4 text-center widget--logo">
-                        <div class="widget--content">
-                            <div class="widget--logo-img">
-                                <img src="{{url_for('static',filename='frontend/assets/images/logo/logo.png')}}" alt="logo">
+            {% block main  %}{% endblock %}
+
+            <!-- Footer #1
+            ============================================= -->
+            <footer id="footerParallax" class="footer footer-1">
+                <div class="container pr-40 pl-40">
+                    <div class="footer-widget">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12 col-lg-4 text-center-xs widget--links">
+                                <div class="widget--content">
+                                    <ul class="list-unstyled">
+                                        <li><a href="{{ url_for('.about') }}">About Us </a></li>
+                                        <li><a href="#">Privacy Policy</a></li>
+                                        <li><a href="#">Term & Conditions</a></li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                        <div class="footer--copyright">
-                            <span>&copy;<script>new Date().getFullYear()>2010&&document.write(new Date().getFullYear());</script> MyWishlistNG - All Rights Reserved</span>
-                        </div>
-                        <!-- .footer-copyright end -->
-                    </div>
-                    <!-- .col-lg-4 end -->
-                    <div class="col-sm-12 col-md-12 col-lg-4 text-right text-center-xs text-center-sm widget--social">
-                        <div class="widget--content">
-                            <div class="social--icons">
-                                <span>Follow Us On Social</span>
-                                <a class="facebook" href="#">
-                                    <i class="fa fa-facebook"></i>
-                                </a>
-                                <a class="twitter" href="#">
-                                    <i class="fa fa-twitter"></i>
-                                </a>
-                                <a class="google-plus" href="#">
-                                    <i class="fa fa-pinterest-p"></i>
-                                </a>
-                                <a class="instagram" href="#">
-                                    <i class="fa fa-instagram"></i>
-                                </a>
+                            <!-- .col-lg-4 end -->
+                            <div class="col-sm-12 col-md-12 col-lg-4 text-center widget--logo">
+                                <div class="widget--content">
+                                    <div class="widget--logo-img">
+                                        <img src="{{ url_for('static', filename='frontend/assets/images/logo/logo.png') }}" alt="logo">
+                                    </div>
+                                </div>
+                                <div class="footer--copyright">
+                                    <span>&copy;<script>new Date().getFullYear()>2010&&document.write(new Date().getFullYear());</script> MyWishlistNG - All Rights Reserved</span>
+                                </div>
+                                <!-- .footer-copyright end -->
                             </div>
+                            <!-- .col-lg-4 end -->
+                            <div class="col-sm-12 col-md-12 col-lg-4 text-right text-center-xs text-center-sm widget--social">
+                                <div class="widget--content">
+                                    <div class="social--icons">
+                                        <span>Follow Us On Social</span>
+                                        <a class="facebook" href="#">
+                                            <i class="fa fa-facebook"></i>
+                                        </a>
+                                        <a class="twitter" href="#">
+                                            <i class="fa fa-twitter"></i>
+                                        </a>
+                                        <a class="google-plus" href="#">
+                                            <i class="fa fa-pinterest-p"></i>
+                                        </a>
+                                        <a class="instagram" href="#">
+                                            <i class="fa fa-instagram"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- .col-lg-4 end -->
                         </div>
+                        <!-- .row end -->
                     </div>
-                    <!-- .col-lg-4 end -->
+                    <!-- .container end -->
                 </div>
-                <!-- .row end -->
-            </div>
-            <!-- .container end -->
-        </div>
-        <!-- .footer-widget end -->
-    </footer>
+                <!-- .footer-widget end -->
+            </footer>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                {% if category == 'success' %}
-                    <div class="toast jam" aria-hidden="true">
-                        <span class="close" aria-role="button" tabindex="0">&times;</span>
-                        {{ message }}
-                    </div>
-                {% else %}
-                    <div class="toast-failed failed-jam" aria-hidden="true">
-                        <span class="failed-close" aria-role="button" tabindex="0">&times;</span>
-                        {{ message }}
-                    </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category == 'success' %}
+                            <div class="toast jam" aria-hidden="true">
+                                <span class="close" aria-role="button" tabindex="0">&times;</span>
+                                {{ message }}
+                            </div>
+                        {% else %}
+                            <div class="toast-failed failed-jam" aria-hidden="true">
+                                <span class="failed-close" aria-role="button" tabindex="0">&times;</span>
+                                {{ message }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 {% endif %}
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+            {% endwith %}
+        </div>
 
-    </div>
-    <!-- Footer Scripts
-    ============================================= -->
-    <script data-cfasync="false" src="../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-    <script src="{{url_for('static',filename='frontend/assets/js/jquery-3.3.1.min.js')}}"></script>
-    <script src="{{url_for('static',filename='frontend/assets/js/plugins.js')}}"></script>
-    <script src="{{url_for('static',filename='frontend/assets/js/functions.js')}}"></script>
-    <!-- RS5.0 Core JS Files -->
-    <script src="{{url_for('static',filename='frontend/assets/revolution/js/jquery.themepunch.tools.min838f.js')}}"></script>
-    <script src="{{url_for('static',filename='frontend/assets/revolution/js/jquery.themepunch.revolution.min838f.js')}}"></script>
-    <script src="{{url_for('static',filename='frontend/assets/revolution/js/extensions/revolution.extension.video.min.js')}}"></script>
-    <script src="{{url_for('static',filename='frontend/assets/revolution/js/extensions/revolution.extension.slideanims.min.js')}}"></script>
-    <script src="{{url_for('static',filename='frontend/assets/revolution/js/extensions/revolution.extension.actions.min.js')}}"></script>
-    <script src="{{url_for('static',filename='frontend/assets/revolution/js/extensions/revolution.extension.layeranimation.min.js')}}"></script>
-    <script src="{{url_for('static',filename='frontend/assets/revolution/js/extensions/revolution.extension.kenburn.min.js')}}"></script>
-    <script src="{{url_for('static',filename='frontend/assets/revolution/js/extensions/revolution.extension.navigation.min.js')}}"></script>
-    <script src="{{url_for('static',filename='frontend/assets/revolution/js/extensions/revolution.extension.migration.min.js')}}"></script>
-    <script src="{{url_for('static',filename='frontend/assets/revolution/js/extensions/revolution.extension.parallax.min.js')}}"></script>
-    <!-- RS Configration JS Files -->
-    <script src="{{url_for('static',filename='frontend/assets/js/rsconfig.js')}}"></script>
-    {% block extra_js %}{% endblock %}
-</body>
+        <!-- Footer Scripts
+        ============================================= -->
+        <script src="{{ url_for('static', filename='frontend/assets/js/jquery-3.3.1.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='frontend/assets/js/jquery-3.2.1.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='frontend/assets/js/plugins.js') }}"></script>
+        <script src="{{ url_for('static', filename='frontend/assets/js/functions.js') }}"></script>
+        <!-- RS5.0 Core JS Files -->
+        <script src="{{ url_for('static', filename='frontend/assets/revolution/js/jquery.themepunch.tools.min838f.js', rev='5.0') }}"></script>
+        <script src="{{ url_for('static', filename='frontend/assets/revolution/js/jquery.themepunch.revolution.min838f.js', rev='5.0') }}"></script>
+        <script src="{{ url_for('static', filename='frontend/assets/revolution/js/extensions/revolution.extension.video.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='frontend/assets/revolution/js/extensions/revolution.extension.slideanims.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='frontend/assets/revolution/js/extensions/revolution.extension.actions.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='frontend/assets/revolution/js/extensions/revolution.extension.layeranimation.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='frontend/assets/revolution/js/extensions/revolution.extension.kenburn.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='frontend/assets/revolution/js/extensions/revolution.extension.navigation.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='frontend/assets/revolution/js/extensions/revolution.extension.migration.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='frontend/assets/revolution/js/extensions/revolution.extension.parallax.min.js') }}"></script>
+        <!-- RS Configration JS Files -->
+        <script src="{{ url_for('static', filename='frontend/assets/js/rsconfig.js') }}"></script>
+        <script>
+        $(function() {
+
+            $('.showVid').click(function() {
+                $('.videoModal').addClass('toggle');
+                $('.videoModal iframe').addClass('OpenVideo');
+            });
+            $('.videoModal').click(function() {
+                $('.videoModal').removeClass('toggle');
+                $('.videoModal iframe').removeClass('OpenVideo');
+            });
+
+        });
+        </script>
+        {% block extra_js %}{% endblock %}
+    </body>
 </html>
+

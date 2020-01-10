@@ -4,6 +4,7 @@ from flask import flash
 from wtforms.widgets import ListWidget, CheckboxInput
 from wtforms.ext.sqlalchemy.fields import QuerySelectMultipleField
 from flask_admin.form.widgets import Select2TagsWidget, Select2Widget
+from flask_wtf import Form
 
 
 class MultiCheckboxField(form.SelectMultipleField):
@@ -11,7 +12,13 @@ class MultiCheckboxField(form.SelectMultipleField):
     option_widget = CheckboxInput()
 
 
-class DiscountForm(form.Form):
+class NewsletterForm(Form):
+    email = form.StringField('Email Address', validators=[
+        validator.DataRequired(message='Please provide your email address'),
+        validator.Length(max=255, message='Email cannot be longer than 255 characters')])
+
+
+class DiscountForm(Form):
     code = form.StringField('Code', validators=[validator.DataRequired(), validator.Length(max=50)])
     amount = form.FloatField('Amount', validators=[validator.Optional(), validator.NumberRange(min=1)])
     percentage = form.FloatField('Percentage', validators=[validator.Optional(), validator.NumberRange(min=1, max=100)])
@@ -29,7 +36,7 @@ class DiscountForm(form.Form):
         return True
 
 
-class ArticleForm(form.Form):
+class ArticleForm(Form):
     title = form.StringField('Title', validators=[validator.DataRequired(), validator.Length(max=100)])
     summary = form.TextAreaField('Summary', validators=[validator.DataRequired()])
     content = form.TextAreaField('Content', validators=[validator.DataRequired()])
@@ -38,7 +45,7 @@ class ArticleForm(form.Form):
     is_published = form.BooleanField('Is Active', default=True)
 
 
-class RegistrationForm(form.Form):
+class RegistrationForm(Form):
     first_name = form.StringField('First Name', validators=[validator.DataRequired(), validator.Length(max=50)],
                                   render_kw={"placeholder": "First Name"})
     last_name = form.StringField('Last Name', validators=[validator.DataRequired(), validator.Length(max=50)],
@@ -57,7 +64,7 @@ class RegistrationForm(form.Form):
     terms_and_conditions = form.BooleanField(validators=[validator.DataRequired()])
 
 
-class LoginForm(form.Form):
+class LoginForm(Form):
     email = form.StringField('Email', validators=[validator.DataRequired(), validator.Email(),
                                                   validator.Length(max=50)], render_kw={"placeholder": "Email Address"})
     password = form.PasswordField('Password', validators=[validator.DataRequired(), validator.Length(max=50)],
@@ -65,14 +72,14 @@ class LoginForm(form.Form):
     remember_me = form.BooleanField('Remember Me', default=True)
 
 
-class VerificationForm(form.Form):
+class VerificationForm(Form):
     email = form.StringField('Email', validators=[validator.DataRequired(), validator.Email(),
                                                   validator.Length(max=50)], render_kw={"placeholder": "Email Address"})
     verification_code = form.StringField('Verification Code', validators=[validator.DataRequired()],
                                          render_kw={"placeholder": "Verification Code"})
 
 
-class RegistryForm(form.Form):
+class RegistryForm(Form):
     name = form.StringField('Registry Name', validators=[validator.DataRequired(), validator.Length(max=100)],
                             render_kw={"placeholder": "Registry Name e.g Seyi & Funke's Wedding"})
     description = form.TextAreaField('Description', validators=[validator.DataRequired()],
@@ -92,7 +99,7 @@ class RegistryForm(form.Form):
         return True
 
 
-class RegistryProductForm(form.Form):
+class RegistryProductForm(Form):
     name = form.StringField('Your Name', validators=[validator.DataRequired(), validator.Length(max=100)], render_kw={"placeholder": "Your Name"})
     phone_number = form.StringField('Your Phone Number', validators=[validator.DataRequired()], render_kw={"placeholder": "Your Phone Number"})
     address = form.TextAreaField('Delivery Address', validators=[validator.DataRequired()], render_kw={"placeholder": "Your Delivery Address", "rows": 10})
@@ -101,15 +108,15 @@ class RegistryProductForm(form.Form):
     products = form.SelectMultipleField('Products', coerce=int, validators=[validator.DataRequired(message="Please select at least one product")])
 
 
-class AdminRegistryForm(form.Form):
+class AdminRegistryForm(Form):
     pass
 
 
-class AddCartDiscount(form.Form):
+class AddCartDiscount(Form):
     code = form.StringField('Dicount code', validators=[validator.DataRequired()], render_kw={'placeholder': "Enter Your Code Here"})
 
 
-class OrderForm(form.Form):
+class OrderForm(Form):
     first_name = form.StringField('First Name', validators=[validator.DataRequired(), validator.Length(max=100)])
     last_name = form.StringField('Last Name', validators=[validator.DataRequired(), validator.Length(max=100)])
     phone_number = form.StringField('Phone Number', validators=[validator.Length(max=50)])
