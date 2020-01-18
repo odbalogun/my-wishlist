@@ -463,7 +463,7 @@ def checkout():
         tran.generate_txn_number()
         if 'discount_id' in session:
             tran.discount_id = session['discount_id']
-            tran.discounted_amount = session['discount_amount']
+            tran.discounted_amount = session['discounted_price']
         tran.save()
 
         # save order items
