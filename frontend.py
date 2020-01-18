@@ -481,8 +481,8 @@ def checkout():
                 order.generate_order_number()
                 order.save()
 
-            item = OrderItem(order_id=order.id, registry_id=product['registry']['id'], reg_product_id=key,
-                             quantity=product['quantity'], unit_price=product['unit_price'],
+            item = OrderItem(order_id=order.id, reg_product_id=key, quantity=product['quantity'],
+                             unit_price=product['unit_price'],
                              total_price=product['total_price'])
             item.save()
 
