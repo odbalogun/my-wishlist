@@ -21,18 +21,11 @@
                     <li class="has-dropdown">
                         <a href="{{ url_for('.registries') }}" data-toggle="dropdown" class="dropdown-toggle menu-item">Registry</a>
                         <ul class="dropdown-menu">
-                            <li>
-                                <a href="#">Wedding</a>
-                            </li>
-                            <li>
-                                <a href="#">bridal</a>
-                            </li>
-                            <li>
-                                <a href="#">birthday</a>
-                            </li>
-                            <li>
-                                <a href="#">babyshower</a>
-                            </li>
+                            {% for item in registry_types.get_active_records() %}
+                                <li>
+                                    <a href="{{ url_for('.registries', type=item.slug) }}">{{ item.name }}</a>
+                                </li>
+                            {% endfor %}
                             <li>
                                 <a href="{{ url_for('.registries') }}">all</a>
                             </li>

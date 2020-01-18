@@ -83,7 +83,7 @@
                                             <span>{{ product.display_price }}</span>
                                         </div>
                                         <div class="category--bio">
-                                            <p>{{ product.description }}</p>
+                                            <p>{{ product.description | safe }}</p>
                                         </div>
                                     </div>
                                     <!-- .category-content end -->

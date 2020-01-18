@@ -6,7 +6,7 @@ from flask_security import current_user, logout_user
 from flask_security.utils import hash_password
 from flask import redirect, request, url_for, flash, Markup
 from app import db
-from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage, Registry, HoneymoonFund, Order, Newsletter
+from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage, Registry, HoneymoonFund, Order, Newsletter, RegistryType, Transaction, Donation
 from slugify import UniqueSlugify, Slugify
 from wtforms import TextAreaField, FileField, FloatField
 from flask_admin.actions import action
@@ -344,17 +344,54 @@ class HoneyMoonFundInlineForm(InlineFormAdmin):
     form_columns = ['message', 'target_amount']
 
 
+class RegistryTypeView(MyModelView):
+    column_list = ['name', 'slug', 'is_active']
+    form_excluded_columns = ['registries']
+    form_widget_args = {
+        'is_active': {
+            'type': 'checkbox',
+            'class': 'flat-red'
+        }
+    }
+
+    @action('activate', 'Mark as Activated', 'Are you sure you want to mark these items as active?')
+    def action_activate(self, ids):
+        try:
+            count = RegistryType.query.filter(RegistryType.id.in_(ids)).update({RegistryType.is_active: True},
+                                                                               synchronize_session='fetch')
+            db.session.commit()
+
+            flash(f'{count} items were successfully marked as active', 'success')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(f'Failed to process request. {str(ex)}', 'error')
+
+    @action('deactivate', 'Mark as Deactivated', 'Are you sure you want to mark these items as deactivated?')
+    def action_deactivate(self, ids):
+        try:
+            count = RegistryType.query.filter(RegistryType.id.in_(ids)).update({RegistryType.is_active: False},
+                                                                               synchronize_session='fetch')
+            db.session.commit()
+
+            flash(f'{count} items were successfully marked as deactivated', 'success')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(f'Failed to process request. {str(ex)}', 'error')
+
+
 class RegistryView(MyModelView):
-    column_list = ['name', 'url', 'target_amount', 'amount_attained', 'is_active', 'created_by', 'date_created', 'admin_created_by']
+    column_list = ['name', 'url', 'registry_type', 'target_amount', 'amount_attained', 'is_active', 'created_by', 'date_created', 'admin_created_by']
     form_excluded_columns = ['slug', 'admin_created_by', 'date_created', 'registry_products']
-    form_columns = ['created_by', 'name', 'description', 'image', 'products']
+    form_columns = ['created_by', 'name', 'registry_type', 'description', 'image', 'products']
     column_labels = {'admin_created_by': 'Created by Admin', 'created_by': 'Owner',
                      'fund.target_amount': 'Target Amount', 'fund.message': 'Honeymoon Fund'}
     column_details_list = ['created_by', 'name', 'slug', 'description', 'image', 'products', 'fund.target_amount',
                            'fund.message', 'admin_created_by', 'date_created']
     relative_file_path = get_relative_file_path('registries', generate_folder_name())
     form_widget_args = {
-        'is_available': {
+        'is_active': {
             'type': 'checkbox',
             'class': 'flat-red'
         },
@@ -401,14 +438,40 @@ class RegistryView(MyModelView):
             flash(f'Failed to process request. {str(ex)}', 'error')
 
 
-# class OrderView(MyModelView):
-#     column_list = ['order_number', 'full_name', 'total_amount', 'discount', 'get_amount_paid', 'payment_status',
-#                    'payment_txn_number', 'status', 'date_created']
-#     column_labels = {'order_number': "Order No.", 'get_amount_paid': "Amount Due", 'first_name': "First Name",
-#                      'last_name': "Last Name"}
-#     column_searchable_list = ['order_number', 'first_name', 'last_name']
-#     can_create = False
-#     can_edit = False
+class OrderView(MyModelView):
+    column_list = ['order_number', 'transaction', 'registry', 'status', 'date_created']
+    column_labels = {'order_number': "Order No.", 'transaction': "Transaction No."}
+    column_searchable_list = ['order_number']
+    can_create = False
+    can_edit = False
+
+
+class DonationView(MyModelView):
+    column_list = ['transaction', 'registry', 'amount', 'date_created']
+    column_labels = {'transaction': "Transaction No.", 'amount': 'Amount Donated'}
+    # column_searchable_list = ['order_number', 'first_name', 'last_name']
+    can_create = False
+    can_edit = False
+
+
+class TransactionView(MyModelView):
+    column_list = ['txn_no', 'first_name', 'last_name', 'email', 'phone_number', 'type', 'total_amount', 'discounted_amount',
+                   'payment_txn_number', 'date_created']
+    column_searchable_list = ['txn_no', 'first_name', 'last_name', 'email']
+    column_labels = {'payment_txn_number': 'Payment Reference'}
+    can_edit = False
+    can_create = False
+    can_delete = False
+
+    def get_query(self):
+        return super(TransactionView, self).get_query().filter(Transaction.payment_status == 'paid')
+
+    def get_count_query(self):
+        return super(TransactionView, self).get_count_query().filter(Transaction.payment_status == 'paid')
+
+    def get_one(self, id):
+        query = self.get_query()
+        return query.filter(self.model.id == id).filter(Transaction.payment_status == 'paid').one()
 
 
 class NewsletterView(MyModelView):
@@ -433,6 +496,7 @@ admin.add_view(ProductCategoryView(Category, db.session, menu_icon_type='fa', me
                                    name="Product Categories"))
 admin.add_view(ProductView(Product, db.session, menu_icon_type='fa', menu_icon_value='fa-shopping-basket',
                            name='Products'))
+admin.add_view(RegistryTypeView(RegistryType, db.session, menu_icon_type='fa', menu_icon_value='fa-file-o', name='Registry Types'))
 admin.add_view(RegistryView(Registry, db.session, menu_icon_type='fa', menu_icon_value='fa-file', name='Registries'))
 # admin.add_view(OrderView(Order, db.session, menu_icon_type='fa', menu_icon_value='fa-first-order', name='Orders'))
 admin.add_view(NewsletterView(Newsletter, db.session, menu_icon_type='fa', menu_icon_value='fa-newspaper-o',
@@ -440,3 +504,6 @@ admin.add_view(NewsletterView(Newsletter, db.session, menu_icon_type='fa', menu_
 admin.add_view(UserView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-users', name="Users"))
 admin.add_view(AdminView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-user', name="Administrators",
                          endpoint='administrator'))
+admin.add_view(OrderView(Order, db.session, menu_icon_type='fa', menu_icon_value='fa-shopping-cart', name='Orders'))
+admin.add_view(DonationView(Donation, db.session, menu_icon_type='fa', menu_icon_value='fa-money', name='Donations'))
+admin.add_view(TransactionView(Transaction, db.session, menu_icon_type='fa', menu_icon_value='fa-credit-card', name='Transactions'))

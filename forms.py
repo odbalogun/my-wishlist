@@ -82,13 +82,17 @@ class VerificationForm(FlaskForm):
 class RegistryForm(FlaskForm):
     name = form.StringField('Registry Name', validators=[validator.DataRequired(), validator.Length(max=100)],
                             render_kw={"placeholder": "Registry Name e.g Seyi & Funke's Wedding"})
+    registry_type_id = form.SelectField('Event Type', coerce=int, validators=[validator.DataRequired()],
+                                        render_kw={"placeholder": "Registry Type"})
+    hashtag = form.StringField('Hashtag', validators=[validator.Optional()],
+                               render_kw={"placeholder": "Event hashtag e.g #SeyFun20"})
     description = form.TextAreaField('Description', validators=[validator.DataRequired()],
                                      render_kw={"placeholder": "Registry Description"})
     image = form.FileField('Image', validators=[validator.Optional()])
     amount = form.FloatField('Target Amount', validators=[validator.Optional()],
                              render_kw={"placeholder": "Target Amount"})
     message = form.TextAreaField('Message', validators=[validator.Optional()],
-                                 render_kw={"placeholder": "Message to people who donate to your fund"})
+                                 render_kw={"placeholder": "Message to people donating to your fund", 'style': "height: 200px;"})
 
     def validate(self):
         if not super(RegistryForm, self).validate():
@@ -102,7 +106,7 @@ class RegistryForm(FlaskForm):
 class RegistryProductForm(FlaskForm):
     name = form.StringField('Your Name', validators=[validator.DataRequired(), validator.Length(max=100)], render_kw={"placeholder": "Your Name"})
     phone_number = form.StringField('Your Phone Number', validators=[validator.DataRequired()], render_kw={"placeholder": "Your Phone Number"})
-    address = form.TextAreaField('Delivery Address', validators=[validator.DataRequired()], render_kw={"placeholder": "Your Delivery Address", "rows": 10})
+    address = form.TextAreaField('Delivery Address', validators=[validator.DataRequired()], render_kw={"placeholder": "Your Delivery Address"})
     city = form.StringField('Your City', validators=[validator.DataRequired()], render_kw={'placeholder': "Your City"})
     state = form.StringField('Your State', validators=[validator.DataRequired()], render_kw={'placeholder': "Your State"})
     products = form.SelectMultipleField('Products', coerce=int, validators=[validator.DataRequired(message="Please select at least one product")])
@@ -113,7 +117,7 @@ class AdminRegistryForm(FlaskForm):
 
 
 class AddCartDiscount(FlaskForm):
-    code = form.StringField('Dicount code', validators=[validator.DataRequired()], render_kw={'placeholder': "Enter Your Code Here"})
+    code = form.StringField('Discount code', validators=[validator.DataRequired()], render_kw={'placeholder': "Enter Your Code Here"})
 
 
 class OrderForm(FlaskForm):
@@ -121,6 +125,18 @@ class OrderForm(FlaskForm):
     last_name = form.StringField('Last Name', validators=[validator.DataRequired(), validator.Length(max=100)])
     phone_number = form.StringField('Phone Number', validators=[validator.Length(max=50)])
     email = form.StringField('Email Address', validators=[validator.DataRequired(), validator.Email(), validator.Length(max=50)])
+    message = form.TextAreaField('Message', validators=[validator.Optional()],
+                                 render_kw={"placeholder": "Send a message to the celebrants"})
+
+
+class DonationForm(FlaskForm):
+    first_name = form.StringField('First Name', validators=[validator.DataRequired(), validator.Length(max=100)], render_kw={"placeholder": "Your First Name"})
+    last_name = form.StringField('Last Name', validators=[validator.DataRequired(), validator.Length(max=100)], render_kw={"placeholder": "Your Last Name"})
+    phone_number = form.StringField('Phone Number', validators=[validator.Length(max=50)], render_kw={"placeholder": "Your Phone Number"})
+    email = form.StringField('Email Address', render_kw={"placeholder": "Your Email Address"},
+                             validators=[validator.DataRequired(), validator.Email(), validator.Length(max=50)])
+    amount = form.FloatField('Enter Amount', validators=[validator.DataRequired(), validator.NumberRange(min=0)],
+                             render_kw={"placeholder": "Enter an Amount"})
     message = form.TextAreaField('Message', validators=[validator.Optional()],
                                  render_kw={"placeholder": "Send a message to the celebrants"})
 

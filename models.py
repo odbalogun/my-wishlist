@@ -3,7 +3,7 @@ from flask import request
 from database import (
     db,
     Model,
-    SurrogatePK,
+    CustomModelMixin,
     reference_col,
     relationship,
     Column
@@ -82,7 +82,7 @@ articles_tags = db.Table('articles_tags',
                          )
 
 
-class Article(SurrogatePK, Model):
+class Article(CustomModelMixin, Model):
     __tablename__ = 'articles'
 
     title = Column(db.String(100), nullable=False)
@@ -111,7 +111,7 @@ class Article(SurrogatePK, Model):
         return self.save()
 
 
-class Tag(SurrogatePK, Model):
+class Tag(CustomModelMixin, Model):
     __tablename__ = 'tags'
 
     name = Column(db.String(50), nullable=False, unique=True)
@@ -135,7 +135,7 @@ Classes for the product/inventory management section
 """
 
 
-class Category(SurrogatePK, Model):
+class Category(CustomModelMixin, Model):
     __tablename__ = 'categories'
 
     name = Column(db.String(100), nullable=False, unique=True)
@@ -150,7 +150,7 @@ class Category(SurrogatePK, Model):
         return self.name
 
 
-class Product(SurrogatePK, Model):
+class Product(CustomModelMixin, Model):
     __tablename__ = 'products'
 
     name = Column(db.String(100), nullable=False)
@@ -206,7 +206,7 @@ class Product(SurrogatePK, Model):
         }
 
 
-class ProductImage(SurrogatePK, Model):
+class ProductImage(CustomModelMixin, Model):
     __tablename__ = 'product_images'
 
     name = Column(db.Text, nullable=False)
@@ -225,7 +225,7 @@ class ProductImage(SurrogatePK, Model):
         return self.name
 
 
-class Discount(SurrogatePK, Model):
+class Discount(CustomModelMixin, Model):
     __tablename__ = 'discounts'
 
     code = Column(db.String(50), nullable=False, unique=True)
@@ -247,13 +247,24 @@ class Discount(SurrogatePK, Model):
         return (self.percentage/100) * price
 
 
-class Registry(SurrogatePK, Model):
+class RegistryType(CustomModelMixin, Model):
+    __tablename__ = 'registry_types'
+
+    name = Column(db.String(100), nullable=False)
+    slug = Column(db.String(100), nullable=False, unique=True)
+    is_active = Column(db.Boolean, default=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Registry(CustomModelMixin, Model):
     __tablename__ = 'registries'
 
     name = Column(db.String(100), nullable=False)
     slug = Column(db.String(100), nullable=False, unique=True)
-    # registry_type
-    # hashtag
+    hashtag = Column(db.String(50), nullable=True)
+    registry_type_id = reference_col("registry_types", nullable=True)
     description = Column(db.Text, nullable=False)
     image = Column(db.Text, nullable=True)
     created_by_id = reference_col("user", nullable=True)
@@ -264,6 +275,7 @@ class Registry(SurrogatePK, Model):
     created_by = relationship("User", backref="registries", primaryjoin="Registry.created_by_id==User.id")
     admin_created_by = relationship("User", primaryjoin="Registry.admin_created_id==User.id")
     products = relationship("Product", secondary="registry_products")
+    registry_type = relationship("RegistryType", backref="registries")
 
     @property
     def url(self):
@@ -304,7 +316,7 @@ class Registry(SurrogatePK, Model):
         }
 
 
-class HoneymoonFund(SurrogatePK, Model):
+class HoneymoonFund(CustomModelMixin, Model):
     __tablename__ = 'honeymoon_funds'
 
     registry_id = reference_col("registries", nullable=False)
@@ -331,7 +343,7 @@ class HoneymoonFund(SurrogatePK, Model):
         return 99800
 
 
-class RegistryProducts(SurrogatePK, Model):
+class RegistryProducts(CustomModelMixin, Model):
     __tablename__ = 'registry_products'
 
     registry_id = reference_col("registries", nullable=False)
@@ -346,7 +358,7 @@ class RegistryProducts(SurrogatePK, Model):
         return self.product.name
 
 
-class RegistryDeliveryAddress(SurrogatePK, Model):
+class RegistryDeliveryAddress(CustomModelMixin, Model):
     __tablename__ = 'registry_delivery_addresses'
 
     registry_id = reference_col("registries", nullable=False)
@@ -359,14 +371,14 @@ class RegistryDeliveryAddress(SurrogatePK, Model):
     registry = relationship("Registry", backref=backref("delivery", uselist=False, cascade="all, delete-orphan"))
 
 
-class Newsletter(SurrogatePK, Model):
+class Newsletter(CustomModelMixin, Model):
     __tablename__ = 'newsletter'
 
     email = db.Column(db.String(255), unique=True)
     date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
 
 
-class Transaction(SurrogatePK, Model):
+class Transaction(CustomModelMixin, Model):
     __tablename__ = 'transactions'
 
     txn_no = Column(db.String(255), unique=True)
@@ -375,6 +387,8 @@ class Transaction(SurrogatePK, Model):
     phone_number = db.Column(db.String(50), nullable=True)
     email = db.Column(db.String(255))
     message = Column(db.Text, nullable=True)
+    # valid types are order and donation
+    type = Column(db.String(255))
     payment_status = Column(ChoiceType(PAYMENT_STATUS, impl=db.String()))
     total_amount = Column(db.Float, nullable=False)
     discounted_amount = Column(db.Float, nullable=True)
@@ -396,8 +410,29 @@ class Transaction(SurrogatePK, Model):
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
 
+    @property
+    def get_items(self):
+        if self.type == 'order':
+            return self.orders
+        return self.donations
 
-class Order(SurrogatePK, Model):
+    def __str__(self):
+        return self.txn_no
+
+
+class Donation(CustomModelMixin, Model):
+    __tablename__ = 'donations'
+
+    transaction_id = reference_col("transactions", nullable=False)
+    registry_id = reference_col("registries", nullable=False)
+    amount = Column(db.Float, nullable=False)
+    date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+
+    registry = relationship("Registry", backref=backref("donations", uselist=True))
+    transaction = relationship("Transaction", backref=backref("donations", uselist=True))
+
+
+class Order(CustomModelMixin, Model):
     __tablename__ = 'orders'
 
     order_number = Column(db.String(255), unique=True)
@@ -413,7 +448,7 @@ class Order(SurrogatePK, Model):
         self.order_number = f"ORD{dt.date.today().strftime('%Y%m%d')}00000{self.id}"
 
 
-class OrderItem(SurrogatePK, Model):
+class OrderItem(CustomModelMixin, Model):
     __tablename__ = 'order_items'
 
     order_id = reference_col("orders", nullable=False)

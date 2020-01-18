@@ -1,4 +1,5 @@
 {% extends 'frontend/_layout.html' %}
+{% from "frontend/_formhelpers.html" import render_field %}
 
 {% block main %}
     <!-- Page Title #3
@@ -58,16 +59,16 @@
             <div class="col-sm-12 col-md-12 col-lg-12">
                 <div class="banner-panel">
                     <div class="panel--content">
-                        <h5>{{ registry }}</h5>
+                        <h5>{% if registry.hashtag %} {{ registry.hashtag | lower }} {% else %} {{ registry }} {% endif %}</h5>
                         <h6>We are trying to raise {{ registry.fund.format_price(registry.fund.target_amount) }}</h6>
                         <p>{{ registry.fund.message }}</p>
                     </div>
                     <div class="pt-50">
                         <div class="progress-bg">
                             <div class="progress-bar">
-                                <h3 class="raised">{{ registry.fund.format_price(registry.fund.target_amount) }} </h3>
+                                <h3 class="raised">{{ registry.fund.format_price(registry.fund.amount_donated) }} </h3>
                             </div>
-                            <h3 class="goal">Goal: {{ registry.fund.format_price(registry.fund.amount_donated) }}</h3>
+                            <h3 class="goal">Goal: {{ registry.fund.format_price(registry.fund.target_amount) }}</h3>
                         </div>
                     </div>
                 </div>
@@ -159,45 +160,72 @@
 <!-- #category end -->
 <div id="costumModal30" class="modal" data-easein="bounce"  tabindex="-1" role="dialog" aria-labelledby="costumModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    ×
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6 col-lg-6">
-                            <div class="register-title">
-                                <h5>Donate to our fund</h5>
-                            </div>
-                            <!-- .register-title end -->
-                            <form>
+        <form action="" method="post">
+            {{ form.csrf_token }}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                <div class="register-title">
+                                    <h5>Donate to support our event</h5>
+                                </div>
                                 <div class="row">
                                     <div class="col-sm-12 col-md-12 col-lg-12">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" id="user-name" placeholder="Enter Amount">
+                                            <input type="text" name="amount" placeholder="Enter Amount" class="form-control" required>
                                         </div>
                                     </div>
                                     <!-- .col-lg-12 end -->
                                     <div class="col-sm-12 col-md-12 col-lg-12">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" id="login-password" placeholder="Enter Message">
+                                            {{ render_field(form.message) }}
                                         </div>
                                     </div>
                                 </div>
-                                <!-- .row end -->
-                            </form>
+                            </div>
+                            <div class="col-md-6 col-lg-6">
+                                <div class="register-title">
+                                    <h5>Please tell us a bit about yourself</h5>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="form-group">
+                                            {{ render_field(form.first_name) }}
+                                        </div>
+                                    </div>
+                                    <!-- .col-lg-12 end -->
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="form-group">
+                                            {{ render_field(form.last_name) }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="form-group">
+                                            {{ render_field(form.email) }}
+                                        </div>
+                                    </div>
+                                    <!-- .col-lg-12 end -->
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <div class="form-group">
+                                            {{ render_field(form.phone_number) }}
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                        <button type="submit" class="btn btn--primary btn--rounded">Send</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <!-- .row end -->
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn--primary btn--rounded">Send</button>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
 

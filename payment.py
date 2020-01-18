@@ -15,7 +15,7 @@ class PaystackPay(object):
         payload = {
             'email': email,
             'amount': int(amount * 100),
-            'callback_url': f'{request.url_root}/cart/verify-payment'
+            'callback_url': f'{request.url_root}cart/verify-payment'
         }
         response = requests.post(self.authorization_url, json=payload,
                                  headers={'Authorization': 'Bearer sk_test_3f33d1a7e198c4ca0af6b19b90f9c26e0c79ddbe'})

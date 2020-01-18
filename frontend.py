@@ -1,9 +1,9 @@
 from flask import redirect, render_template, url_for, Blueprint, flash, request, abort, session, jsonify
 from forms import RegistrationForm, LoginForm, VerificationForm, RegistryForm, RegistryProductForm, AddCartDiscount, \
-    OrderForm, NewsletterForm
+    OrderForm, NewsletterForm, DonationForm
 from decorators import custom_login_required
 from models import db, User, Registry, Product, Article, Tag, RegistryProducts, Category, HoneymoonFund, \
-    RegistryDeliveryAddress, Discount, Order, OrderItem, Newsletter, Transaction
+    RegistryDeliveryAddress, Discount, Order, OrderItem, Newsletter, Transaction, RegistryType, Donation
 from flask_security.utils import hash_password, logout_user, login_user, verify_password
 from flask_security import current_user
 from utils import generate_full_file_path, generate_folder_name
@@ -21,6 +21,7 @@ def allowed_file(filename):
 
 
 @frontend.route('/')
+@frontend.route('/index')
 def index():
     form = NewsletterForm(request.form)
 
@@ -88,6 +89,9 @@ def login():
 
 @frontend.route('/register', methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('.dashboard'))
+
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
         # check that email does not exist already
@@ -145,11 +149,15 @@ def my_registry():
 @custom_login_required
 def create_registry():
     form = RegistryForm(request.form)
-
+    form.registry_type_id.choices = [(x.id, x.name) for x in RegistryType.get_active_records()]
     if request.method == 'POST' and form.validate():
         reg = Registry()
         reg.created_by = current_user
         form.populate_obj(reg)
+        # check hashtag
+        if reg.hashtag:
+            if reg.hashtag[0] != '#':
+                reg.hashtag = f'#{reg.hashtag}'
         reg.generate_slug()
 
         image = request.files['image']
@@ -199,7 +207,7 @@ def manage_products(slug):
     form.products.choices = [(x.id, x.name) for x in products]
     categories = Category.query.all()
 
-    if request.method == 'POST' and form.validate():
+    if form.validate_on_submit():
         delivery = RegistryDeliveryAddress.query.filter_by(registry_id=registry.id).first()
 
         if not delivery:
@@ -220,6 +228,12 @@ def manage_products(slug):
 
         flash("Your registry has been successfully updated", "success")
         return redirect(url_for('.dashboard'))
+    else:
+        for errors in form.errors.values():
+            for error in errors:
+                flash(f'{error}', "error")
+                break
+            break
 
     return render_template('frontend/manage_products.html', registry=registry, products=products, form=form, categories=categories)
 
@@ -335,18 +349,53 @@ def blog_article(slug):
 
 @frontend.route('/registries', methods=['GET'])
 def registries():
-    reg_list = Registry.query.filter_by(is_active=True).all()
-    return render_template('frontend/registries.html', registries=reg_list)
+    reg_list = Registry.query.filter_by(is_active=True)
+    reg_type = request.args.get('type', None)
+
+    if reg_type:
+        category = RegistryType.get_by_slug(reg_type)
+        if category:
+            reg_list = reg_list.filter_by(registry_type_id=category.id)
+    return render_template('frontend/registries.html', registries=reg_list.all())
 
 
 @frontend.route('/registries/<slug>', methods=['GET', 'POST'])
 def view_registry(slug):
     registry = Registry.get_by_slug(slug)
-
     if not registry:
         abort(404)
 
-    return render_template('frontend/registry.html', registry=registry)
+    form = DonationForm(request.form)
+    if form.validate_on_submit():
+        tran = Transaction()
+        form.populate_obj(tran)
+        tran.total_amount = form.amount.data
+        tran.payment_status = 'unpaid'
+        tran.type = 'donation'
+        tran.save()
+
+        tran.generate_txn_number()
+        tran.save()
+
+        donation = Donation()
+        donation.registry_id = registry.id
+        donation.transaction_id = tran.id
+        donation.amount = form.amount.data
+        donation.save()
+
+        # initialize payments
+        paystack = PaystackPay()
+        response = paystack.fetch_authorization_url(email=tran.email, amount=tran.total_amount)
+
+        if response.status_code == 200:
+            json_response = response.json()
+
+            tran.update(payment_txn_number=json_response['data']['reference'])
+            return redirect(json_response['data']['authorization_url'])
+        else:
+            flash('Something went wrong. Please try again', 'error')
+
+    return render_template('frontend/registry.html', registry=registry, form=form)
 
 
 @frontend.route('/products/<slug>', methods=['GET'])
@@ -406,11 +455,12 @@ def checkout():
     if request.method == 'POST' and form.validate():
         tran = Transaction()
         form.populate_obj(tran)
+        tran.type = 'order'
         tran.total_amount = session['all_total_price']
         tran.payment_status = 'unpaid'
         tran.save()
 
-        tran.generate_order_number()
+        tran.generate_txn_number()
         if 'discount_id' in session:
             tran.discount_id = session['discount_id']
             tran.discounted_amount = session['discount_amount']

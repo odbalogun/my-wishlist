@@ -67,11 +67,22 @@ class SurrogatePK(object):
             return cls.query.get(int(record_id))
         return None
 
+
+class CustomModelMixin(SurrogatePK):
+    """Mixin that adds extra helper functions to any declarative-mapped class"""
+
     @classmethod
     def get_by_slug(cls, slug):
         """Get record by slug"""
         if hasattr(cls, 'slug'):
             return cls.query.filter_by(slug=slug).first()
+        return None
+
+    @classmethod
+    def get_active_records(cls):
+        """Get active records"""
+        if hasattr(cls, 'is_active'):
+            return cls.query.filter_by(is_active=True).all()
         return None
 
 

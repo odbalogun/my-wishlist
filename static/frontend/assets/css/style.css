@@ -3058,13 +3058,18 @@ table tbody tr td {
     #Heading
 \*------------------------------------*/
 .heading .heading--title {
-  font-family: "CeraPro-Bold";
+  font-family: "CeraPro-Medium";
   color: #000000;
   font-size: 36px;
   font-weight: 700;
-  line-height: 1.5;
   margin-bottom: 22px;
 }
+
+.heading p i{
+font-size: 36px;
+color: #9e2a97;
+}
+
 .heading .heading--subtitle {
   font-family: "CeraPro-Medium";
   color: #a1a1a1;
@@ -3104,12 +3109,15 @@ table tbody tr td {
 
 .heading-5 .heading--title {
   font-size: 24px;
-  font-weight: 300;
+  font-weight: 100;
+  font-family: 'CeraPro-Regular';
+  letter-spacing: 4px;
 }
 
 .heading-5 .heading--title a{
   color: #ffffff;
-  font-weight: 600;
+  font-weight: 500;
+  font-family: 'CeraPro-Bold';
 }
 
 @media only screen and (min-width: 320px) and (max-width: 767px) {
@@ -3277,6 +3285,9 @@ table tbody tr td {
     position: static;
     transform: translateX(0);
     margin-left: 15px;
+  }
+  .nav-logo{
+    margin-top: 30px;
   }
 
   .logo-centered .navbar-brand {
