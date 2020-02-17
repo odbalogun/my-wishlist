@@ -1,0 +1,40 @@
+1) Fix emails
+2) Add image uploads for created registries
+3) Add the various registries pages
+4) Add search
+5) Fix admin backend
+
+# form.registry_type_id.choices = [(x.id, x.name) for x in RegistryType.get_active_records()]
+# if request.method == 'POST' and form.validate():
+#     reg = Registry()
+#     reg.created_by = current_user
+#     form.populate_obj(reg)
+#     # check hashtag
+#     if reg.hashtag:
+#         if reg.hashtag[0] != '#':
+#             reg.hashtag = f'#{reg.hashtag}'
+#     reg.generate_slug()
+#
+#     image = request.files['image']
+#     if image:
+#         if allowed_file(image.filename):
+#             filename = secure_filename(image.filename)
+#             folder_name = generate_folder_name()
+#
+#             image.save(generate_full_file_path('registries', folder_name, filename))
+#
+#             reg.image = os.path.join('uploads', 'registries', folder_name, filename)
+#         else:
+#             flash('Please upload an image file', 'error')
+#             return redirect(url_for('.create_registry'))
+#
+#     reg.save()
+#     if form.amount.data:
+#         db.session.add(HoneymoonFund(message=form.message.data, target_amount=form.amount.data,
+#                                      registry_id=reg.id))
+#         db.session.commit()
+#
+#     flash("Please provide your delivery details and select products for your registry", "success")
+#     return redirect(url_for('.manage_products', slug=reg.slug))
+#
+# return render_template('frontend/create_registry.html', form=form)

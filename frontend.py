@@ -1,9 +1,9 @@
 from flask import redirect, render_template, url_for, Blueprint, flash, request, abort, session, jsonify
 from forms import RegistrationForm, LoginForm, VerificationForm, RegistryForm, RegistryProductForm, AddCartDiscount, \
-    OrderForm, NewsletterForm, DonationForm
+    OrderForm, NewsletterForm, DonationForm, WeddingRegistryForm, BabyShowerForm, BridalShowerForm, BirthdayForm
 from decorators import custom_login_required
-from models import db, User, Registry, Product, Article, Tag, RegistryProducts, Category, HoneymoonFund, \
-    RegistryDeliveryAddress, Discount, Order, OrderItem, Newsletter, Transaction, RegistryType, Donation
+from models import db, User, Product, Article, Tag, RegistryProducts, Category, RegistryDeliveryAddress, \
+    Discount, Order, OrderItem, Newsletter, Transaction, Donation, WeddingRegistry, BabyShowerRegistry, BridalShowerRegistry, BirthdayRegistry
 from flask_security.utils import hash_password, logout_user, login_user, verify_password
 from flask_security import current_user
 from utils import generate_full_file_path, generate_folder_name
@@ -14,6 +14,12 @@ import datetime
 
 frontend = Blueprint('frontend', __name__, url_prefix='/')
 ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+REGISTRY_TYPES = {
+    'weddings': WeddingRegistry,
+    'baby-showers': BabyShowerRegistry,
+    'bridal-showers': BridalShowerRegistry,
+    'birthdays': BirthdayRegistry,
+}
 
 
 def allowed_file(filename):
@@ -145,44 +151,145 @@ def my_registry():
     return render_template('frontend/my_registries.html')
 
 
-@frontend.route('/registry/create', methods=['GET', 'POST'])
+@frontend.route('/registry/create/<slug>', methods=['GET', 'POST'])
 @custom_login_required
-def create_registry():
-    form = RegistryForm(request.form)
-    form.registry_type_id.choices = [(x.id, x.name) for x in RegistryType.get_active_records()]
-    if request.method == 'POST' and form.validate():
-        reg = Registry()
-        reg.created_by = current_user
-        form.populate_obj(reg)
-        # check hashtag
-        if reg.hashtag:
-            if reg.hashtag[0] != '#':
-                reg.hashtag = f'#{reg.hashtag}'
-        reg.generate_slug()
+def create_registry(slug=None):
+    if not slug:
+        flash('You selected an invalid option. Please choose the type of registry you wish to create', 'error')
+        return redirect(url_for('.index'))
 
-        image = request.files['image']
-        if image:
-            if allowed_file(image.filename):
-                filename = secure_filename(image.filename)
-                folder_name = generate_folder_name()
+    if slug.lower() not in REGISTRY_TYPES.keys():
+        flash('You selected an invalid option. Please choose the type of registry you wish to create', 'error')
+        return redirect(url_for('.index'))
 
-                image.save(generate_full_file_path('registries', folder_name, filename))
+    if slug == 'weddings':
+        form = WeddingRegistryForm(request.form)
 
-                reg.image = os.path.join('uploads', 'registries', folder_name, filename)
-            else:
-                flash('Please upload an image file', 'error')
-                return redirect(url_for('.create_registry'))
+        if request.method == 'POST' and form.validate():
+            wedding = WeddingRegistry()
+            form.populate_obj(wedding)
 
-        reg.save()
-        if form.amount.data:
-            db.session.add(HoneymoonFund(message=form.message.data, target_amount=form.amount.data,
-                                         registry_id=reg.id))
-            db.session.commit()
+            # validate event date
+            try:
+                event_date = datetime.date(form.year.data, form.month.data, form.date.data)
+            except ValueError:
+                flash('Invalid event date provided. Please check your provided date', 'error')
+                return redirect(url_for('.create_registry', slug='weddings'))
 
-        flash("Please provide your delivery details and select products for your registry", "success")
-        return redirect(url_for('.manage_products', slug=reg.slug))
+            if event_date <= datetime.date.today():
+                flash('Your event date cannot be today or earlier.', 'error')
+                return redirect(url_for('.create_registry', slug='weddings'))
 
-    return render_template('frontend/create_registry.html', form=form)
+            wedding.event_date = event_date
+            wedding.created_by = current_user
+            # create hashtag
+            wedding.generate_hashtag()
+            wedding.generate_slug()
+            wedding.address.registry_type = wedding.__class__.__name__.lower()
+            wedding.save()
+
+            # todo send email
+            # todo add image
+            # todo ensure that errors can be displayed
+            flash('Your wedding registry has been created', 'success')
+            return redirect(url_for('.dashboard'))
+        return render_template('frontend/creation_forms/wedding_registry.html', form=form)
+    elif slug == 'baby-showers':
+        form = BabyShowerForm(request.form)
+
+        if request.method == 'POST' and form.validate():
+            baby = BabyShowerRegistry()
+            form.populate_obj(baby)
+
+            # validate event date
+            try:
+                event_date = datetime.date(form.year.data, form.month.data, form.date.data)
+            except ValueError:
+                flash('Invalid event date provided. Please check your provided date', 'error')
+                return redirect(url_for('.create_registry', slug='baby-showers'))
+
+            if event_date <= datetime.date.today():
+                flash('Your event date cannot be today or earlier.', 'error')
+                return redirect(url_for('.create_registry', slug='baby-showers'))
+
+            baby.event_date = event_date
+            baby.created_by = current_user
+            # create hashtag
+            baby.generate_hashtag()
+            baby.generate_slug()
+            baby.address.registry_type = baby.__class__.__name__.lower()
+            baby.save()
+
+            # todo send email
+            # todo add image
+            # todo ensure that errors can be displayed
+            flash('Your baby shower registry has been created', 'success')
+            return redirect(url_for('.dashboard'))
+        return render_template('frontend/creation_forms/baby_registry.html', form=form)
+    elif slug == 'bridal-showers':
+        form = BridalShowerForm(request.form)
+
+        if request.method == 'POST' and form.validate():
+            bride = BridalShowerRegistry()
+            form.populate_obj(bride)
+
+            # validate event date
+            try:
+                event_date = datetime.date(form.year.data, form.month.data, form.date.data)
+            except ValueError:
+                flash('Invalid event date provided. Please check your provided date', 'error')
+                return redirect(url_for('.create_registry', slug='bridal-showers'))
+
+            if event_date <= datetime.date.today():
+                flash('Your event date cannot be today or earlier.', 'error')
+                return redirect(url_for('.create_registry', slug='bridal-showers'))
+
+            bride.event_date = event_date
+            bride.created_by = current_user
+            # create hashtag
+            bride.generate_hashtag()
+            bride.generate_slug()
+            bride.address.registry_type = bride.__class__.__name__.lower()
+            bride.save()
+
+            # todo send email
+            # todo add image
+            # todo ensure that errors can be displayed
+            flash('Your bridal shower registry has been created', 'success')
+            return redirect(url_for('.dashboard'))
+        return render_template('frontend/creation_forms/bridal_registry.html', form=form)
+    elif slug == 'birthdays':
+        form = BirthdayForm(request.form)
+
+        if request.method == 'POST' and form.validate():
+            birthday = BirthdayRegistry()
+            form.populate_obj(birthday)
+
+            # validate event date
+            try:
+                event_date = datetime.date(form.year.data, form.month.data, form.date.data)
+            except ValueError:
+                flash('Invalid event date provided. Please check your provided date', 'error')
+                return redirect(url_for('.create_registry', slug='birthdays'))
+
+            if event_date <= datetime.date.today():
+                flash('Your event date cannot be today or earlier.', 'error')
+                return redirect(url_for('.create_registry', slug='birthdays'))
+
+            birthday.event_date = event_date
+            birthday.created_by = current_user
+            # create hashtag
+            birthday.generate_hashtag()
+            birthday.generate_slug()
+            birthday.address.registry_type = birthday.__class__.__name__.lower()
+            birthday.save()
+
+            # todo send email
+            # todo add image
+            # todo ensure that errors can be displayed
+            flash('Your birthday registry has been created', 'success')
+            return redirect(url_for('.dashboard'))
+        return render_template('frontend/creation_forms/birthday_registry.html', form=form)
 
 
 @frontend.route('/registry/<slug>/manage-products', methods=['GET', 'POST'])
@@ -349,18 +456,25 @@ def blog_article(slug):
 
 @frontend.route('/registries', methods=['GET'])
 def registries():
-    reg_list = Registry.query.filter_by(is_active=True)
     reg_type = request.args.get('type', None)
 
-    if reg_type:
-        category = RegistryType.get_by_slug(reg_type)
-        if category:
-            reg_list = reg_list.filter_by(registry_type_id=category.id)
-    return render_template('frontend/registries.html', registries=reg_list.all())
+    if not reg_type:
+        flash('The registry type was not specified', 'error')
+        return redirect(url_for('.index'))
+
+    category = REGISTRY_TYPES.get(reg_type, None)
+
+    if not category:
+        flash('The registry type does not exist', 'error')
+        return redirect(url_for('.index'))
+
+    reg_list = category.get_active_records()
+    return render_template('frontend/registries.html', registries=reg_list, reg_type=reg_type)
 
 
 @frontend.route('/registries/<slug>', methods=['GET', 'POST'])
 def view_registry(slug):
+    # todo deprecate in favor of individual views for each reg type. Url should look like 'weddings/#benife2020'
     registry = Registry.get_by_slug(slug)
     if not registry:
         abort(404)

@@ -1,0 +1,83 @@
+{% extends 'frontend/creation_forms/_form_layout.html' %}
+
+{% block main %}
+<div class="fs-form-wrap" id="fs-form-wrap">
+    <form id="myform" action="" method="post" class="fs-form fs-form-full" autocomplete="off">
+        {{ form.csrf_token }}
+        <ol class="fs-fields">
+
+            <li>
+                <label class="fs-field-label fs-anim-upper" for="q1">Your special day is almost here! We have stocked the best gifts for our beautiful bride to be.</label>
+            </li>
+            <li>
+                <label class="fs-field-label fs-anim-upper" for="first_name last_name">Who's our Bride?</label>
+                <div class="input-questions">
+                    {{ form.first_name(class_='fs-anim-lower', placeholder="First Name") }}
+                    {{ form.last_name(class_='fs-anim-lower', placeholder="Last Name") }}
+                </div>
+            </li>
+            <li>
+                <label class="fs-field-label fs-anim-upper" data-info="We'll create one if you leave it blank :)" for="hashtag">Do you have a #hashtag for your bridal shower?</label>
+                <div class="input-questions">
+                    {{ form.hashtag(class_='fs-anim-lower', placeholder='#StephIsGettingMarried') }}
+                </div>
+            </li>
+            <li data-input-trigger>
+                <label class="fs-field-label fs-anim-upper" data-info="We'll make sure to use the date all over">When is it happening?</label>
+                <div class="question-wrap clearfix fs-anim-lower">
+                    <div class="select-questions">
+                        {{ form.month(class_='cs-select fs-anim-lower one') }}
+                    </div>
+                    <div class="input-questions-month" style="width: inherit;">
+                        {{ form.date(class_='cs-select fs-anim-lower') }}
+                    </div>
+                    <div class="select-questions" style="margin-left: 42px">
+                        {{ form.year(class_='cs-select fs-anim-lower') }}
+                    </div>
+                </div>
+            </li>
+            <!--
+            <li data-input-trigger>
+                <label class="fs-field-label fs-anim-upper" for="q3" data-info="This will help us know what kind of service you need">What are you excited about using MyWishListNg?</label>
+                <div class="fs-radio-group fs-radio-custom clearfix fs-anim-lower">
+                    <span><input id="q3b" name="q3" type="radio" value="conversion"/><label for="q3b" class="radio-conversion">Gifts</label></span>
+                    <span><input id="q3c" name="q3" type="radio" value="social"/><label for="q3c" class="radio-social">Cash Gifts</label></span>
+                    <span><input id="q3a" name="q3" type="radio" value="mobile"/><label for="q3a" class="radio-mobile">Gifts & Cash Gifts</label></span>
+                </div>
+            </li>
+            -->
+            <li>
+                <label class="fs-field-label fs-anim-upper" for="message" data-info="Leave a message, say thank you or tell them where the party's at!">Leave a message for your loved ones</label>
+                {{ form.message(class_="fs-anim-lower", placeholder="Leave a message...") }}
+            </li>
+            <li>
+                <label class="fs-field-label fs-anim-upper">Where should your gifts be shipped to</label>
+                    <div class="input-questions">
+                        {{ form.address.full_name(class_="fs-anim-lower", placeholder='Full Name') }}
+                        {{ form.address.phone_number(class_="fs-anim-lower", placeholder='Phone Number') }}
+                    </div>
+                    <div class="clearfix fs-anim-lower mt50">
+                        {{ form.address.address(class_="fs-anim-lower", placeholder="Delivery address...") }}
+                    </div>
+            </li>
+            <li>
+                <label class="fs-field-label fs-anim-upper" data-info="A little more information :)">Where should your gifts be shipped to (cont.)</label>
+                <div class="input-questions">
+                    {{ form.address.city(class_="fs-anim-lower", placeholder='City') }}
+                    {{ form.address.state(class_="fs-anim-lower", placeholder='State') }}
+                </div>
+                <div class="clearfix fs-anim-lower mt50">
+                    {{ form.address.additional_info(class_="fs-anim-lower", placeholder="Any major landmarks? Or something else we should be aware of?") }}
+                </div>
+            </li>
+            <!--<li>
+                <label class="fs-field-label fs-anim-upper" for="q5">What's your budget?</label>
+                <input class="fs-mark fs-anim-lower" id="q5" name="q5" type="number" placeholder="1000" step="100" min="100"/>
+            </li>-->
+        </ol><!-- /fs-fields -->
+        <button class="fs-submit" type="submit">Save Registry</button>
+    </form><!-- /fs-form -->
+    <!--<div class="form-footer"><p class="footer-text">Already have an account? <a href="">Log In</a></p></div>-->
+</div><!-- /fs-form-wrap -->
+{% endblock %}
+

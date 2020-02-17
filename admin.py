@@ -6,7 +6,7 @@ from flask_security import current_user, logout_user
 from flask_security.utils import hash_password
 from flask import redirect, request, url_for, flash, Markup
 from app import db
-from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage, Registry, HoneymoonFund, Order, Newsletter, RegistryType, Transaction, Donation
+from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage, Order, Newsletter, Transaction, Donation
 from slugify import UniqueSlugify, Slugify
 from wtforms import TextAreaField, FileField, FloatField
 from flask_admin.actions import action
@@ -340,10 +340,6 @@ class ProductView(MyModelView):
             flash(f'Failed to process request. {str(ex)}', 'error')
 
 
-class HoneyMoonFundInlineForm(InlineFormAdmin):
-    form_columns = ['message', 'target_amount']
-
-
 class RegistryTypeView(MyModelView):
     column_list = ['name', 'slug', 'is_active']
     form_excluded_columns = ['registries']
@@ -385,10 +381,8 @@ class RegistryView(MyModelView):
     column_list = ['name', 'url', 'registry_type', 'target_amount', 'amount_attained', 'is_active', 'created_by', 'date_created', 'admin_created_by']
     form_excluded_columns = ['slug', 'admin_created_by', 'date_created', 'registry_products']
     form_columns = ['created_by', 'name', 'registry_type', 'description', 'image', 'products']
-    column_labels = {'admin_created_by': 'Created by Admin', 'created_by': 'Owner',
-                     'fund.target_amount': 'Target Amount', 'fund.message': 'Honeymoon Fund'}
-    column_details_list = ['created_by', 'name', 'slug', 'description', 'image', 'products', 'fund.target_amount',
-                           'fund.message', 'admin_created_by', 'date_created']
+    column_labels = {'admin_created_by': 'Created by Admin', 'created_by': 'Owner', 'fund': 'Target Amount'}
+    column_details_list = ['created_by', 'name', 'slug', 'description', 'image', 'products', 'fund', 'admin_created_by', 'date_created']
     relative_file_path = get_relative_file_path('registries', generate_folder_name())
     form_widget_args = {
         'is_active': {
@@ -496,8 +490,8 @@ admin.add_view(ProductCategoryView(Category, db.session, menu_icon_type='fa', me
                                    name="Product Categories"))
 admin.add_view(ProductView(Product, db.session, menu_icon_type='fa', menu_icon_value='fa-shopping-basket',
                            name='Products'))
-admin.add_view(RegistryTypeView(RegistryType, db.session, menu_icon_type='fa', menu_icon_value='fa-file-o', name='Registry Types'))
-admin.add_view(RegistryView(Registry, db.session, menu_icon_type='fa', menu_icon_value='fa-file', name='Registries'))
+# admin.add_view(RegistryTypeView(RegistryType, db.session, menu_icon_type='fa', menu_icon_value='fa-file-o', name='Registry Types'))
+# admin.add_view(RegistryView(Registry, db.session, menu_icon_type='fa', menu_icon_value='fa-file', name='Registries'))
 # admin.add_view(OrderView(Order, db.session, menu_icon_type='fa', menu_icon_value='fa-first-order', name='Orders'))
 admin.add_view(NewsletterView(Newsletter, db.session, menu_icon_type='fa', menu_icon_value='fa-newspaper-o',
                               name='Newsletters'))

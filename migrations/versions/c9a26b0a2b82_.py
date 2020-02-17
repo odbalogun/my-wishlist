@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: f95b54702221
+Revision ID: c9a26b0a2b82
 Revises: 
-Create Date: 2020-01-08 02:04:49.460085
+Create Date: 2020-02-15 04:41:54.901510
 
 """
 from alembic import op
@@ -12,7 +12,7 @@ from models import PAYMENT_STATUS, STATUS
 
 
 # revision identifiers, used by Alembic.
-revision = 'f95b54702221'
+revision = 'c9a26b0a2b82'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,6 +26,17 @@ def upgrade():
     sa.Column('date_created', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
+    )
+    op.create_table('registry_delivery_addresses',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(length=100), nullable=False),
+    sa.Column('phone_number', sa.String(length=50), nullable=True),
+    sa.Column('address', sa.Text(), nullable=False),
+    sa.Column('city', sa.String(length=50), nullable=False),
+    sa.Column('state', sa.String(length=50), nullable=False),
+    sa.Column('registry_type', sa.Unicode(length=255), nullable=True),
+    sa.Column('registry_id', sa.Integer(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('role',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -86,21 +97,6 @@ def upgrade():
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('code')
     )
-    op.create_table('registries',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=100), nullable=False),
-    sa.Column('slug', sa.String(length=100), nullable=False),
-    sa.Column('description', sa.Text(), nullable=False),
-    sa.Column('image', sa.Text(), nullable=True),
-    sa.Column('created_by_id', sa.Integer(), nullable=True),
-    sa.Column('date_created', sa.DateTime(), nullable=False),
-    sa.Column('admin_created_id', sa.Integer(), nullable=True),
-    sa.Column('is_active', sa.Boolean(), nullable=True),
-    sa.ForeignKeyConstraint(['admin_created_id'], ['user.id'], ),
-    sa.ForeignKeyConstraint(['created_by_id'], ['user.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('slug')
-    )
     op.create_table('roles_users',
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('role_id', sa.Integer(), nullable=True),
@@ -116,6 +112,23 @@ def upgrade():
     sa.ForeignKeyConstraint(['created_by_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
+    )
+    op.create_table('wedding_registries',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('date_created', sa.DateTime(), nullable=False),
+    sa.Column('event_date', sa.Date(), nullable=True),
+    sa.Column('is_active', sa.Boolean(), nullable=True),
+    sa.Column('bride_first_name', sa.String(length=100), nullable=False),
+    sa.Column('bride_last_name', sa.String(length=100), nullable=False),
+    sa.Column('hashtag', sa.String(length=50), nullable=True),
+    sa.Column('slug', sa.String(length=100), nullable=True),
+    sa.Column('groom_first_name', sa.String(length=100), nullable=False),
+    sa.Column('groom_last_name', sa.String(length=100), nullable=False),
+    sa.Column('message', sa.Text(), nullable=True),
+    sa.Column('image', sa.Text(), nullable=True),
+    sa.Column('created_by_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['created_by_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('articles_tags',
     sa.Column('article_id', sa.Integer(), nullable=True),
@@ -134,7 +147,7 @@ def upgrade():
     sa.Column('date_paid_status_updated', sa.DateTime(), nullable=True),
     sa.Column('admin_updated_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['admin_updated_id'], ['user.id'], ),
-    sa.ForeignKeyConstraint(['registry_id'], ['registries.id'], ),
+    sa.ForeignKeyConstraint(['registry_id'], ['wedding_registries.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('products',
@@ -153,17 +166,6 @@ def upgrade():
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('slug')
     )
-    op.create_table('registry_delivery_addresses',
-    sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('registry_id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=100), nullable=False),
-    sa.Column('phone_number', sa.String(length=50), nullable=True),
-    sa.Column('address', sa.Text(), nullable=False),
-    sa.Column('city', sa.String(length=50), nullable=False),
-    sa.Column('state', sa.String(length=50), nullable=False),
-    sa.ForeignKeyConstraint(['registry_id'], ['registries.id'], ),
-    sa.PrimaryKeyConstraint('id')
-    )
     op.create_table('transactions',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('txn_no', sa.String(length=255), nullable=True),
@@ -172,7 +174,8 @@ def upgrade():
     sa.Column('phone_number', sa.String(length=50), nullable=True),
     sa.Column('email', sa.String(length=255), nullable=True),
     sa.Column('message', sa.Text(), nullable=True),
-    sa.Column('payment_status', sqlalchemy_utils.types.choice.ChoiceType(choices=PAYMENT_STATUS), nullable=True),
+    sa.Column('type', sa.String(length=255), nullable=True),
+    sa.Column('payment_status', sqlalchemy_utils.types.choice.ChoiceType(PAYMENT_STATUS), nullable=True),
     sa.Column('total_amount', sa.Float(), nullable=False),
     sa.Column('discounted_amount', sa.Float(), nullable=True),
     sa.Column('discount_id', sa.Integer(), nullable=True),
@@ -183,14 +186,20 @@ def upgrade():
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('txn_no')
     )
+    op.create_table('donations',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('transaction_id', sa.Integer(), nullable=False),
+    sa.Column('amount', sa.Float(), nullable=False),
+    sa.Column('date_created', sa.DateTime(), nullable=False),
+    sa.ForeignKeyConstraint(['transaction_id'], ['transactions.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('orders',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('order_number', sa.String(length=255), nullable=True),
     sa.Column('transaction_id', sa.Integer(), nullable=False),
-    sa.Column('registry_id', sa.Integer(), nullable=False),
     sa.Column('status', sqlalchemy_utils.types.choice.ChoiceType(STATUS), nullable=True),
     sa.Column('date_created', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['registry_id'], ['registries.id'], ),
     sa.ForeignKeyConstraint(['transaction_id'], ['transactions.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('order_number')
@@ -206,11 +215,11 @@ def upgrade():
     )
     op.create_table('registry_products',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('registry_id', sa.Integer(), nullable=False),
     sa.Column('product_id', sa.Integer(), nullable=False),
     sa.Column('has_been_purchased', sa.Boolean(), nullable=True),
+    sa.Column('registry_type', sa.Unicode(length=255), nullable=True),
+    sa.Column('registry_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['product_id'], ['products.id'], ),
-    sa.ForeignKeyConstraint(['registry_id'], ['registries.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('order_items',
@@ -233,18 +242,19 @@ def downgrade():
     op.drop_table('registry_products')
     op.drop_table('product_images')
     op.drop_table('orders')
+    op.drop_table('donations')
     op.drop_table('transactions')
-    op.drop_table('registry_delivery_addresses')
     op.drop_table('products')
     op.drop_table('honeymoon_funds')
     op.drop_table('articles_tags')
+    op.drop_table('wedding_registries')
     op.drop_table('tags')
     op.drop_table('roles_users')
-    op.drop_table('registries')
     op.drop_table('discounts')
     op.drop_table('categories')
     op.drop_table('articles')
     op.drop_table('user')
     op.drop_table('role')
+    op.drop_table('registry_delivery_addresses')
     op.drop_table('newsletter')
     # ### end Alembic commands ###

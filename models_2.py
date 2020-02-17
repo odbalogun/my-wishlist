@@ -6,20 +6,21 @@ from database import (
     CustomModelMixin,
     reference_col,
     relationship,
-    Column,
-    HasAddress, HasProducts
+    Column
 )
 import datetime as dt
+from sqlalchemy.event import listens_for
 from sqlalchemy.orm import backref
 import random
-from sqlalchemy_utils.types.choice import ChoiceType
-from sqlalchemy.ext.declarative import declared_attr
 import uuid
+from slugify import Slugify
+from sqlalchemy_utils.types.choice import ChoiceType
+
 
 PAYMENT_STATUS = [
-    (u'unpaid', u'Unpaid'),
-    (u'paid', u'Paid')
-]
+        (u'unpaid', u'Unpaid'),
+        (u'paid', u'Paid')
+    ]
 
 STATUS = [
     (u'pending', u'Pending'),
@@ -164,6 +165,7 @@ class Product(CustomModelMixin, Model):
 
     created_by = relationship("User")
     category = relationship("Category")
+    products_in_registry = relationship("Registry", secondary="registry_products")
 
     def __repr__(self):
         """Represent instance as a string."""
@@ -245,186 +247,111 @@ class Discount(CustomModelMixin, Model):
         return (self.percentage/100) * price
 
 
-class RegistryBase(CustomModelMixin, Model):
-    __abstract__ = True
+class RegistryType(CustomModelMixin, Model):
+    __tablename__ = 'registry_types'
 
-    slug = Column(db.String(100), nullable=True)
-    date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
-    event_date = Column(db.Date, nullable=True)
+    name = Column(db.String(100), nullable=False)
+    slug = Column(db.String(100), nullable=False, unique=True)
     is_active = Column(db.Boolean, default=True)
 
-    @declared_attr
-    def created_by_id(cls):
-        return reference_col("user", nullable=True)
-
-    @declared_attr
-    def admin_created_id(cls):
-        return reference_col("user", nullable=True)
+    def __str__(self):
+        return self.name
 
 
-class WeddingRegistry(HasProducts, HasAddress, RegistryBase):
-    __tablename__ = 'wedding_registries'
+class Registry(CustomModelMixin, Model):
+    __tablename__ = 'registries'
 
-    first_name = Column(db.String(100), nullable=False)
-    last_name = Column(db.String(100), nullable=False)
+    name = Column(db.String(100), nullable=False)
+    slug = Column(db.String(100), nullable=False, unique=True)
     hashtag = Column(db.String(50), nullable=True)
-    spouse_first_name = Column(db.String(100), nullable=False)
-    spouse_last_name = Column(db.String(100), nullable=False)
-    message = Column(db.Text, nullable=True)
+    registry_type_id = reference_col("registry_types", nullable=True)
+    description = Column(db.Text, nullable=False)
     image = Column(db.Text, nullable=True)
-    fund = Column(db.Float, nullable=True)
+    created_by_id = reference_col("user", nullable=True)
+    date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    admin_created_id = reference_col("user", nullable=True)
+    is_active = Column(db.Boolean, default=True)
 
-    admin_created_id = relationship("User")
-    created_by = relationship("User", backref="weddings", primaryjoin="WeddingRegistry.created_by_id==User.id")
+    created_by = relationship("User", backref="registries", primaryjoin="Registry.created_by_id==User.id")
+    admin_created_by = relationship("User", primaryjoin="Registry.admin_created_id==User.id")
+    products = relationship("Product", secondary="registry_products")
+    registry_type = relationship("RegistryType", backref="registries")
 
     @property
     def url(self):
-        return "{}registry/weddings/{}".format(request.url_root, self.slug)
+        return "{}registries/{}".format(request.url_root, self.slug)
 
-    def unique_slug(self, slug):
-        if self.query.filter_by(slug=slug).first():
-            return f"{slug}-{str(uuid.uuid4()).split('-')[0]}"
-        return False
-
-    def generate_hashtag(self):
-        # check if hashtag has been provided
-        if not self.hashtag:
-            # if not join first_name, spouse_first_name and last two digits of the year
-            self.hashtag = f'#{self.first_name.title()}{self.last_name.title()}{str(self.event_date.year)[:2]}'
-        # check if first letter is hashtag
-        if self.hashtag[0] != '#':
-            self.hashtag = f'#{self.hashtag}'
+    def __str__(self):
+        return self.name
 
     def generate_slug(self):
-        # strip hashtag
-        slug = self.hashtag[1:]
-        # check if exists in database
-        check = self.unique_slug(slug)  # if it exists, add uuid
-        self.slug = check.lower() if check else slug.lower()
-
-
-class BabyShowerRegistry(HasProducts, HasAddress, RegistryBase):
-    __tablename__ = 'baby_shower_registries'
-
-    baby_name = Column(db.String(100), nullable=False)
-    parents_name = Column(db.String(200), nullable=False)
-    hashtag = Column(db.String(50), nullable=True)
-    message = Column(db.Text, nullable=True)
-    image = Column(db.Text, nullable=True)
-
-    admin_created_id = relationship("User")
-    created_by = relationship("User", backref="baby_showers", primaryjoin="BabyShowerRegistry.created_by_id==User.id")
+        slugify = Slugify(to_lower=True)
+        self.slug = "{}-{}".format(slugify(self.name), str(uuid.uuid4()).split('-')[0])
 
     @property
-    def url(self):
-        return "{}registry/baby-showers/{}".format(request.url_root, self.slug)
-
-    def unique_slug(self, slug):
-        if self.query.filter_by(slug=slug).first():
-            return f"{slug}-{str(uuid.uuid4()).split('-')[0]}"
-        return False
-
-    def generate_hashtag(self):
-        # check if hashtag has been provided
-        if not self.hashtag:
-            # if not
-            self.hashtag = f'#{self.baby_name.title()}{str(self.event_date.year)}'
-        # check if first letter is hashtag
-        if self.hashtag[0] != '#':
-            self.hashtag = f'#{self.hashtag}'
-
-    def generate_slug(self):
-        # strip hashtag
-        slug = self.hashtag[1:]
-        # check if exists in database
-        check = self.unique_slug(slug)  # if it exists, add uuid
-        self.slug = check.lower() if check else slug.lower()
-
-
-class BridalShowerRegistry(HasProducts, HasAddress, RegistryBase):
-    __tablename__ = 'bridal_shower_registries'
-
-    first_name = Column(db.String(100), nullable=False)
-    last_name = Column(db.String(100), nullable=False)
-    hashtag = Column(db.String(50), nullable=True)
-    message = Column(db.Text, nullable=True)
-    image = Column(db.Text, nullable=True)
-
-    admin_created_id = relationship("User")
-    created_by = relationship("User", backref="bridal_showers", primaryjoin="BridalShowerRegistry.created_by_id==User.id")
+    def product_ids(self):
+        return [x.id for x in self.products]
 
     @property
-    def url(self):
-        return "{}registry/bridal-showers/{}".format(request.url_root, self.slug)
-
-    def unique_slug(self, slug):
-        if self.query.filter_by(slug=slug).first():
-            return f"{slug}-{str(uuid.uuid4()).split('-')[0]}"
-        return False
-
-    def generate_hashtag(self):
-        # check if hashtag has been provided
-        if not self.hashtag:
-            # if not
-            self.hashtag = f'#{self.first_name.title()}{str(self.event_date.year)}'
-        # check if first letter is hashtag
-        if self.hashtag[0] != '#':
-            self.hashtag = f'#{self.hashtag}'
-
-    def generate_slug(self):
-        # strip hashtag
-        slug = self.hashtag[1:]
-        # check if exists in database
-        check = self.unique_slug(slug)  # if it exists, add uuid
-        self.slug = check.lower() if check else slug.lower()
-
-
-class BirthdayRegistry(HasProducts, HasAddress, RegistryBase):
-    __tablename__ = 'birthday_registries'
-
-    first_name = Column(db.String(100), nullable=False)
-    last_name = Column(db.String(100), nullable=False)
-    hashtag = Column(db.String(50), nullable=True)
-    message = Column(db.Text, nullable=True)
-    image = Column(db.Text, nullable=True)
-
-    admin_created_id = relationship("User")
-    created_by = relationship("User", backref="birthdays", primaryjoin="BirthdayRegistry.created_by_id==User.id")
+    def target_amount(self):
+        if self.fund:
+            return self.fund.target_amount
+        return None
 
     @property
-    def url(self):
-        return "{}registry/birthdays/{}".format(request.url_root, self.slug)
+    def amount_attained(self):
+        return None
 
-    def unique_slug(self, slug):
-        if self.query.filter_by(slug=slug).first():
-            return f"{slug}-{str(uuid.uuid4()).split('-')[0]}"
-        return False
+    @property
+    def string_id(self):
+        return str(self.id)
 
-    def generate_hashtag(self):
-        # check if hashtag has been provided
-        if not self.hashtag:
-            # if not
-            self.hashtag = f'#{self.first_name.title()}{str(self.event_date.year)}'
-        # check if first letter is hashtag
-        if self.hashtag[0] != '#':
-            self.hashtag = f'#{self.hashtag}'
+    @property
+    def to_json(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'url': self.url,
+            'slug': self.slug
+        }
 
-    def generate_slug(self):
-        # strip hashtag
-        slug = self.hashtag[1:]
-        # check if exists in database
-        check = self.unique_slug(slug)  # if it exists, add uuid
-        self.slug = check.lower() if check else slug.lower()
+
+class HoneymoonFund(CustomModelMixin, Model):
+    __tablename__ = 'honeymoon_funds'
+
+    registry_id = reference_col("registries", nullable=False)
+    message = Column(db.Text, nullable=True)
+    target_amount = Column(db.Float, nullable=True)
+    has_achieved_target = Column(db.Boolean, default=False)
+    date_target_achieved = Column(db.DateTime, nullable=True)
+    has_been_paid = Column(db.Boolean, default=False)
+    date_paid_status_updated = Column(db.DateTime, nullable=True)
+    admin_updated_id = reference_col("user", nullable=True)
+
+    admin_updated_by = relationship("User")
+    registry = relationship("Registry", backref=backref('fund', uselist=False), uselist=False)
+
+    def __str__(self):
+        return self.registry.name
+
+    @staticmethod
+    def format_price(price):
+        return "NGN{:,.2f}".format(price)
+
+    @property
+    def amount_donated(self):
+        return 99800
 
 
 class RegistryProducts(CustomModelMixin, Model):
     __tablename__ = 'registry_products'
 
+    registry_id = reference_col("registries", nullable=False)
     product_id = reference_col("products", nullable=False)
     has_been_purchased = Column(db.Boolean, default=False)
-    registry_type = Column(db.Unicode(255))
-    registry_id = Column(db.Integer, nullable=False)
 
+    # product = relationship("Product", backref="registry_products", uselist=False)
+    registry = relationship("Registry", backref=backref("registry_products", cascade="all, delete-orphan"))
     product = relationship("Product", backref=backref("registry_products", cascade="all, delete-orphan"))
 
     def __str__(self):
@@ -434,15 +361,14 @@ class RegistryProducts(CustomModelMixin, Model):
 class RegistryDeliveryAddress(CustomModelMixin, Model):
     __tablename__ = 'registry_delivery_addresses'
 
-    full_name = Column(db.String(100), nullable=False)
+    registry_id = reference_col("registries", nullable=False)
+    name = Column(db.String(100), nullable=False)
     phone_number = db.Column(db.String(50), nullable=True)
     address = Column(db.Text, nullable=False)
     city = Column(db.String(50), nullable=False)
     state = Column(db.String(50), nullable=False)
-    additional_info = Column(db.Text, nullable=True)
 
-    registry_type = Column(db.Unicode(255))
-    registry_id = Column(db.Integer, nullable=False)
+    registry = relationship("Registry", backref=backref("delivery", uselist=False, cascade="all, delete-orphan"))
 
 
 class Newsletter(CustomModelMixin, Model):
@@ -498,9 +424,11 @@ class Donation(CustomModelMixin, Model):
     __tablename__ = 'donations'
 
     transaction_id = reference_col("transactions", nullable=False)
+    registry_id = reference_col("registries", nullable=False)
     amount = Column(db.Float, nullable=False)
     date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
 
+    registry = relationship("Registry", backref=backref("donations", uselist=True))
     transaction = relationship("Transaction", backref=backref("donations", uselist=True))
 
 
@@ -509,9 +437,11 @@ class Order(CustomModelMixin, Model):
 
     order_number = Column(db.String(255), unique=True)
     transaction_id = reference_col("transactions", nullable=False)
+    registry_id = reference_col("registries", nullable=False)
     status = Column(ChoiceType(STATUS, impl=db.String()))
     date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
 
+    registry = relationship("Registry", backref=backref("orders", uselist=True))
     transaction = relationship("Transaction", backref=backref("orders", uselist=True))
 
     def generate_order_number(self):

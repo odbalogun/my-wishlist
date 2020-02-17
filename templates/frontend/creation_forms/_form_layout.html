@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title></title>
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		<meta name="author" content="Codrops" />
+		<link rel="shortcut icon" href="../favicon.ico">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='frontend/assets/css/normalize.css') }}" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='frontend/assets/css/demo.css') }}" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='frontend/assets/css/component.css') }}" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='frontend/assets/css/cs-select.css') }}" />
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='frontend/assets/css/cs-skin-boxes.css') }}" />
+		<script src="{{ url_for('static', filename='frontend/assets/js/modernizr.custom.js') }}"></script>
+	</head>
+	<body>
+		<div class="container">
+            {% block main %}{% endblock %}
+        </div><!-- /container -->
+		<script src="{{ url_for('static', filename='frontend/assets/js/classie.js') }}"></script>
+		<script src="{{ url_for('static', filename='frontend/assets/js/selectFx.js') }}"></script>
+		<script src="{{ url_for('static', filename='frontend/assets/js/fullscreenForm.js') }}"></script>
+		<script>
+			(function() {
+				var formWrap = document.getElementById( 'fs-form-wrap' );
+
+				[].slice.call( document.querySelectorAll( 'select.cs-select' ) ).forEach( function(el) {
+					new SelectFx( el, {
+						stickyPlaceholder: false,
+						onChange: function(val){
+							document.querySelector('span.cs-placeholder').style.backgroundColor = val;
+						}
+					});
+				} );
+
+				new FForm( formWrap, {
+					onReview : function() {
+						classie.add( document.body, 'overview' );
+					}
+				} );
+			})();
+		</script>
+	</body>
+</html>

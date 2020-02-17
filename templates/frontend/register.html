@@ -8,8 +8,8 @@
             <!-- .col-lg-6 end -->
             <div class="col-sm-12 col-md-6 col-lg-6 offset-lg-3">
                 <div class="register-title">
-                    <h5>Create account now</h5>
-                    <p>Login to your account to discovery all great features in this item</p>
+                    <h5>Create an account</h5>
+                    <p>Create an account, set up a registry and share with your friends and loved ones</p>
                 </div>
                 <!-- .register-title end -->
                 <form method="post" action="">
@@ -39,7 +39,7 @@
                             {{ render_field(form.confirm_password) }}
                         </div>
                         <!-- .col-lg-6 end -->
-                        <div class="col-sm-12 col-md-12 col-lg-12 mb-40">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="input-checkbox inline-block">
                                 <div class="form-group">
                                     <label class="label-checkbox">I agree to the <a href="#">terms and conditions</a>
@@ -50,10 +50,19 @@
                             </div>
                         </div>
                         <!-- .col-lg-12 end -->
-                        <div class="col-sm-12 col-md-12 col-lg-12 mb-40">
+                        <div class="col-sm-12 col-md-12 col-lg-12 mb-10">
                             <input type="submit" class="btn btn--primary btn--rounded" value="Register">
                         </div>
+
+                        <div class="col-sm-12 col-md-12 col-lg-12 mb-50">
+                            <div class="social--login">
+                                <span class="title">ALREADY HAVE AN ACCOUNT?
+                                    <a href="{{ url_for('.login') }}" style="text-decoration: underline; font-size: inherit; width: inherit; height: inherit; color: #8e297b; border-radius: unset;">LOG IN</a>
+                                </span>
+                            </div>
+                        </div>
                         <!-- .col-lg-12 end -->
+
                         <!--
                         <div class="col-sm-12 col-md-12 col-lg-12">
                             <div class="social--login">

@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 """Database module, including the SQLAlchemy database object and DB-related utilities."""
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import event, and_
+from sqlalchemy.orm import remote, foreign, backref
 
 db = SQLAlchemy()
 
@@ -104,3 +106,54 @@ def reference_col(
         nullable=nullable,
         **column_kwargs,
     )
+
+# Mixins for Generic relationships
+# Based off this https://github.com/zzzeek/sqlalchemy/blob/master/examples/generic_associations/generic_fk.py
+
+
+class HasAddress(object):
+    """HasAddresses mixin, creates a relationship to
+    the address_association table for each parent.
+    """
+
+
+@event.listens_for(HasAddress, "mapper_configured", propagate=True)
+def setup_address_listener(mapper, class_):
+    name = class_.__name__
+    discriminator = name.lower()
+    class_.address = relationship(
+        'RegistryDeliveryAddress',
+        primaryjoin=f"and_({name}.id == foreign(RegistryDeliveryAddress.registry_id), RegistryDeliveryAddress.registry_type == '{discriminator}')",
+        backref=backref(
+            "parent_%s" % discriminator,
+            uselist=False
+        ),
+        uselist=False
+    )
+
+    @event.listens_for(class_.address, "set")
+    def set_address(target, value, oldvalue, initiator):
+        value.registry_type = discriminator
+
+
+class HasProducts(object):
+    """HasProducts mixin, creates a relationship to
+    the registry_products table for each parent.
+    """
+
+
+@event.listens_for(HasProducts, "mapper_configured", propagate=True)
+def setup_product_listener(mapper, class_):
+    name = class_.__name__
+    discriminator = name.lower()
+    class_.products = relationship(
+        'RegistryProducts',
+        primaryjoin=f"and_({name}.id == foreign(RegistryProducts.registry_id), RegistryProducts.registry_type == '{discriminator}')",
+        backref=backref(
+            "parent_%s" % discriminator,
+        ),
+    )
+
+    @event.listens_for(class_.products, "append")
+    def append_product(target, value, initiator):
+        value.registry_type = discriminator

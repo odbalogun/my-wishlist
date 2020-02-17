@@ -6,7 +6,6 @@ from flask_migrate import Migrate
 from database import db
 from flask_ckeditor import CKEditor
 from frontend import frontend
-from models import RegistryType
 
 
 # Create Flask application
@@ -16,7 +15,6 @@ app.config.from_pyfile('config.py')
 db.init_app(app)
 migrate = Migrate(app, db)
 ckeditor = CKEditor(app)
-app.jinja_env.globals['registry_types'] = RegistryType
 
 
 @app.template_filter()

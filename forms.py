@@ -5,6 +5,17 @@ from wtforms.widgets import ListWidget, CheckboxInput
 from wtforms.ext.sqlalchemy.fields import QuerySelectMultipleField
 from flask_admin.form.widgets import Select2TagsWidget, Select2Widget
 from flask_wtf import FlaskForm
+from wtforms_alchemy import ModelForm, ModelFormField
+from models import WeddingRegistry, RegistryDeliveryAddress, BabyShowerRegistry, BridalShowerRegistry, BirthdayRegistry
+import datetime
+
+
+# constants
+MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+MONTH_CHOICES = [(ind+1, x) for ind, x in enumerate(MONTHS)]
+DATE_CHOICES = [(ind, f'{ind:02}') for ind in range(1, 32)]
+YEAR = datetime.datetime.now().year
+YEAR_CHOICES = [(YEAR + ind, YEAR + ind) for ind in range(0, 6)]
 
 
 class MultiCheckboxField(form.SelectMultipleField):
@@ -140,3 +151,50 @@ class DonationForm(FlaskForm):
     message = form.TextAreaField('Message', validators=[validator.Optional()],
                                  render_kw={"placeholder": "Send a message to the celebrants"})
 
+
+class DeliveryForm(ModelForm):
+    class Meta:
+        model = RegistryDeliveryAddress
+
+    registry_id = form.StringField(validators=[validator.Optional()])
+
+
+class WeddingRegistryForm(ModelForm):
+    class Meta:
+        model = WeddingRegistry
+
+    email = form.StringField(validators=[validator.Optional(), validator.Email(), validator.Length(max=50)], render_kw={"placeholder": "Email address"})
+    month = form.SelectField(validators=[validator.DataRequired()], coerce=int, choices=MONTH_CHOICES)
+    date = form.SelectField(validators=[validator.DataRequired()], coerce=int, choices=DATE_CHOICES)
+    year = form.SelectField(validators=[validator.DataRequired()], coerce=int, choices=YEAR_CHOICES)
+    address = ModelFormField(DeliveryForm)
+
+
+class BabyShowerForm(ModelForm):
+    class Meta:
+        model = BabyShowerRegistry
+
+    month = form.SelectField(validators=[validator.DataRequired()], coerce=int, choices=MONTH_CHOICES)
+    date = form.SelectField(validators=[validator.DataRequired()], coerce=int, choices=DATE_CHOICES)
+    year = form.SelectField(validators=[validator.DataRequired()], coerce=int, choices=YEAR_CHOICES)
+    address = ModelFormField(DeliveryForm)
+
+
+class BridalShowerForm(ModelForm):
+    class Meta:
+        model = BridalShowerRegistry
+
+    month = form.SelectField(validators=[validator.DataRequired()], coerce=int, choices=MONTH_CHOICES)
+    date = form.SelectField(validators=[validator.DataRequired()], coerce=int, choices=DATE_CHOICES)
+    year = form.SelectField(validators=[validator.DataRequired()], coerce=int, choices=YEAR_CHOICES)
+    address = ModelFormField(DeliveryForm)
+
+
+class BirthdayForm(ModelForm):
+    class Meta:
+        model = BirthdayRegistry
+
+    month = form.SelectField(validators=[validator.DataRequired()], coerce=int, choices=MONTH_CHOICES)
+    date = form.SelectField(validators=[validator.DataRequired()], coerce=int, choices=DATE_CHOICES)
+    year = form.SelectField(validators=[validator.DataRequired()], coerce=int, choices=YEAR_CHOICES)
+    address = ModelFormField(DeliveryForm)
