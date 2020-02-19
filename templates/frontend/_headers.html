@@ -16,16 +16,16 @@
                         <a href="{{ url_for('.faq') }}" class="link-hover">How it works</a>
                     </li>
                     <li>
-                        <a href="{{ url_for('.registries', type='weddings') }}">Weddings</a>
+                        <a href="{{ url_for('.registries', cat='weddings') }}">Weddings</a>
                     </li>
                     <li>
-                        <a href="{{ url_for('.registries', type='bridal-showers') }}">Bridal Showers</a>
+                        <a href="{{ url_for('.registries', cat='bridal-showers') }}">Bridal Showers</a>
                     </li>
                     <li>
-                        <a href="{{ url_for('.registries', type='birthdays') }}">Birthdays</a>
+                        <a href="{{ url_for('.registries', cat='birthdays') }}">Birthdays</a>
                     </li>
                     <li>
-                        <a href="{{ url_for('.registries', type='baby-showers') }}">Baby Showers</a>
+                        <a href="{{ url_for('.registries', cat='baby-showers') }}">Baby Showers</a>
                     </li>
                     <!--
                     <li>
@@ -35,19 +35,19 @@
                         <a href="{{ url_for('.faq') }}" class="link-hover">How it works</a>
                     </li>
                     <li class="has-dropdown">
-                        <a href="{{ url_for('.registries') }}" data-toggle="dropdown" class="dropdown-toggle menu-item">Registry</a>
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle menu-item">Registry</a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="{{ url_for('.registries', type='weddings') }}">Weddings</a>
+                                <a href="{{ url_for('.registries', cat='weddings') }}">Weddings</a>
                             </li>
                             <li>
-                                <a href="{{ url_for('.registries', type='bridal-showers') }}">Bridal Showers</a>
+                                <a href="{{ url_for('.registries', cat='bridal-showers') }}">Bridal Showers</a>
                             </li>
                             <li>
-                                <a href="{{ url_for('.registries', type='birthdays') }}">Birthdays</a>
+                                <a href="{{ url_for('.registries', cat='birthdays') }}">Birthdays</a>
                             </li>
                             <li>
-                                <a href="{{ url_for('.registries', type='baby-showers') }}">Baby Showers</a>
+                                <a href="{{ url_for('.registries', cat='baby-showers') }}">Baby Showers</a>
                             </li>
                         </ul>
                     </li>
@@ -58,21 +58,6 @@
                 </ul>
 
                 <div class="module-container">
-                    <!-- Module Search -->
-                    <!--
-                    <div class="module module-search pull-left">
-                        <div class="module-icon search-icon">
-                            <i class="lnr lnr-magnifier"></i>
-                            <span class="title">find a registry</span>
-                        </div>
-                        <div class="module-content module--search-box">
-                            <form class="form-search" action="{{ url_for('.search') }}" method="get">
-                                <input type="text" name="q" class="form-control" placeholder="Search anything">
-                                <button type="submit"><span class="fa fa-arrow-right"></span></button>
-                            </form>
-                        </div>
-                    </div>
-                    -->
 
                     <div class="vertical-divider pull-left mr-20"></div>
 

@@ -6,7 +6,7 @@
 ============================================= -->
 <section id="page-title" class="page-title bg-parallax">
     <div class="bg-section">
-        <img src="{{ url_for('static', filename=registry.image) }}" alt="background">
+        <img src="{{ url_for('static', filename=registry.image_url) }}" alt="background">
     </div>
     <div class="container">
         <div class="row">
@@ -33,7 +33,7 @@
                         </div>
                     </div>
                     <div class="clearfix"></div>
-                    <p>{{ registry.description }}</p>
+                    <p>{{ registry.message }}</p>
                 </div>
                 <!-- .title end -->
             </div>
@@ -60,21 +60,23 @@
                 <div class="banner-panel">
                     <div class="panel--content">
                         <h5>{% if registry.hashtag %} {{ registry.hashtag | lower }} {% else %} {{ registry }} {% endif %}</h5>
-                        <h6>We are trying to raise {{ registry.fund.format_price(registry.fund.target_amount) }}</h6>
+                        <h6>We are trying to raise {{ registry.fund | format_money }}</h6>
                         <p>{{ registry.fund.message }}</p>
                     </div>
                     <div class="pt-50">
                         <div class="progress-bg">
+                            <!--
                             <div class="progress-bar">
-                                <h3 class="raised">{{ registry.fund.format_price(registry.fund.amount_donated) }} </h3>
+                                <h3 class="raised">{{ registry.fund | format_money }} </h3>
                             </div>
-                            <h3 class="goal">Goal: {{ registry.fund.format_price(registry.fund.target_amount) }}</h3>
+                            -->
+                            <h3 class="goal">Goal: {{ registry.fund | format_money }}</h3>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12 pt-50 text-center">
-                <a class="btn btn--primary btn--rounded" href="#costumModal30" role="button" data-toggle="modal">Donate</a>
+                <a class="btn btn--primary btn--rounded" href="#costumModal30" role="button" data-toggle="modal">Contribute</a>
             </div>
             <!-- .interactive-panel end -->
         </div>
@@ -158,6 +160,7 @@
     <!-- .container end -->
 </section>
 <!-- #category end -->
+{% if form %}
 <div id="costumModal30" class="modal" data-easein="bounce"  tabindex="-1" role="dialog" aria-labelledby="costumModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <form action="" method="post">
@@ -173,7 +176,7 @@
                         <div class="row">
                             <div class="col-sm-12 col-md-6 col-lg-6">
                                 <div class="register-title">
-                                    <h5>Donate to support our event</h5>
+                                    <h5>Contribute to our Honeymoon Fund</h5>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-12 col-md-12 col-lg-12">
@@ -194,13 +197,13 @@
                                     <h5>Please tell us a bit about yourself</h5>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
                                         <div class="form-group">
                                             {{ render_field(form.first_name) }}
                                         </div>
                                     </div>
                                     <!-- .col-lg-12 end -->
-                                    <div class="col-sm-12 col-md-12 col-lg-12">
+                                    <div class="col-sm-6 col-md-6 col-lg-6">
                                         <div class="form-group">
                                             {{ render_field(form.last_name) }}
                                         </div>
@@ -228,7 +231,7 @@
         </form>
     </div>
 </div>
-
+{% endif %}
 {% endblock %}
 
 {% block extra_js %}

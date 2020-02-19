@@ -149,7 +149,7 @@ class DonationForm(FlaskForm):
     amount = form.FloatField('Enter Amount', validators=[validator.DataRequired(), validator.NumberRange(min=0)],
                              render_kw={"placeholder": "Enter an Amount"})
     message = form.TextAreaField('Message', validators=[validator.Optional()],
-                                 render_kw={"placeholder": "Send a message to the celebrants"})
+                                 render_kw={"placeholder": "Send a message to the newly-weds"})
 
 
 class DeliveryForm(ModelForm):

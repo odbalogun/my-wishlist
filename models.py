@@ -265,11 +265,11 @@ class RegistryBase(CustomModelMixin, Model):
 class WeddingRegistry(HasProducts, HasAddress, RegistryBase):
     __tablename__ = 'wedding_registries'
 
-    first_name = Column(db.String(100), nullable=False)
-    last_name = Column(db.String(100), nullable=False)
+    bride_first_name = Column(db.String(100), nullable=False)
+    bride_last_name = Column(db.String(100), nullable=False)
     hashtag = Column(db.String(50), nullable=True)
-    spouse_first_name = Column(db.String(100), nullable=False)
-    spouse_last_name = Column(db.String(100), nullable=False)
+    groom_first_name = Column(db.String(100), nullable=False)
+    groom_last_name = Column(db.String(100), nullable=False)
     message = Column(db.Text, nullable=True)
     image = Column(db.Text, nullable=True)
     fund = Column(db.Float, nullable=True)
@@ -281,6 +281,26 @@ class WeddingRegistry(HasProducts, HasAddress, RegistryBase):
     def url(self):
         return "{}registry/weddings/{}".format(request.url_root, self.slug)
 
+    def __str__(self):
+        return self.name
+
+    @property
+    def name(self):
+        return f"{self.bride_first_name.title()} & {self.groom_first_name.title()}'s Registry"
+
+    @property
+    def image_url(self):
+        if self.image:
+            return True
+        return 'img/random/default_wedding.jpg'
+
+    @classmethod
+    def search(cls, term):
+        return cls.query.filter(cls.is_active.is_(True)).\
+            filter((cls.bride_first_name.ilike(term)) | (cls.bride_last_name.ilike(term)) |
+                   (cls.groom_first_name.ilike(term)) | (cls.groom_last_name.ilike(term)) | (cls.hashtag.ilike(term))
+                   | (cls.slug.ilike(term)))
+
     def unique_slug(self, slug):
         if self.query.filter_by(slug=slug).first():
             return f"{slug}-{str(uuid.uuid4()).split('-')[0]}"
@@ -290,7 +310,7 @@ class WeddingRegistry(HasProducts, HasAddress, RegistryBase):
         # check if hashtag has been provided
         if not self.hashtag:
             # if not join first_name, spouse_first_name and last two digits of the year
-            self.hashtag = f'#{self.first_name.title()}{self.last_name.title()}{str(self.event_date.year)[:2]}'
+            self.hashtag = f'#{self.bride_first_name.title()}{self.groom_first_name.title()}{str(self.event_date.year)[:2]}'
         # check if first letter is hashtag
         if self.hashtag[0] != '#':
             self.hashtag = f'#{self.hashtag}'
@@ -318,6 +338,25 @@ class BabyShowerRegistry(HasProducts, HasAddress, RegistryBase):
     @property
     def url(self):
         return "{}registry/baby-showers/{}".format(request.url_root, self.slug)
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def name(self):
+        return f"{self.baby_name}'s Baby Shower"
+
+    @property
+    def image_url(self):
+        if self.image:
+            return True
+        return 'img/random/default_baby.jpg'
+
+    @classmethod
+    def search(cls, term):
+        return cls.query.filter(cls.is_active.is_(True)).\
+            filter((cls.baby_name.ilike(term)) | (cls.parents_name.ilike(term)) | (cls.hashtag.ilike(term))
+                   | (cls.slug.ilike(term)))
 
     def unique_slug(self, slug):
         if self.query.filter_by(slug=slug).first():
@@ -357,6 +396,25 @@ class BridalShowerRegistry(HasProducts, HasAddress, RegistryBase):
     def url(self):
         return "{}registry/bridal-showers/{}".format(request.url_root, self.slug)
 
+    def __str__(self):
+        return self.name
+
+    @property
+    def name(self):
+        return f"{self.first_name}'s Bridal Shower"
+
+    @property
+    def image_url(self):
+        if self.image:
+            return True
+        return 'img/random/default_bridal_shower.jpeg'
+
+    @classmethod
+    def search(cls, term):
+        return cls.query.filter(cls.is_active.is_(True)).\
+            filter((cls.first_name.ilike(term)) | (cls.last_name.ilike(term)) | (cls.hashtag.ilike(term))
+                   | (cls.slug.ilike(term)))
+
     def unique_slug(self, slug):
         if self.query.filter_by(slug=slug).first():
             return f"{slug}-{str(uuid.uuid4()).split('-')[0]}"
@@ -394,6 +452,25 @@ class BirthdayRegistry(HasProducts, HasAddress, RegistryBase):
     @property
     def url(self):
         return "{}registry/birthdays/{}".format(request.url_root, self.slug)
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def name(self):
+        return f"{self.first_name}'s Birthday"
+
+    @property
+    def image_url(self):
+        if self.image:
+            return True
+        return 'img/random/default_birthday.jpg'
+
+    @classmethod
+    def search(cls, term):
+        return cls.query.filter(cls.is_active.is_(True)).\
+            filter((cls.first_name.ilike(term)) | (cls.last_name.ilike(term)) | (cls.hashtag.ilike(term))
+                   | (cls.slug.ilike(term)))
 
     def unique_slug(self, slug):
         if self.query.filter_by(slug=slug).first():
@@ -498,9 +575,11 @@ class Donation(CustomModelMixin, Model):
     __tablename__ = 'donations'
 
     transaction_id = reference_col("transactions", nullable=False)
+    registry_id = reference_col("wedding_registries", nullable=False)
     amount = Column(db.Float, nullable=False)
     date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
 
+    registry = relationship("WeddingRegistry", backref=backref("donations", uselist=True))
     transaction = relationship("Transaction", backref=backref("donations", uselist=True))
 
 

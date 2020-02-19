@@ -1,6 +1,6 @@
 from flask import redirect, render_template, url_for, Blueprint, flash, request, abort, session, jsonify
-from forms import RegistrationForm, LoginForm, VerificationForm, RegistryForm, RegistryProductForm, AddCartDiscount, \
-    OrderForm, NewsletterForm, DonationForm, WeddingRegistryForm, BabyShowerForm, BridalShowerForm, BirthdayForm
+from forms import RegistrationForm, LoginForm, VerificationForm, RegistryProductForm, AddCartDiscount, OrderForm, \
+    NewsletterForm, DonationForm, WeddingRegistryForm, BabyShowerForm, BridalShowerForm, BirthdayForm
 from decorators import custom_login_required
 from models import db, User, Product, Article, Tag, RegistryProducts, Category, RegistryDeliveryAddress, \
     Discount, Order, OrderItem, Newsletter, Transaction, Donation, WeddingRegistry, BabyShowerRegistry, BridalShowerRegistry, BirthdayRegistry
@@ -32,14 +32,6 @@ def index():
     form = NewsletterForm(request.form)
 
     return render_template('frontend/index.html', form=form)
-
-
-@frontend.route('/registries/search', methods=['GET'])
-def search():
-    search_term = "%{}%".format(request.args.get('q'))
-    registries = Registry.query.filter(Registry.name.like(search_term)).all()
-
-    return render_template('frontend/search.html', registries=registries)
 
 
 @frontend.route('/newsletter/subscribe', methods=['POST'])
@@ -182,6 +174,7 @@ def create_registry(slug=None):
 
             wedding.event_date = event_date
             wedding.created_by = current_user
+            wedding.is_active = True
             # create hashtag
             wedding.generate_hashtag()
             wedding.generate_slug()
@@ -214,6 +207,7 @@ def create_registry(slug=None):
 
             baby.event_date = event_date
             baby.created_by = current_user
+            baby.is_active = True
             # create hashtag
             baby.generate_hashtag()
             baby.generate_slug()
@@ -246,6 +240,7 @@ def create_registry(slug=None):
 
             bride.event_date = event_date
             bride.created_by = current_user
+            bride.is_active = True
             # create hashtag
             bride.generate_hashtag()
             bride.generate_slug()
@@ -278,6 +273,7 @@ def create_registry(slug=None):
 
             birthday.event_date = event_date
             birthday.created_by = current_user
+            birthday.is_active = True
             # create hashtag
             birthday.generate_hashtag()
             birthday.generate_slug()
@@ -454,62 +450,74 @@ def blog_article(slug):
     return render_template('frontend/blog_single.html', article=article, recent_articles=recent_articles, tags=tags)
 
 
-@frontend.route('/registries', methods=['GET'])
-def registries():
-    reg_type = request.args.get('type', None)
-
-    if not reg_type:
-        flash('The registry type was not specified', 'error')
+@frontend.route('/registries/<cat>', methods=['GET'])
+def registries(cat=None):
+    if not cat:
+        flash('The registry category was not specified', 'error')
         return redirect(url_for('.index'))
 
-    category = REGISTRY_TYPES.get(reg_type, None)
+    category = REGISTRY_TYPES.get(cat, None)
 
     if not category:
-        flash('The registry type does not exist', 'error')
+        flash('The registry category does not exist', 'error')
         return redirect(url_for('.index'))
 
-    reg_list = category.get_active_records()
-    return render_template('frontend/registries.html', registries=reg_list, reg_type=reg_type)
+    search = request.args.get('q', None)
+    if search:
+        search_term = "%{}%".format(request.args.get('q', None))
+        reg_list = category.search(term=search_term).all()
+    else:
+        reg_list = category.get_active_records()
+    return render_template('frontend/registries.html', registries=reg_list, reg_type=cat)
 
 
-@frontend.route('/registries/<slug>', methods=['GET', 'POST'])
-def view_registry(slug):
-    # todo deprecate in favor of individual views for each reg type. Url should look like 'weddings/#benife2020'
-    registry = Registry.get_by_slug(slug)
+@frontend.route('/registries/<cat>/<slug>', methods=['GET', 'POST'])
+def view_registry(cat, slug):
+    category = REGISTRY_TYPES.get(cat, None)
+
+    if not category:
+        flash('The registry category does not exist', 'error')
+        return redirect(url_for('.index'))
+
+    registry = category.get_by_slug(slug)
+
     if not registry:
-        abort(404)
+        flash('The registry does not exist', 'error')
+        return redirect(url_for('.index'))
 
-    form = DonationForm(request.form)
-    if form.validate_on_submit():
-        tran = Transaction()
-        form.populate_obj(tran)
-        tran.total_amount = form.amount.data
-        tran.payment_status = 'unpaid'
-        tran.type = 'donation'
-        tran.save()
+    if cat == 'weddings':
+        form = DonationForm(request.form)
+        if form.validate_on_submit():
+            tran = Transaction()
+            form.populate_obj(tran)
+            tran.total_amount = form.amount.data
+            tran.payment_status = 'unpaid'
+            tran.type = 'donation'
+            tran.save()
 
-        tran.generate_txn_number()
-        tran.save()
+            tran.generate_txn_number()
+            tran.save()
 
-        donation = Donation()
-        donation.registry_id = registry.id
-        donation.transaction_id = tran.id
-        donation.amount = form.amount.data
-        donation.save()
+            donation = Donation()
+            donation.registry_id = registry.id
+            donation.transaction_id = tran.id
+            donation.amount = form.amount.data
+            donation.save()
 
-        # initialize payments
-        paystack = PaystackPay()
-        response = paystack.fetch_authorization_url(email=tran.email, amount=tran.total_amount)
+            # initialize payments
+            paystack = PaystackPay()
+            response = paystack.fetch_authorization_url(email=tran.email, amount=tran.total_amount)
 
-        if response.status_code == 200:
-            json_response = response.json()
+            if response.status_code == 200:
+                json_response = response.json()
 
-            tran.update(payment_txn_number=json_response['data']['reference'])
-            return redirect(json_response['data']['authorization_url'])
-        else:
-            flash('Something went wrong. Please try again', 'error')
+                tran.update(payment_txn_number=json_response['data']['reference'])
+                return redirect(json_response['data']['authorization_url'])
+            else:
+                flash('Something went wrong. Please try again', 'error')
+        return render_template('frontend/registry.html', registry=registry, form=form)
 
-    return render_template('frontend/registry.html', registry=registry, form=form)
+    return render_template('frontend/registry.html', registry=registry)
 
 
 @frontend.route('/products/<slug>', methods=['GET'])
@@ -556,7 +564,7 @@ def handle_500(e):
 def cart():
     if 'cart_item' not in session:
         flash("There are no items in your cart", "error")
-        return redirect(url_for('.registries'))
+        return redirect(url_for('.index'))
 
     discount_form = AddCartDiscount()
     products = session['cart_item']
@@ -624,18 +632,18 @@ def verify_payment():
 
     if not reference:
         flash('Payment failed. Please try again', 'error')
-        return redirect(url_for('.registries'))
+        return redirect(url_for('.checkout'))
 
     # get order
     tran = Transaction.query.filter_by(payment_txn_number=reference).first()
 
     if not tran:
         flash('Something went wrong. Please contact an administrator', 'error')
-        return redirect(url_for('.registries'))
+        return redirect(url_for('.checkout'))
 
     if tran.payment_status == 'paid':
         flash('Payment successful', 'success')
-        return redirect(url_for('.registries'))
+        return redirect(url_for('.checkout'))
 
     paystack = PaystackPay()
     response = paystack.verify_reference_transaction(reference)
@@ -646,7 +654,7 @@ def verify_payment():
         flash('Your purchase has been completed', 'success')
     else:
         flash('The transaction could not be completed. Please try again', 'error')
-    return redirect(url_for('.registries'))
+    return redirect(url_for('.index'))
 
 
 @frontend.route('/cart/verify-payment-webhook', methods=['GET', 'POST'])
@@ -711,7 +719,7 @@ def add_product_to_cart(product_id):
 
     if not product.product.is_available:
         flash("This product is currently out of stock", "error")
-        return redirect(url_for('.registries'))
+        return redirect(url_for('.index'))
 
     all_total_price = 0
     all_total_quantity = 0
@@ -754,7 +762,7 @@ def add_product_to_cart(product_id):
 def empty_cart():
     try:
         session.clear()
-        return redirect(url_for('.registries'))
+        return redirect(url_for('.index'))
     except Exception as e:
         print(e)
 

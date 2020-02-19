@@ -10,17 +10,17 @@
                 <label class="fs-field-label fs-anim-upper" for="q1">Congratulations! Your special day is almost here. Can we ask a few questions?</label>
             </li>
             <li>
-                <label class="fs-field-label fs-anim-upper" for="first_name last_name">Who is getting married?</label>
+                <label class="fs-field-label fs-anim-upper" for="first_name last_name">Can we meet the Bride?</label>
                     <div class="input-questions">
-                        {{ form.first_name(class_='fs-anim-lower', placeholder='First Name') }}
-                        {{ form.last_name(class_='fs-anim-lower', placeholder='Last Name') }}
+                        {{ form.bride_first_name(class_='fs-anim-lower', placeholder='First Name') }}
+                        {{ form.bride_last_name(class_='fs-anim-lower', placeholder='Last Name') }}
                     </div>
             </li>
             <li>
-                <label class="fs-field-label fs-anim-upper" for="spouse_first_name spouse_last_name">And your lucky spouse to be is</label>
+                <label class="fs-field-label fs-anim-upper" for="spouse_first_name spouse_last_name">And the lucky Groom is?</label>
                 <div class="input-questions">
-                    {{ form.spouse_first_name(class_='fs-anim-lower', placeholder='First Name') }}
-                    {{ form.spouse_last_name(class_='fs-anim-lower', placeholder='Last Name') }}
+                    {{ form.groom_first_name(class_='fs-anim-lower', placeholder='First Name') }}
+                    {{ form.groom_last_name(class_='fs-anim-lower', placeholder='Last Name') }}
                 </div>
             </li>
             <li>

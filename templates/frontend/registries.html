@@ -5,13 +5,22 @@
         <div class="container">
             <div class="row">
                 {% if reg_type == 'weddings' %}
+                    <div class="col-lg-12">
+                        <form action="" class="form-inline" method="get">
+                            <div class="form-search">
+                                <label for="q" style="display: inline;">Search for:</label>
+                                <input id="q" type="text" name="q" value="{{ request.args.get('q', '') }}" class="form-control">
+                                <button type="submit" class="btn btn--primary fs-submit">Search</button>
+                            </div>
+                        </form>
+                    </div>
                     {% for registry in registries %}
                     <div class="col-sm-12 col-md-6 col-lg-6">
                         <div class="collection-item collection-item-1">
                             <div class="collection--img">
-                                <img src="{{ url_for('static', filename=registry.image) }}" alt="{{ registry.name }}" />
+                                <img src="{{ url_for('static', filename=registry.image_url) }}" alt="{{ registry.name }}" />
                                 <div class="collection--hover">
-                                    <a href="{{ url_for('.view_registry', slug=registry.slug) }}">
+                                    <a href="{{ url_for('.view_registry', cat=reg_type, slug=registry.slug) }}">
                                         <div class="collection--action">
                                         </div>
                                     </a>
@@ -19,17 +28,125 @@
                             </div>
                             <div class="collection--content">
                                 <div class="collection--title">
-                                    <h3><a href="{{ url_for('.view_registry', slug=registry.slug) }}"> {{ registry }}</a></h3>
+                                    <h3><a href="{{ url_for('.view_registry', cat=reg_type, slug=registry.slug) }}"> {{ registry }}</a></h3>
                                 </div>
                                 <div class="collection--desc">
-                                    <p>{{ registry.description | truncate(102, True, end='...') }}</p>
+                                    <p>{{ registry.message | truncate(102, True, end='...') }}</p>
                                 </div>
-                                <a href="{{ url_for('.view_registry', slug=registry.slug) }}" class="btn btn--underlined">VIEW REGISTRY</a>
+                                <a href="{{ url_for('.view_registry', cat=reg_type, slug=registry.slug) }}" class="btn btn--underlined">VIEW REGISTRY</a>
                             </div>
                         </div>
                     </div>
                     {% else %}
-                        <p>There are no wedding registries to view</p>
+                        <p>There are no wedding registries to display</p>
+                    {% endfor %}
+                {% elif reg_type == 'birthdays' %}
+                    <div class="col-lg-12">
+                        <form action="" class="form-inline" method="get">
+                            <div class="form-search">
+                                <label for="q" style="display: inline;">Search for:</label>
+                                <input id="q" type="text" name="q" value="{{ request.args.get('q', '') }}" class="form-control">
+                                <button type="submit" class="btn btn--primary fs-submit">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                    {% for registry in registries %}
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <div class="collection-item collection-item-1">
+                            <div class="collection--img">
+                                <img src="{{ url_for('static', filename=registry.image_url) }}" alt="{{ registry.name }}" />
+                                <div class="collection--hover">
+                                    <a href="{{ url_for('.view_registry', cat=reg_type, slug=registry.slug) }}">
+                                        <div class="collection--action">
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="collection--content">
+                                <div class="collection--title">
+                                    <h3><a href="{{ url_for('.view_registry', cat=reg_type, slug=registry.slug) }}"> {{ registry }}</a></h3>
+                                </div>
+                                <div class="collection--desc">
+                                    <p>{{ registry.message | truncate(102, True, end='...') }}</p>
+                                </div>
+                                <a href="{{ url_for('.view_registry', cat=reg_type, slug=registry.slug) }}" class="btn btn--underlined">VIEW REGISTRY</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                        <p>There are no birthdays to display</p>
+                    {% endfor %}
+                {% elif reg_type == 'bridal-showers' %}
+                    <div class="col-lg-12">
+                        <form action="" class="form-inline" method="get">
+                            <div class="form-search">
+                                <label for="q" style="display: inline;">Search for:</label>
+                                <input id="q" type="text" name="q" value="{{ request.args.get('q', '') }}" class="form-control">
+                                <button type="submit" class="btn btn--primary fs-submit">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                    {% for registry in registries %}
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <div class="collection-item collection-item-1">
+                            <div class="collection--img">
+                                <img src="{{ url_for('static', filename=registry.image_url) }}" alt="{{ registry.name }}" />
+                                <div class="collection--hover">
+                                    <a href="{{ url_for('.view_registry', cat=reg_type, slug=registry.slug) }}">
+                                        <div class="collection--action">
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="collection--content">
+                                <div class="collection--title">
+                                    <h3><a href="{{ url_for('.view_registry', cat=reg_type, slug=registry.slug) }}"> {{ registry }}</a></h3>
+                                </div>
+                                <div class="collection--desc">
+                                    <p>{{ registry.message | truncate(102, True, end='...') }}</p>
+                                </div>
+                                <a href="{{ url_for('.view_registry', cat=reg_type, slug=registry.slug) }}" class="btn btn--underlined">VIEW REGISTRY</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                        <p>There are no bridal showers to display</p>
+                    {% endfor %}
+                {% elif reg_type == 'baby-showers' %}
+                    <div class="col-lg-12">
+                        <form action="" class="form-inline" method="get">
+                            <div class="form-search">
+                                <label for="q" style="display: inline;">Search for:</label>
+                                <input id="q" type="text" name="q" value="{{ request.args.get('q', '') }}" class="form-control">
+                                <button type="submit" class="btn btn--primary fs-submit">Search</button>
+                            </div>
+                        </form>
+                    </div>
+                    {% for registry in registries %}
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <div class="collection-item collection-item-1">
+                            <div class="collection--img">
+                                <img src="{{ url_for('static', filename=registry.image_url) }}" alt="{{ registry.name }}" />
+                                <div class="collection--hover">
+                                    <a href="{{ url_for('.view_registry', cat=reg_type, slug=registry.slug) }}">
+                                        <div class="collection--action">
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="collection--content">
+                                <div class="collection--title">
+                                    <h3><a href="{{ url_for('.view_registry', cat=reg_type, slug=registry.slug) }}"> {{ registry }}</a></h3>
+                                </div>
+                                <div class="collection--desc">
+                                    <p>{{ registry.message | truncate(102, True, end='...') }}</p>
+                                </div>
+                                <a href="{{ url_for('.view_registry', cat=reg_type, slug=registry.slug) }}" class="btn btn--underlined">VIEW REGISTRY</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                        <p>There are no baby showers to display</p>
                     {% endfor %}
                 {% endif %}
             </div>
