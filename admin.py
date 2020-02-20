@@ -6,7 +6,8 @@ from flask_security import current_user, logout_user
 from flask_security.utils import hash_password
 from flask import redirect, request, url_for, flash, Markup
 from app import db
-from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage, Order, Newsletter, Transaction, Donation
+from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage, Order, Newsletter, Transaction, \
+    Donation, WeddingRegistry, BabyShowerRegistry, BridalShowerRegistry, BirthdayRegistry
 from slugify import UniqueSlugify, Slugify
 from wtforms import TextAreaField, FileField, FloatField
 from flask_admin.actions import action
@@ -472,6 +473,22 @@ class NewsletterView(MyModelView):
     form_excluded_columns = ['date_created']
 
 
+class WeddingView(MyModelView):
+    pass
+
+
+class BirthdayView(MyModelView):
+    pass
+
+
+class BridalView(MyModelView):
+    pass
+
+
+class BabyView(MyModelView):
+    pass
+
+
 # Create admin
 admin = flask_admin.Admin(
     name='My Dashboard',
@@ -490,9 +507,10 @@ admin.add_view(ProductCategoryView(Category, db.session, menu_icon_type='fa', me
                                    name="Product Categories"))
 admin.add_view(ProductView(Product, db.session, menu_icon_type='fa', menu_icon_value='fa-shopping-basket',
                            name='Products'))
-# admin.add_view(RegistryTypeView(RegistryType, db.session, menu_icon_type='fa', menu_icon_value='fa-file-o', name='Registry Types'))
-# admin.add_view(RegistryView(Registry, db.session, menu_icon_type='fa', menu_icon_value='fa-file', name='Registries'))
-# admin.add_view(OrderView(Order, db.session, menu_icon_type='fa', menu_icon_value='fa-first-order', name='Orders'))
+admin.add_view(WeddingView(WeddingRegistry, db.session, menu_icon_type='fa', menu_icon_value='fa-heart', name="Weddings"))
+admin.add_view(BridalView(BridalShowerRegistry, db.session, menu_icon_type='fa', menu_icon_value='fa-female', name="Bridal Showers"))
+admin.add_view(BirthdayView(BirthdayRegistry, db.session, menu_icon_type='fa', menu_icon_value='fa-gift', name="Birthdays"))
+admin.add_view(BabyView(BabyShowerRegistry, db.session, menu_icon_type='fa', menu_icon_value='fa-child', name="Baby Showers"))
 admin.add_view(NewsletterView(Newsletter, db.session, menu_icon_type='fa', menu_icon_value='fa-newspaper-o',
                               name='Newsletters'))
 admin.add_view(UserView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-users', name="Users"))
