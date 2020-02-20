@@ -341,98 +341,6 @@ class ProductView(MyModelView):
             flash(f'Failed to process request. {str(ex)}', 'error')
 
 
-class RegistryTypeView(MyModelView):
-    column_list = ['name', 'slug', 'is_active']
-    form_excluded_columns = ['registries']
-    form_widget_args = {
-        'is_active': {
-            'type': 'checkbox',
-            'class': 'flat-red'
-        }
-    }
-
-    @action('activate', 'Mark as Activated', 'Are you sure you want to mark these items as active?')
-    def action_activate(self, ids):
-        try:
-            count = RegistryType.query.filter(RegistryType.id.in_(ids)).update({RegistryType.is_active: True},
-                                                                               synchronize_session='fetch')
-            db.session.commit()
-
-            flash(f'{count} items were successfully marked as active', 'success')
-        except Exception as ex:
-            if not self.handle_view_exception(ex):
-                raise
-            flash(f'Failed to process request. {str(ex)}', 'error')
-
-    @action('deactivate', 'Mark as Deactivated', 'Are you sure you want to mark these items as deactivated?')
-    def action_deactivate(self, ids):
-        try:
-            count = RegistryType.query.filter(RegistryType.id.in_(ids)).update({RegistryType.is_active: False},
-                                                                               synchronize_session='fetch')
-            db.session.commit()
-
-            flash(f'{count} items were successfully marked as deactivated', 'success')
-        except Exception as ex:
-            if not self.handle_view_exception(ex):
-                raise
-            flash(f'Failed to process request. {str(ex)}', 'error')
-
-
-class RegistryView(MyModelView):
-    column_list = ['name', 'url', 'registry_type', 'target_amount', 'amount_attained', 'is_active', 'created_by', 'date_created', 'admin_created_by']
-    form_excluded_columns = ['slug', 'admin_created_by', 'date_created', 'registry_products']
-    form_columns = ['created_by', 'name', 'registry_type', 'description', 'image', 'products']
-    column_labels = {'admin_created_by': 'Created by Admin', 'created_by': 'Owner', 'fund': 'Target Amount'}
-    column_details_list = ['created_by', 'name', 'slug', 'description', 'image', 'products', 'fund', 'admin_created_by', 'date_created']
-    relative_file_path = get_relative_file_path('registries', generate_folder_name())
-    form_widget_args = {
-        'is_active': {
-            'type': 'checkbox',
-            'class': 'flat-red'
-        },
-        'description': {
-            'rows': 15,
-            # 'class': "form-control textarea"
-        },
-    }
-    column_searchable_list = ['name']
-    form_extra_fields = {
-        'image': form.ImageUploadField('Background Image', allowed_extensions=['jpg', 'jpeg', 'png'], base_path=get_file_path(),
-                                       relative_path=relative_file_path)
-    }
-
-    def on_model_change(self, form, model, is_created):
-        if is_created:
-            model.admin_created_by = current_user
-            model.generate_slug()
-
-    @action('activate', 'Mark as Activated', 'Are you sure you want to mark these items as active?')
-    def action_activate(self, ids):
-        try:
-            count = Registry.query.filter(Registry.id.in_(ids)).update({Registry.is_active: True},
-                                                                       synchronize_session='fetch')
-            db.session.commit()
-
-            flash(f'{count} registries were successfully marked as active', 'success')
-        except Exception as ex:
-            if not self.handle_view_exception(ex):
-                raise
-            flash(f'Failed to process request. {str(ex)}', 'error')
-
-    @action('deactivate', 'Mark as Deactivated', 'Are you sure you want to mark these items as deactivated?')
-    def action_deactivate(self, ids):
-        try:
-            count = Registry.query.filter(Registry.id.in_(ids)).update({Registry.is_active: False},
-                                                                       synchronize_session='fetch')
-            db.session.commit()
-
-            flash(f'{count} registries were successfully marked as deactivated', 'success')
-        except Exception as ex:
-            if not self.handle_view_exception(ex):
-                raise
-            flash(f'Failed to process request. {str(ex)}', 'error')
-
-
 class OrderView(MyModelView):
     column_list = ['order_number', 'transaction', 'registry', 'status', 'date_created']
     column_labels = {'order_number': "Order No.", 'transaction': "Transaction No."}
@@ -473,20 +381,64 @@ class NewsletterView(MyModelView):
     form_excluded_columns = ['date_created']
 
 
-class WeddingView(MyModelView):
-    pass
+class RegistryView(MyModelView):
+    column_filters = ['is_active']
+    relative_file_path = get_relative_file_path('registries', generate_folder_name())
+    form_widget_args = {
+        'is_active': {
+            'type': 'checkbox',
+            'class': 'flat-red'
+        },
+    }
+    form_extra_fields = {
+        'image': form.ImageUploadField('Background Image', allowed_extensions=['jpg', 'jpeg', 'png'], base_path=get_file_path(),
+                                       relative_path=relative_file_path)
+    }
+    can_delete = False
+
+    @action('activate', 'Mark as Activated', 'Are you sure you want to mark these items as active?')
+    def action_activate(self, ids):
+        try:
+            count = self.model.query.filter(self.model.id.in_(ids)).update({self.model.is_active: True}, synchronize_session='fetch')
+            db.session.commit()
+
+            flash(f'{count} items were successfully marked as active', 'success')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(f'Failed to process request. {str(ex)}', 'error')
+
+    @action('deactivate', 'Mark as Deactivated', 'Are you sure you want to mark these items as deactivated?')
+    def action_deactivate(self, ids):
+        try:
+            count = self.model.query.filter(self.model.id.in_(ids)).update({self.model.is_active: False}, synchronize_session='fetch')
+            db.session.commit()
+
+            flash(f'{count} items were successfully marked as deactivated', 'success')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(f'Failed to process request. {str(ex)}', 'error')
 
 
-class BirthdayView(MyModelView):
-    pass
+class WeddingView(RegistryView):
+    column_list = ['groom', 'bride', 'hashtag', 'url', 'fund', 'created_by', 'event_date', 'is_active', 'date_created']
+    column_searchable_list = ['groom_first_name', 'groom_last_name', 'bride_first_name', 'bride_last_name', 'hashtag']
 
 
-class BridalView(MyModelView):
-    pass
+class BirthdayView(RegistryView):
+    column_list = ['first_name', 'last_name', 'hashtag', 'url', 'event_date', 'is_active', 'created_by', 'date_created']
+    column_searchable_list = ['first_name', 'last_name', 'hashtag']
 
 
-class BabyView(MyModelView):
-    pass
+class BridalView(RegistryView):
+    column_list = ['first_name', 'last_name', 'hashtag', 'url', 'event_date', 'is_active', 'created_by', 'date_created']
+    column_searchable_list = ['first_name', 'last_name', 'hashtag']
+
+
+class BabyView(RegistryView):
+    column_list = ['baby_name', 'parents_name', 'hashtag', 'url', 'event_date', 'is_active', 'created_by', 'date_created']
+    column_searchable_list = ['baby_name', 'parents_name', 'hashtag']
 
 
 # Create admin

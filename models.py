@@ -282,6 +282,14 @@ class WeddingRegistry(HasOrders, HasProducts, HasAddress, RegistryBase):
     created_by = relationship("User", backref="weddings", primaryjoin="WeddingRegistry.created_by_id==User.id")
 
     @property
+    def groom(self):
+        return f"{self.groom_first_name} {self.groom_last_name}"
+
+    @property
+    def bride(self):
+        return f"{self.bride_first_name} {self.bride_last_name}"
+
+    @property
     def url(self):
         return "{}registry/weddings/{}".format(request.url_root, self.slug)
 
