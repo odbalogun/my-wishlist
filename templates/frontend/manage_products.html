@@ -5,45 +5,6 @@
 {% block main %}
     <form action="" method="post">
         {{ form.csrf_token }}
-        <section id="register-login" style="padding-bottom: 0px !important;" class="register-login pt-50">
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-12 col-md-6 col-lg-9 offset-lg-1">
-                        <div class="register-title">
-                            <h4>Delivery Details</h4>
-                            <p>These are your delivery details</p>
-                        </div>
-                        <!-- .register-title end -->
-                        <div class="form--review">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-12 col-lg-6">
-                                    {{ render_field(form.name) }}
-                                </div>
-                                <div class="col-sm-12 col-md-12 col-lg-6">
-                                    {{ render_field(form.phone_number) }}
-                                </div>
-                                <!-- .col-lg-6 end -->
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    {{ render_field(form.address) }}
-                                </div>
-                                <!-- .col-lg-6 end -->
-                                <div class="col-sm-12 col-md-12 col-lg-6">
-                                    {{ render_field(form.city) }}
-                                </div>
-                                <!-- .col-lg-6 end -->
-                                <div class="col-sm-12 col-md-12 col-lg-6">
-                                    {{ render_field(form.state) }}
-                                </div>
-                            </div>
-                            <!-- .row end -->
-                        </div>
-
-                    </div>
-                <!-- .row end -->
-            </div>
-            </div>
-            <!-- .container end -->
-        </section>
         <section id="category" style="padding-top: 0px !important;" class="category category-5 pb-80">
             <div class="heading heading-4 text-center">
                 <h2 class="heading--title">Add products to your Registry</h2>

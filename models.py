@@ -7,7 +7,7 @@ from database import (
     reference_col,
     relationship,
     Column,
-    HasAddress, HasProducts
+    HasAddress, HasProducts, HasOrders
 )
 import datetime as dt
 from sqlalchemy.orm import backref
@@ -253,6 +253,10 @@ class RegistryBase(CustomModelMixin, Model):
     event_date = Column(db.Date, nullable=True)
     is_active = Column(db.Boolean, default=True)
 
+    @property
+    def product_ids(self):
+        return [x.id for x in self.products]
+
     @declared_attr
     def created_by_id(cls):
         return reference_col("user", nullable=True)
@@ -262,7 +266,7 @@ class RegistryBase(CustomModelMixin, Model):
         return reference_col("user", nullable=True)
 
 
-class WeddingRegistry(HasProducts, HasAddress, RegistryBase):
+class WeddingRegistry(HasOrders, HasProducts, HasAddress, RegistryBase):
     __tablename__ = 'wedding_registries'
 
     bride_first_name = Column(db.String(100), nullable=False)
@@ -323,7 +327,7 @@ class WeddingRegistry(HasProducts, HasAddress, RegistryBase):
         self.slug = check.lower() if check else slug.lower()
 
 
-class BabyShowerRegistry(HasProducts, HasAddress, RegistryBase):
+class BabyShowerRegistry(HasOrders, HasProducts, HasAddress, RegistryBase):
     __tablename__ = 'baby_shower_registries'
 
     baby_name = Column(db.String(100), nullable=False)
@@ -380,7 +384,7 @@ class BabyShowerRegistry(HasProducts, HasAddress, RegistryBase):
         self.slug = check.lower() if check else slug.lower()
 
 
-class BridalShowerRegistry(HasProducts, HasAddress, RegistryBase):
+class BridalShowerRegistry(HasOrders, HasProducts, HasAddress, RegistryBase):
     __tablename__ = 'bridal_shower_registries'
 
     first_name = Column(db.String(100), nullable=False)
@@ -437,7 +441,7 @@ class BridalShowerRegistry(HasProducts, HasAddress, RegistryBase):
         self.slug = check.lower() if check else slug.lower()
 
 
-class BirthdayRegistry(HasProducts, HasAddress, RegistryBase):
+class BirthdayRegistry(HasOrders, HasProducts, HasAddress, RegistryBase):
     __tablename__ = 'birthday_registries'
 
     first_name = Column(db.String(100), nullable=False)
@@ -590,6 +594,8 @@ class Order(CustomModelMixin, Model):
     transaction_id = reference_col("transactions", nullable=False)
     status = Column(ChoiceType(STATUS, impl=db.String()))
     date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    registry_type = Column(db.Unicode(255))
+    registry_id = Column(db.Integer, nullable=False)
 
     transaction = relationship("Transaction", backref=backref("orders", uselist=True))
 

@@ -1,6 +1,6 @@
 from flask import redirect, render_template, url_for, Blueprint, flash, request, abort, session, jsonify
-from forms import RegistrationForm, LoginForm, VerificationForm, RegistryProductForm, AddCartDiscount, OrderForm, \
-    NewsletterForm, DonationForm, WeddingRegistryForm, BabyShowerForm, BridalShowerForm, BirthdayForm
+from forms import RegistrationForm, LoginForm, VerificationForm, AddCartDiscount, OrderForm, NewsletterForm,\
+    DonationForm, WeddingRegistryForm, BabyShowerForm, BridalShowerForm, BirthdayForm, RegistryProductForm
 from decorators import custom_login_required
 from models import db, User, Product, Article, Tag, RegistryProducts, Category, RegistryDeliveryAddress, \
     Discount, Order, OrderItem, Newsletter, Transaction, Donation, WeddingRegistry, BabyShowerRegistry, BridalShowerRegistry, BirthdayRegistry
@@ -185,7 +185,7 @@ def create_registry(slug=None):
             # todo add image
             # todo ensure that errors can be displayed
             flash('Your wedding registry has been created', 'success')
-            return redirect(url_for('.dashboard'))
+            return redirect(url_for('.manage_products', cat=slug, slug=wedding.slug))
         return render_template('frontend/creation_forms/wedding_registry.html', form=form)
     elif slug == 'baby-showers':
         form = BabyShowerForm(request.form)
@@ -218,7 +218,7 @@ def create_registry(slug=None):
             # todo add image
             # todo ensure that errors can be displayed
             flash('Your baby shower registry has been created', 'success')
-            return redirect(url_for('.dashboard'))
+            return redirect(url_for('.manage_products', cat=slug, slug=baby.slug))
         return render_template('frontend/creation_forms/baby_registry.html', form=form)
     elif slug == 'bridal-showers':
         form = BridalShowerForm(request.form)
@@ -251,7 +251,7 @@ def create_registry(slug=None):
             # todo add image
             # todo ensure that errors can be displayed
             flash('Your bridal shower registry has been created', 'success')
-            return redirect(url_for('.dashboard'))
+            return redirect(url_for('.manage_products', cat=slug, slug=bride.slug))
         return render_template('frontend/creation_forms/bridal_registry.html', form=form)
     elif slug == 'birthdays':
         form = BirthdayForm(request.form)
@@ -284,15 +284,21 @@ def create_registry(slug=None):
             # todo add image
             # todo ensure that errors can be displayed
             flash('Your birthday registry has been created', 'success')
-            return redirect(url_for('.dashboard'))
+            return redirect(url_for('.manage_products', cat=slug, slug=birthday.slug))
         return render_template('frontend/creation_forms/birthday_registry.html', form=form)
 
 
-@frontend.route('/registry/<slug>/manage-products', methods=['GET', 'POST'])
+@frontend.route('/registries/<cat>/<slug>/manage-products', methods=['GET', 'POST'])
 @custom_login_required
-def manage_products(slug):
+def manage_products(cat, slug):
+    category = REGISTRY_TYPES.get(cat, None)
+
+    if not category:
+        flash('The registry category does not exist', 'error')
+        return redirect(url_for('.index'))
+
     # load registry
-    registry = Registry.get_by_slug(slug)
+    registry = category.get_by_slug(slug)
 
     if not registry:
         abort(404)
@@ -302,50 +308,39 @@ def manage_products(slug):
 
     # get form
     products = Product.query.filter_by(is_available=True).all()
-    if registry.delivery:
-        form = RegistryProductForm(request.form, obj=registry.delivery)
-    else:
-        form = RegistryProductForm(request.form, data={'name': current_user.full_name,
-                                                       'phone_number': current_user.phone_number})
+    form = RegistryProductForm(request.form)
     form.products.choices = [(x.id, x.name) for x in products]
+
     categories = Category.query.all()
 
     if form.validate_on_submit():
-        delivery = RegistryDeliveryAddress.query.filter_by(registry_id=registry.id).first()
-
-        if not delivery:
-            delivery = RegistryDeliveryAddress(registry_id=registry.id)
-
-        form.populate_obj(delivery)
-        delivery.save()
-
         # populate products
-        RegistryProducts.query.filter_by(registry_id=registry.id).delete()
+        RegistryProducts.query.filter_by(registry_id=registry.id, registry_type=str(category.__name__).lower()).delete()
         db.session.commit()
         product_list = []
         for item in form.products.data:
             product_list.append(RegistryProducts(product_id=item))
-        registry.registry_products.extend(product_list)
+        registry.products.extend(product_list)
         db.session.add(registry)
         db.session.commit()
 
         flash("Your registry has been successfully updated", "success")
         return redirect(url_for('.dashboard'))
-    else:
-        for errors in form.errors.values():
-            for error in errors:
-                flash(f'{error}', "error")
-                break
-            break
 
     return render_template('frontend/manage_products.html', registry=registry, products=products, form=form, categories=categories)
 
 
-@frontend.route('/registry/<slug>/add-product/<product_id>', methods=['GET'])
+@frontend.route('/registries/<cat>/<slug>/add-product/<product_id>', methods=['GET'])
 @custom_login_required
-def add_product(slug, product_id):
+def add_product(cat, slug, product_id):
+    category = REGISTRY_TYPES.get(cat, None)
+
+    if not category:
+        flash('The registry category does not exist', 'error')
+        return redirect(url_for('.index'))
+
     # load registry
-    registry = Registry.get_by_slug(slug)
+    registry = category.get_by_slug(slug)
     product = Product.query.get(product_id)
 
     if not registry or not product:
@@ -356,20 +351,27 @@ def add_product(slug, product_id):
 
     if product.id in registry.product_ids:
         flash("This product is already in your registry wishlist", "error")
-        return redirect(url_for('.manage_products', slug=slug))
+        return redirect(url_for('.manage_products', cat=cat, slug=slug))
 
-    registry.registry_products.append(RegistryProducts(product_id=product.id))
+    registry.products.append(RegistryProducts(product_id=product.id))
     db.session.add(registry)
     db.session.commit()
 
     flash("This product has been added to your registry wishlist", "success")
-    return redirect(url_for('.manage_products', slug=slug))
+    return redirect(url_for('.manage_products', cat=cat, slug=slug))
 
 
-@frontend.route('/registry/<slug>/remove-product/<product_id>', methods=['GET'])
+@frontend.route('/registry/<cat>/<slug>/remove-product/<product_id>', methods=['GET'])
 @custom_login_required
-def remove_product(slug, product_id):
-    registry = Registry.get_by_slug(slug)
+def remove_product(cat, slug, product_id):
+    category = REGISTRY_TYPES.get(cat, None)
+
+    if not category:
+        flash('The registry category does not exist', 'error')
+        return redirect(url_for('.index'))
+
+    # load registry
+    registry = category.get_by_slug(slug)
     product = Product.query.get(product_id)
 
     if not registry or not product:
@@ -380,19 +382,26 @@ def remove_product(slug, product_id):
 
     if product.id not in registry.product_ids:
         flash("This product is not in your registry wishlist", "error")
-        return redirect(url_for('.manage_products', slug=slug))
+        return redirect(url_for('.manage_products', cat=cat, slug=slug))
 
-    RegistryProducts.query.filter_by(product_id=product.id, registry_id=registry.id).delete()
+    RegistryProducts.query.filter_by(product_id=product.id, registry_id=registry.id, registry_type=category.__name__.lower()).delete()
     db.session.commit()
 
     flash("This product has been removed from your registry wishlist", "success")
-    return redirect(url_for('.manage_products', slug=slug))
+    return redirect(url_for('.manage_products', cat=cat, slug=slug))
 
 
-@frontend.route('/registry/<slug>/deactivate', methods=["GET"])
+@frontend.route('/registry/<cat>/<slug>/deactivate', methods=["GET"])
 @custom_login_required
-def deactivate_registry(slug):
-    registry = Registry.get_by_slug(slug)
+def deactivate_registry(cat, slug):
+    category = REGISTRY_TYPES.get(cat, None)
+
+    if not category:
+        flash('The registry category does not exist', 'error')
+        return redirect(url_for('.index'))
+
+    # load registry
+    registry = category.get_by_slug(slug)
 
     if not registry:
         abort(404)
@@ -408,10 +417,17 @@ def deactivate_registry(slug):
     return redirect(url_for('.dashboard'))
 
 
-@frontend.route('/registry/<slug>/activate', methods=["GET"])
+@frontend.route('/registry/<cat>/<slug>/activate', methods=["GET"])
 @custom_login_required
-def activate_registry(slug):
-    registry = Registry.get_by_slug(slug)
+def activate_registry(cat, slug):
+    category = REGISTRY_TYPES.get(cat, None)
+
+    if not category:
+        flash('The registry category does not exist', 'error')
+        return redirect(url_for('.index'))
+
+    # load registry
+    registry = category.get_by_slug(slug)
 
     if not registry:
         abort(404)
@@ -515,9 +531,9 @@ def view_registry(cat, slug):
                 return redirect(json_response['data']['authorization_url'])
             else:
                 flash('Something went wrong. Please try again', 'error')
-        return render_template('frontend/registry.html', registry=registry, form=form)
+        return render_template('frontend/registry.html', registry=registry, form=form, cat=cat)
 
-    return render_template('frontend/registry.html', registry=registry)
+    return render_template('frontend/registry.html', registry=registry, cat=cat)
 
 
 @frontend.route('/products/<slug>', methods=['GET'])
@@ -591,11 +607,12 @@ def checkout():
         # save order items
         for key, product in session['cart_item'].items():
             # check if there is an existing order
-            order = Order.query.filter_by(transaction_id=tran.id, registry_id=product['registry']['id']).first()
+            order = Order.query.filter_by(transaction_id=tran.id, registry_id=product['registry_id'], registry_type=product['registry_type']).first()
 
             if not order:
                 order = Order()
-                order.registry_id = product['registry']['id']
+                order.registry_id = product['registry_id']
+                order.registry_type = product['registry_type']
                 order.transaction_id = tran.id
                 order.status = 'pending'
                 order.save()
@@ -709,10 +726,22 @@ def add_cart_discount():
     return redirect(url_for('.cart'))
 
 
-@frontend.route('/cart/add-product/<product_id>', methods=['GET'])
-def add_product_to_cart(product_id):
+@frontend.route('/cart/add-product/<cat>/<product_id>', methods=['GET'])
+def add_product_to_cart(cat, product_id):
     _quantity = 1
     product = RegistryProducts.query.get(product_id)
+
+    category = REGISTRY_TYPES.get(cat, None)
+
+    if not category:
+        flash('The registry category does not exist', 'error')
+        return redirect(url_for('.index'))
+
+    registry = category.get_by_id(product.registry_id)
+
+    if not registry:
+        flash('The registry does not exist', 'error')
+        return redirect(url_for('.index'))
 
     if not product:
         abort(404)
@@ -725,6 +754,7 @@ def add_product_to_cart(product_id):
     all_total_quantity = 0
     session.modified = True
 
+    registry_dict = {'id': registry.id, 'name': registry.name, 'url': registry.url, 'slug': registry.slug}
     if 'cart_item' in session:
         if product_id in session['cart_item']:
             for key, value in session['cart_item'].items():
@@ -735,15 +765,19 @@ def add_product_to_cart(product_id):
                     session['cart_item'][key]['unit_price'] = product.product.price
                     session['cart_item'][key]['total_price'] = total_quantity * product.product.price
                     session['cart_item'][key]['product'] = product.product.to_json
-                    session['cart_item'][key]['registry'] = product.registry.to_json
+                    session['cart_item'][key]['registry_id'] = product.registry_id
+                    session['cart_item'][key]['registry_type'] = product.registry_type
+                    session['cart_item'][key]['registry'] = registry_dict
         else:
             session['cart_item'][product_id] = {'quantity': _quantity, 'unit_price': product.product.price,
-                                                'product': product.product.to_json, 'registry': product.registry.to_json,
+                                                'product': product.product.to_json, 'registry_id': product.registry_id,
+                                                'registry_type': product.registry_type, 'registry': registry_dict,
                                                 'total_price': _quantity * product.product.price}
     else:
         session['cart_item'] = {product_id: {'quantity': _quantity, 'unit_price': product.product.price,
-                                              'product': product.product.to_json, 'registry': product.registry.to_json,
-                                              'total_price': _quantity * product.product.price}}
+                                             'product': product.product.to_json, 'registry_id': product.registry_id,
+                                             'registry_type': product.registry_type, 'registry': registry_dict,
+                                             'total_price': _quantity * product.product.price}}
 
     for key, value in session['cart_item'].items():
         individual_quantity = int(session['cart_item'][key]['quantity'])
@@ -755,7 +789,7 @@ def add_product_to_cart(product_id):
     session['all_total_price'] = all_total_price
 
     flash('Your cart has been updated', 'success')
-    return redirect(url_for('.view_registry', slug=product.registry.slug))
+    return redirect(url_for('.view_registry', cat=cat, slug=registry.slug))
 
 
 @frontend.route('/cart/empty', methods=['GET'])

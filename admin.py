@@ -499,5 +499,5 @@ admin.add_view(UserView(User, db.session, menu_icon_type='fa', menu_icon_value='
 admin.add_view(AdminView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-user', name="Administrators",
                          endpoint='administrator'))
 admin.add_view(OrderView(Order, db.session, menu_icon_type='fa', menu_icon_value='fa-shopping-cart', name='Orders'))
-admin.add_view(DonationView(Donation, db.session, menu_icon_type='fa', menu_icon_value='fa-money', name='Donations'))
+admin.add_view(DonationView(Donation, db.session, menu_icon_type='fa', menu_icon_value='fa-money', name='Honeymoon Funds'))
 admin.add_view(TransactionView(Transaction, db.session, menu_icon_type='fa', menu_icon_value='fa-credit-card', name='Transactions'))

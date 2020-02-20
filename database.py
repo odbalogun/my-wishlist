@@ -157,3 +157,26 @@ def setup_product_listener(mapper, class_):
     @event.listens_for(class_.products, "append")
     def append_product(target, value, initiator):
         value.registry_type = discriminator
+
+
+class HasOrders(object):
+    """HasOrders mixin, creates a relationship to
+    the orders table for each parent.
+    """
+
+
+@event.listens_for(HasOrders, "mapper_configured", propagate=True)
+def setup_order_listener(mapper, class_):
+    name = class_.__name__
+    discriminator = name.lower()
+    class_.orders = relationship(
+        'Order',
+        primaryjoin=f"and_({name}.id == foreign(Order.registry_id), Order.registry_type == '{discriminator}')",
+        backref=backref(
+            "parent_%s" % discriminator,
+        ),
+    )
+
+    @event.listens_for(class_.orders, "append")
+    def append_order(target, value, initiator):
+        value.registry_type = discriminator

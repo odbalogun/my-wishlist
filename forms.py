@@ -115,11 +115,6 @@ class RegistryForm(FlaskForm):
 
 
 class RegistryProductForm(FlaskForm):
-    name = form.StringField('Your Name', validators=[validator.DataRequired(), validator.Length(max=100)], render_kw={"placeholder": "Your Name"})
-    phone_number = form.StringField('Your Phone Number', validators=[validator.DataRequired()], render_kw={"placeholder": "Your Phone Number"})
-    address = form.TextAreaField('Delivery Address', validators=[validator.DataRequired()], render_kw={"placeholder": "Your Delivery Address"})
-    city = form.StringField('Your City', validators=[validator.DataRequired()], render_kw={'placeholder': "Your City"})
-    state = form.StringField('Your State', validators=[validator.DataRequired()], render_kw={'placeholder': "Your State"})
     products = form.SelectMultipleField('Products', coerce=int, validators=[validator.DataRequired(message="Please select at least one product")])
 
 
@@ -136,8 +131,7 @@ class OrderForm(FlaskForm):
     last_name = form.StringField('Last Name', validators=[validator.DataRequired(), validator.Length(max=100)])
     phone_number = form.StringField('Phone Number', validators=[validator.Length(max=50)])
     email = form.StringField('Email Address', validators=[validator.DataRequired(), validator.Email(), validator.Length(max=50)])
-    message = form.TextAreaField('Message', validators=[validator.Optional()],
-                                 render_kw={"placeholder": "Send a message to the celebrants"})
+    message = form.TextAreaField('Send a message to the celebrants', validators=[validator.Optional()])
 
 
 class DonationForm(FlaskForm):

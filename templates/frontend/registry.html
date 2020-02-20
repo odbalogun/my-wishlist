@@ -93,13 +93,13 @@
         <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12 category-options">
                 <div class="category-num pull-left pull-none-xs">
-                    <h2><span>{{ registry.registry_products | length }}</span>PRODUCT(S) FOUND</h2>
+                    <h2><span>{{ registry.products | length }}</span>PRODUCT(S) FOUND</h2>
                 </div>
             </div>
             <!-- .category-options end -->        </div>
         <!-- .row end -->
         <div class="row row-no-padding mb-60">
-            {% for product in registry.registry_products %}
+            {% for product in registry.products %}
             <!-- category item #5 -->
             <div class="col-sm-6 col-md-6 col-lg-5ths">
                 <div class="category-item">
@@ -121,7 +121,7 @@
                         <!-- .category-price end -->
                         <div class="category--hover">
                             <div class="category--action">
-                                <a href="{{ url_for('.add_product_to_cart', product_id=product.id) }}" class="btn btn--primary btn--rounded"><i class="icon-bag"></i>ADD TO CART</a>
+                                <a href="{{ url_for('.add_product_to_cart', cat=cat, product_id=product.id) }}" class="btn btn--primary btn--rounded"><i class="icon-bag"></i>ADD TO CART</a>
                                 <!--
                                 <a data-toggle="modal" data-target="#product-popup"><i class="ti-search"></i></a>
                                 <a href="#"><i class="ti-heart"></i></a>
