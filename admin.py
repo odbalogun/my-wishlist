@@ -7,7 +7,7 @@ from flask_security.utils import hash_password
 from flask import redirect, request, url_for, flash, Markup
 from app import db
 from models import User, Role, Article, Tag, Discount, Product, Category, ProductImage, Order, Newsletter, Transaction, \
-    Donation, WeddingRegistry, BabyShowerRegistry, BridalShowerRegistry, BirthdayRegistry
+    Donation, WeddingRegistry, BabyShowerRegistry, BridalShowerRegistry, BirthdayRegistry, ProductBundleItem
 from slugify import UniqueSlugify, Slugify
 from wtforms import TextAreaField, FileField, FloatField
 from flask_admin.actions import action
@@ -286,9 +286,80 @@ class ProductImageInlineForm(InlineFormAdmin):
     }
 
 
+class ProductItemInlineForm(InlineFormAdmin):
+    form_columns = ['id', 'name']
+    column_labels = dict(name="Sub-product")
+
+
+class ProductBundleView(MyModelView):
+    column_list = ['name', 'category', 'items', 'display_price', 'is_available', 'created_by', 'date_created']
+    form_excluded_columns = ['slug', 'created_by', 'date_created', 'products_in_registry', 'items', 'is_bundle', 'registry_products']
+    column_labels = dict(images='Image', display_price='Price')
+    inline_models = (ProductItemInlineForm(ProductBundleItem), ProductImageInlineForm(ProductImage))
+    form_widget_args = {
+        'is_available': {
+            'type': 'checkbox',
+            'class': 'flat-red'
+        },
+        'description': {
+            'rows': 15,
+            'class': "form-control textarea"
+        },
+    }
+    column_formatters = {
+        'description': strip_html_tags
+    }
+
+    def get_query(self):
+        return super(ProductBundleView, self).get_query().filter(Product.is_bundle.is_(True))
+
+    def get_count_query(self):
+        return super(ProductBundleView, self).get_count_query().filter(Product.is_bundle.is_(True))
+
+    def get_one(self, id):
+        query = self.get_query()
+        return query.filter(self.model.id == id).filter(Product.is_bundle.is_(True)).one()
+
+    def on_model_change(self, form, model, is_created):
+        if is_created:
+            model.created_by = current_user
+            unique_slug = UniqueSlugify(to_lower=True)
+            model.slug = unique_slug(model.name)
+            model.is_bundle = True
+        else:
+            slug = Slugify(to_lower=True)
+            model.slug = slug(model.name)
+
+    @action('unavailable', 'Mark as Unavailable', 'Are you sure you want to mark these items as Out of Stock?')
+    def action_unavailable(self, ids):
+        try:
+            count = Product.query.filter(Product.id.in_(ids)).update({Product.is_available: False},
+                                                                     synchronize_session='fetch')
+            db.session.commit()
+
+            flash(f'{count} bundles were successfully marked as unavailable', 'success')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(f'Failed to process request. {str(ex)}', 'error')
+
+    @action('available', 'Mark as Available', 'Are you sure you want to mark these items as available?')
+    def action_available(self, ids):
+        try:
+            count = Product.query.filter(Product.id.in_(ids)).update({Product.is_available: True},
+                                                                     synchronize_session='fetch')
+            db.session.commit()
+
+            flash(f'{count} bundles were successfully marked as available', 'success')
+        except Exception as ex:
+            if not self.handle_view_exception(ex):
+                raise
+            flash(f'Failed to process request. {str(ex)}', 'error')
+
+
 class ProductView(MyModelView):
     column_list = ['name', 'category', 'display_price', 'is_available', 'created_by', 'date_created']
-    form_excluded_columns = ['slug', 'created_by', 'date_created', 'products_in_registry', 'registry_products']
+    form_excluded_columns = ['slug', 'created_by', 'date_created', 'products_in_registry', 'items', 'is_bundle', 'registry_products']
     column_labels = dict(images='Image', display_price='Price')
     inline_models = (ProductImageInlineForm(ProductImage), )
     form_widget_args = {
@@ -313,6 +384,16 @@ class ProductView(MyModelView):
         else:
             slug = Slugify(to_lower=True)
             model.slug = slug(model.name)
+
+    def get_query(self):
+        return super(ProductView, self).get_query().filter(Product.is_bundle.is_(False))
+
+    def get_count_query(self):
+        return super(ProductView, self).get_count_query().filter(Product.is_bundle.is_(False))
+
+    def get_one(self, id):
+        query = self.get_query()
+        return query.filter(self.model.id == id).filter(Product.is_bundle.is_(False)).one()
 
     @action('unavailable', 'Mark as Unavailable', 'Are you sure you want to mark these items as Out of Stock?')
     def action_unavailable(self, ids):
@@ -457,17 +538,24 @@ admin.add_view(DiscountView(Discount, db.session, menu_icon_type='fa', menu_icon
                             name="Discount Codes"))
 admin.add_view(ProductCategoryView(Category, db.session, menu_icon_type='fa', menu_icon_value='fa-object-group',
                                    name="Product Categories"))
+admin.add_view(ProductBundleView(Product, db.session, menu_icon_type='fa', menu_icon_value='fa-shopping-basket',
+                                 name='Product Bundles'))
 admin.add_view(ProductView(Product, db.session, menu_icon_type='fa', menu_icon_value='fa-shopping-basket',
                            name='Products'))
 admin.add_view(WeddingView(WeddingRegistry, db.session, menu_icon_type='fa', menu_icon_value='fa-heart', name="Weddings"))
-admin.add_view(BridalView(BridalShowerRegistry, db.session, menu_icon_type='fa', menu_icon_value='fa-female', name="Bridal Showers"))
-admin.add_view(BirthdayView(BirthdayRegistry, db.session, menu_icon_type='fa', menu_icon_value='fa-gift', name="Birthdays"))
-admin.add_view(BabyView(BabyShowerRegistry, db.session, menu_icon_type='fa', menu_icon_value='fa-child', name="Baby Showers"))
+admin.add_view(BridalView(BridalShowerRegistry, db.session, menu_icon_type='fa', menu_icon_value='fa-female',
+                          name="Bridal Showers"))
+admin.add_view(BirthdayView(BirthdayRegistry, db.session, menu_icon_type='fa', menu_icon_value='fa-gift',
+                            name="Birthdays"))
+admin.add_view(BabyView(BabyShowerRegistry, db.session, menu_icon_type='fa', menu_icon_value='fa-child',
+                        name="Baby Showers"))
 admin.add_view(NewsletterView(Newsletter, db.session, menu_icon_type='fa', menu_icon_value='fa-newspaper-o',
                               name='Newsletters'))
 admin.add_view(UserView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-users', name="Users"))
 admin.add_view(AdminView(User, db.session, menu_icon_type='fa', menu_icon_value='fa-user', name="Administrators",
                          endpoint='administrator'))
 admin.add_view(OrderView(Order, db.session, menu_icon_type='fa', menu_icon_value='fa-shopping-cart', name='Orders'))
-admin.add_view(DonationView(Donation, db.session, menu_icon_type='fa', menu_icon_value='fa-money', name='Honeymoon Funds'))
-admin.add_view(TransactionView(Transaction, db.session, menu_icon_type='fa', menu_icon_value='fa-credit-card', name='Transactions'))
+admin.add_view(DonationView(Donation, db.session, menu_icon_type='fa', menu_icon_value='fa-money',
+                            name='Honeymoon Funds'))
+admin.add_view(TransactionView(Transaction, db.session, menu_icon_type='fa', menu_icon_value='fa-credit-card',
+                               name='Transactions'))

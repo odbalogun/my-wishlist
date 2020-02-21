@@ -159,6 +159,7 @@ class Product(CustomModelMixin, Model):
     sku = Column(db.String(50), nullable=True)
     price = Column(db.Float, nullable=False)
     is_available = Column(db.Boolean, default=True)
+    is_bundle = Column(db.Boolean, default=False)
     created_by_id = reference_col("user", nullable=True)
     date_created = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
 
@@ -202,6 +203,15 @@ class Product(CustomModelMixin, Model):
             'description': self.description,
             'image': self.main_image.get_url
         }
+
+
+class ProductBundleItem(CustomModelMixin, Model):
+    __tablename__ = 'product_bundle_items'
+
+    name = Column(db.Text, nullable=False)
+    product_id = reference_col("products", nullable=False)
+
+    product = relationship("Product", backref="items")
 
 
 class ProductImage(CustomModelMixin, Model):
